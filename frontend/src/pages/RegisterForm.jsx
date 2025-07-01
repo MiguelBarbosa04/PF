@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import '../assets/RegisterForm.css';
 
-const RegisterForm = ({ onSubmit }) => {
+const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     nome: '',
     pin: '',
     experiencia: '',
     funcao: '',
-    linguagem_preferida: '',
+    ling_preferida: '',
   });
 
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,24 +22,48 @@ const RegisterForm = ({ onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     for (const key in formData) {
       if (!formData[key]) {
         setError(`Por favor, preencha o campo "${key}"`);
+        setSuccess('');
         return;
       }
     }
+
     setError('');
-    onSubmit(formData);
-    setFormData({
-      email: '',
-      nome: '',
-      pin: '',
-      experiencia: '',
-      funcao: '',
-      linguagem_preferida: '',
-    });
+    setSuccess('');
+
+    try {
+      const response = await fetch("http://localhost:8001/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Erro no registo");
+      }
+
+      const data = await response.json();
+      console.log("Utilizador registado:", data);
+      setSuccess("Registo concluído com sucesso!");
+      setFormData({
+        email: '',
+        nome: '',
+        pin: '',
+        experiencia: '',
+        funcao: '',
+        ling_preferida: '',
+      });
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -46,6 +71,8 @@ const RegisterForm = ({ onSubmit }) => {
       <form onSubmit={handleSubmit} className="form">
         <h2 className="title">Registo de Utilizador</h2>
         {error && <div className="error">{error}</div>}
+        {success && <div className="success">{success}</div>}
+
         <input
           type="email"
           name="email"
@@ -71,7 +98,7 @@ const RegisterForm = ({ onSubmit }) => {
           className="input"
         />
         <input
-          type="text"
+          type="number"
           name="experiencia"
           placeholder="Experiência"
           value={formData.experiencia}
@@ -79,23 +106,25 @@ const RegisterForm = ({ onSubmit }) => {
           className="input"
         />
         <input
-          type="text"
+          type="number"
           name="funcao"
           placeholder="Função"
           value={formData.funcao}
           onChange={handleChange}
           className="input"
         />
-        <select required
-          name="linguagem_preferida"
-          value={formData.linguagem_preferida}
+        <select
+          name="ling_preferida"
+          value={formData.ling_preferida}
           onChange={handleChange}
           className="input"
+          required
         >
-          <option value="" disabled selected>Linguagem preferida</option>
-          <option value="formal">Formal</option>
-          <option value="informal">Informal</option>
+          <option value="" disabled>Linguagem preferida</option>
+          <option value="1">Formal</option>
+          <option value="2">Informal</option>
         </select>
+
         <button type="submit">Registar</button>
       </form>
     </div>
