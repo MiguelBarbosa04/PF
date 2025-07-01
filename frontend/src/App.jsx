@@ -1,13 +1,12 @@
 import React from 'react';
-import RegisterForm from './components/RegisterForm.jsx';
-import api from './api.js';
+import RegisterForm from './pages/RegisterForm.jsx';
+import { createUser } from './api/api.js'; // <--- importa corretamente
 
 const App = () => {
   const handleRegister = async (data) => {
     try {
-      await api.post('/users', data);
+      await createUser(data); // <--- usa a função correta
       alert('Utilizador registado com sucesso!');
-      // podes fazer refresh da lista ou redirecionar
     } catch (error) {
       alert('Erro ao registar utilizador');
       console.error(error);

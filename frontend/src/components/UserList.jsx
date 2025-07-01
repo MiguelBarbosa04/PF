@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api.js';
-import AddUserForm from './AddUserForm';
+import api from '../api/api.js';
+import RegisterForm from './RegisterForm.jsx';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -35,7 +35,7 @@ const UserList = () => {
           <li key={i}>{user.nome} - {user.email}</li>
         ))}
       </ul>
-      <AddUserForm addUser={addUser} />
+      <RegisterForm addUser={addUser} />
     </div>
   );
 };

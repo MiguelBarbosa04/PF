@@ -1,10 +1,10 @@
+from sqlalchemy.orm import Session
 from backend.database.models import Users
 from backend.schemas.users import UserCreate
-from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 def create_user(db: Session, user: UserCreate):
     db_user = Users(
-        id=user.id,
         nome=user.nome,
         email=user.email,
         experiencia=user.experiencia,
@@ -12,7 +12,11 @@ def create_user(db: Session, user: UserCreate):
         ling_preferida=user.ling_preferida,
         pin=user.pin,
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    try:
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Erro ao criar usuário: {e}")
     return db_user
