@@ -1,4 +1,6 @@
+// components/LoginForm.jsx
 import React, { useState } from 'react';
+import { loginUser } from '../services/api.js';
 
 const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -10,19 +12,8 @@ const LoginForm = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch("http://localhost:8001/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, pin: parseInt(pin) }),
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.detail || "Erro ao autenticar");
-      }
-
-      const data = await response.json();
-      onLogin(email); // apenas devolve o email para mostrar no App
+      const data = await loginUser({ email, pin: parseInt(pin) });
+      onLogin(email);  // Passar também `data` se depois for para guardar o token
     } catch (err) {
       setError(err.message);
     }

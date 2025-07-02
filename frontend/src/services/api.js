@@ -17,3 +17,19 @@ export async function createUser(userData) {
 
   return response.json();
 }
+
+// services/api.js
+export const loginUser = async ({ email, pin }) => {
+  const response = await fetch("http://localhost:8001/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, pin }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.detail || "Erro ao autenticar");
+  }
+
+  return response.json();
+};
