@@ -13,3 +13,8 @@ class UserRead(UserCreate):
 
     class Config:
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    email: str
+    pin: int

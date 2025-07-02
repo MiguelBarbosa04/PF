@@ -20,3 +20,7 @@ def create_user(db: Session, user: UserCreate):
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Erro ao criar usuário: {e}")
     return db_user
+
+
+def authenticate_user(db: Session, email: str, pin: int):
+    return db.query(Users).filter(Users.email == email, Users.pin == pin).first()

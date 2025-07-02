@@ -1,97 +1,54 @@
-// import React, { useState } from 'react';
-// import '../assets/RegisterForm.css';
-//
-// const RegisterForm = ({ onSubmit }) => {
-//   const [formData, setFormData] = useState({
-//     email: '',
-//     pin: '',
-//   });
-//
-//   const [error, setError] = useState('');
-//
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData(prev => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-//
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     for (const key in formData) {
-//       if (!formData[key]) {
-//         setError(`Por favor, preencha o campo "${key}"`);
-//         return;
-//       }
-//     }
-//     setError('');
-//     onSubmit(formData);
-//     setFormData({
-//       email: '',
-//       pin: '',
-//     });
-//   };
-//
-//   return (
-//     <div className="container">
-//       <form onSubmit={handleSubmit} className="form">
-//         <h2 className="title">Registo de Utilizador</h2>
-//         {error && <div className="error">{error}</div>}
-//         <input
-//           type="email"
-//           name="email"
-//           placeholder="Email"
-//           value={formData.email}
-//           onChange={handleChange}
-//           className="input"
-//         />
-//         <input
-//           type="text"
-//           name="nome"
-//           placeholder="Nome"
-//           value={formData.nome}
-//           onChange={handleChange}
-//           className="input"
-//         />
-//         <input
-//           type="password"
-//           name="pin"
-//           placeholder="PIN"
-//           value={formData.pin}
-//           onChange={handleChange}
-//           className="input"
-//         />
-//         <input
-//           type="text"
-//           name="experiencia"
-//           placeholder="Experiência"
-//           value={formData.experiencia}
-//           onChange={handleChange}
-//           className="input"
-//         />
-//         <input
-//           type="text"
-//           name="funcao"
-//           placeholder="Função"
-//           value={formData.funcao}
-//           onChange={handleChange}
-//           className="input"
-//         />
-//         <select required
-//           name="linguagem_preferida"
-//           value={formData.linguagem_preferida}
-//           onChange={handleChange}
-//           className="input"
-//         >
-//           <option value="" disabled selected>Linguagem preferida</option>
-//           <option value="formal">Formal</option>
-//           <option value="informal">Informal</option>
-//         </select>
-//         <button type="submit">Registar</button>
-//       </form>
-//     </div>
-//   );
-// };
-//
-// export default RegisterForm;
+import React, { useState } from 'react';
+
+const LoginForm = ({ onLogin }) => {
+  const [email, setEmail] = useState('');
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const response = await fetch("http://localhost:8001/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, pin: parseInt(pin) }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || "Erro ao autenticar");
+      }
+
+      const data = await response.json();
+      onLogin(email); // apenas devolve o email para mostrar no App
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Login</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="PIN"
+        value={pin}
+        onChange={e => setPin(e.target.value)}
+        required
+      />
+      <button type="submit">Entrar</button>
+    </form>
+  );
+};
+
+export default LoginForm;
