@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
-import RegisterForm from './components/RegisterForm.jsx';
-import LoginForm from './components/LoginForm.jsx';
-import { createUser } from './services/api.js';
-import {BrowserRouter, Route, Routes} from "react-router";
+import React from 'react';
+import {Route, Routes} from "react-router";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";

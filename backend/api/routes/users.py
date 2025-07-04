@@ -25,14 +25,6 @@ def login_user(user: UserLogin, db: db_dependency):
 def get_experiencia(db: Session = Depends(get_db)):
     return db.query(Experiencia).all()
 
-# @router.get("/experiencia")
-# def get_experiencia(db: Session = Depends(get_db)):
-#     try:
-#         results = db.query(Experiencia).all()
-#         return results
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
-
 @router.get("/funcao")
 def get_funcao(db: Session = Depends(get_db)):
     return db.query(Funcao).all()

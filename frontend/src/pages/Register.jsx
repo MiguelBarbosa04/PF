@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {useState} from 'react';
 import {createUser} from "../services/api.js";
 import RegisterForm from "../components/RegisterForm.jsx";
 import LoginForm from "../components/LoginForm.jsx";
