@@ -19,8 +19,8 @@ export async function createUser(userData) {
 }
 
 // services/api.js
-export const loginUser = async ({ email, password }) => {
-  const response = await fetch("http://localhost:8000/users/login", {
+/*export const loginUser = async ({ email, password }) => {
+  const response = await fetch(`${API_URL}/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -32,4 +32,25 @@ export const loginUser = async ({ email, password }) => {
   }
 
   return response.json();
-};
+};*/
+
+export async function loginUser({ email, password }) {
+  const formData = new URLSearchParams();
+  formData.append("username", email);
+  formData.append("password", password);
+
+  const response = await fetch(`${API_URL}/users/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.detail || "Erro ao autenticar");
+  }
+
+  return response.json();
+}

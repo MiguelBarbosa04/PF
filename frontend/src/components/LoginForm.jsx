@@ -12,7 +12,12 @@ const LoginForm = ({ onLogin }) => {
 
     try {
       const data = await loginUser({ email, password });
-      onLogin(email, password);  // Passar também `data` se depois for para guardar o token
+
+      localStorage.setItem("token", data.access_token);
+
+      localStorage.setItem("token_type", data.token_type);
+
+      onLogin(email);  // Passar também `data` se depois for para guardar o token
     } catch (err) {
       setError(err.message);
     }
