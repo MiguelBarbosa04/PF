@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/RegisterForm.css';
+import { useNavigate } from "react-router";
+
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,9 @@ const RegisterForm = () => {
     funcao: '',
     ling_preferida: '',
   });
+
+
+ const navigate = useNavigate();
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -57,7 +62,6 @@ const RegisterForm = () => {
     }
 
     setError('');
-    setSuccess('');
 
     try {
       const response = await fetch("http://localhost:8000/users/", {
@@ -75,7 +79,10 @@ const RegisterForm = () => {
 
       const data = await response.json();
       console.log("Utilizador registado:", data);
-      setSuccess("Registo concluído com sucesso!");
+      alert("Registo concluído com sucesso");
+
+      navigate("/login");
+
       setFormData({
         email: '',
         nome: '',

@@ -3,6 +3,7 @@ from backend.database.models import Users
 from backend.schemas.users import UserCreate
 from fastapi import HTTPException
 from backend.auth.hashing import get_password_hash
+from backend.auth.hashing import verify_password
 
 def create_user(db: Session, user: UserCreate):
     db_user = Users(
@@ -24,4 +25,9 @@ def create_user(db: Session, user: UserCreate):
 
 
 def authenticate_user(db: Session, email: str, password: str):
-    return db.query(Users).filter(Users.email == email, Users.password == password).first()
+    user = db.query(Users).filter(Users.email == email).first()
+    if not user:
+        return None
+    if not verify_password(password, user.password):
+        return None
+    return user
