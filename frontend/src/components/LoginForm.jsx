@@ -4,7 +4,7 @@ import { loginUser } from '../services/api.js';
 
 const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
-  const [pin, setPin] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -12,8 +12,8 @@ const LoginForm = ({ onLogin }) => {
     setError('');
 
     try {
-      const data = await loginUser({ email, pin: parseInt(pin) });
-      onLogin(email);  // Passar também `data` se depois for para guardar o token
+      const data = await loginUser({ email, password });
+      onLogin(email, password);  // Passar também `data` se depois for para guardar o token
     } catch (err) {
       setError(err.message);
     }
@@ -32,9 +32,9 @@ const LoginForm = ({ onLogin }) => {
       />
       <input
         type="password"
-        placeholder="PIN"
-        value={pin}
-        onChange={e => setPin(e.target.value)}
+        placeholder="Password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
         required
       />
       <button type="submit">Entrar</button>

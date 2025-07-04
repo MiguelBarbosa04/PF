@@ -7,7 +7,7 @@ class Experiencia(Base):
     __tablename__ = "experiencia"
 
     id = Column(Integer, primary_key=True)
-    descricao = Column(String(30), nullable=False)
+    nome = Column(String(30), nullable=False)
 
 class Funcao(Base):
     __tablename__ = "funcao"
@@ -30,7 +30,7 @@ class Users(Base):
     experiencia = Column(Integer, ForeignKey("experiencia.id"))
     funcao = Column(Integer, ForeignKey("funcao.id"))
     ling_preferida = Column(Integer, ForeignKey("linguagem.id"))
-    pin = Column(Integer, nullable=False)
+    password = Column(String(20), nullable=False)
 
     # Relacionamentos (usando o nome correto da classe e __tablename__)
     experiencia_rel = relationship("Experiencia", backref="users")

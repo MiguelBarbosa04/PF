@@ -10,7 +10,7 @@ def create_user(db: Session, user: UserCreate):
         experiencia=user.experiencia,
         funcao=user.funcao,
         ling_preferida=user.ling_preferida,
-        pin=user.pin,
+        password=user.password,
     )
     try:
         db.add(db_user)
@@ -22,5 +22,5 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
-def authenticate_user(db: Session, email: str, pin: int):
-    return db.query(Users).filter(Users.email == email, Users.pin == pin).first()
+def authenticate_user(db: Session, email: str, password: str):
+    return db.query(Users).filter(Users.email == email, Users.password == password).first()

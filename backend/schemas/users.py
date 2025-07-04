@@ -6,7 +6,7 @@ class UserCreate(BaseModel):
     experiencia: int
     funcao: int
     ling_preferida: int
-    pin: int
+    password: str
 
 class UserRead(UserCreate):
     id: int
@@ -17,4 +17,4 @@ class UserRead(UserCreate):
 
 class UserLogin(BaseModel):
     email: str
-    pin: int
+    password: str

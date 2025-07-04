@@ -19,11 +19,11 @@ export async function createUser(userData) {
 }
 
 // services/api.js
-export const loginUser = async ({ email, pin }) => {
-  const response = await fetch("http://localhost:8001/users/login", {
+export const loginUser = async ({ email, password }) => {
+  const response = await fetch("http://localhost:8000/users/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, pin }),
+    body: JSON.stringify({ email, password }),
   });
 
   if (!response.ok) {

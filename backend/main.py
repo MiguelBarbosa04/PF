@@ -12,9 +12,6 @@ origins = [
     "http://localhost:5173",  # origem do frontend (Vite)
 ]
 
-# Inclui rotas
-app.include_router(users.router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,3 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Inclui rotas
+app.include_router(users.router)

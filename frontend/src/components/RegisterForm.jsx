@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../assets/RegisterForm.css';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     nome: '',
-    pin: '',
+    password: '',
     experiencia: '',
     funcao: '',
     ling_preferida: '',
@@ -13,6 +13,29 @@ const RegisterForm = () => {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const [experiencias, setExperiencias] = useState([]);
+  const [funcoes, setFuncoes] = useState([]);
+  const [linguagens, setLinguagens] = useState([]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const [expRes, funcRes, lingRes] = await Promise.all([
+          fetch("http://localhost:8000/users/experiencia"),
+          fetch("http://localhost:8000/users/funcao"),
+          fetch("http://localhost:8000/users/linguagem"),
+        ]);
+
+        setExperiencias(await expRes.json());
+        setFuncoes(await funcRes.json());
+        setLinguagens(await lingRes.json());
+      } catch (error) {
+        console.error("Erro ao carregar opções:", error);
+      }
+    };
+    fetchOptions();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +60,7 @@ const RegisterForm = () => {
     setSuccess('');
 
     try {
-      const response = await fetch("http://localhost:8001/users/", {
+      const response = await fetch("http://localhost:8000/users/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +79,7 @@ const RegisterForm = () => {
       setFormData({
         email: '',
         nome: '',
-        pin: '',
+        password: '',
         experiencia: '',
         funcao: '',
         ling_preferida: '',
@@ -91,38 +114,60 @@ const RegisterForm = () => {
         />
         <input
           type="password"
-          name="pin"
-          placeholder="PIN"
-          value={formData.pin}
+          name="password"
+          placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           className="input"
         />
-        <input
-          type="number"
-          name="experiencia"
-          placeholder="Experiência"
-          value={formData.experiencia}
-          onChange={handleChange}
-          className="input"
-        />
-        <input
-          type="number"
-          name="funcao"
-          placeholder="Função"
-          value={formData.funcao}
-          onChange={handleChange}
-          className="input"
-        />
+
         <select
-          name="ling_preferida"
-          value={formData.ling_preferida}
+          name="experiencia"
+          value={formData.experiencia}
           onChange={handleChange}
           className="input"
           required
         >
+          <option value="" disabled>Experiência</option>
+          {experiencias.length > 0 ? (
+              experiencias.map(exp=>(
+                <option key={exp.id} value={exp.id}>{exp.nome}</option>
+              ))
+          ) : (
+              <option disabled>Carregando....</option>
+          )}
+        </select>
+        <select
+            name="funcao"
+            value={formData.funcao}
+            onChange={handleChange}
+            className="input"
+            required
+        >
+          <option value="" disabled>Função</option>
+          {funcoes.length > 0 ? (
+            funcoes.map(func => (
+              <option key={func.id} value={func.id}>{func.nome}</option>
+            ))
+          ) : (
+            <option disabled>Carregando....</option>
+          )}
+        </select>
+        <select
+            name="ling_preferida"
+            value={formData.ling_preferida}
+            onChange={handleChange}
+            className="input"
+            required
+        >
           <option value="" disabled>Linguagem preferida</option>
-          <option value="1">Formal</option>
-          <option value="2">Informal</option>
+          {funcoes.length > 0 ? (
+            linguagens.map(ling => (
+                <option key={ling.id} value={ling.id}>{ling.nome}</option>
+            ))
+          ) : (
+              <option disabled>Carregando....</option>
+          )}
         </select>
 
         <button type="submit">Registar</button>
