@@ -7,7 +7,7 @@ from backend.database.db import get_db
 from backend.database.models import Users
 from backend.core.config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
