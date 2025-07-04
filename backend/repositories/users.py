@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from backend.database.models import Users
 from backend.schemas.users import UserCreate
 from fastapi import HTTPException
+from backend.auth.hashing import get_password_hash
 
 def create_user(db: Session, user: UserCreate):
     db_user = Users(
@@ -10,7 +11,7 @@ def create_user(db: Session, user: UserCreate):
         experiencia=user.experiencia,
         funcao=user.funcao,
         ling_preferida=user.ling_preferida,
-        password=user.password,
+        password=get_password_hash(user.password),
     )
     try:
         db.add(db_user)
