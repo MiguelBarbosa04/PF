@@ -1,0 +1,59 @@
+/* HomePage.css */
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.homepage-container {
+  background-color: #dbeeff;
+  min-height: 100vh;
+  width: 100vw; /* Garante ocupação total da largura da viewport */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #12357c;
+  margin-bottom: 40px;
+}
+
+.card-container {
+  display: flex;
+  gap: 40px;
+}
+
+.card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card-icon {
+  font-size: 50px;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.card-button {
+  background-color: #1a4fbf;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+  background-color: #0d3a91;
+}
