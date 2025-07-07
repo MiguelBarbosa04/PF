@@ -8,7 +8,7 @@ html, body {
 }
 
 .homepage-container {
-  background-color: #dbeeff;
+  background-color: #D7ECF4;
   min-height: 100vh;
   width: 100vw; /* Garante ocupação total da largura da viewport */
   display: flex;

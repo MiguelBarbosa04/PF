@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import '../assets/css/Welcome.css';
-import '../assets/css/UserProfileWrapper.css';
+import '../assets/css/IconMenuWrapper.css';
 import {FaRobot} from "react-icons/fa";
-import UserProfile from "../components/UserProfile.jsx";
+import IconMenu from "../components/IconMenu.jsx";
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Welcome = () => {
   return (
       <div className="homepage-container">
           <div className="user-profile-wrapper">
-              <UserProfile/>
+              <IconMenu/>
           </div>
           <h1 className="welcome-title">Bem-vindo User!</h1>
           <div className="card-container">

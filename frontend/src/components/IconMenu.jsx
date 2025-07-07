@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from "react";
-import "../assets/css/UserProfile.css";
+import "../assets/css/IconMenu.css";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import {getCurrentUser} from "../services/api.js";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ const generateInitials = (nome) => {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 };
 
-const UserProfile = ({ onLogout }) => {
+const IconMenu = ({ onLogout }) => {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -95,4 +95,4 @@ return (
   );
 };
 
-export default UserProfile;
+export default IconMenu;
