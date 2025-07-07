@@ -19,7 +19,7 @@ const Home = () => {
         Ir para Registo
       </button>
       <button onClick={handleLoginClick} style={{ padding: '10px 20px', fontSize: '16px' }}>
-        Ir para Lgin
+        Ir para Login
       </button>
     </div>
   );
