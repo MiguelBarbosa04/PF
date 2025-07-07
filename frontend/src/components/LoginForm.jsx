@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { loginUser } from '../services/api.js';
+import '../assets/css/LoginForm.css';
+import { Link } from "react-router";
 
 const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -24,25 +26,32 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Entrar</button>
-    </form>
+      <div className="container">
+          <form onSubmit={handleSubmit} className="form">
+              <h2 className="title">Login</h2>
+              {error && <p style={{color: 'red'}}>{error}</p>}
+
+              <p className="label">Digite o seu email e password</p>
+              <input
+                  type="email"
+                  placeholder="Email"
+                  className="input"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+              />
+              <input
+                  type="password"
+                  placeholder="Password"
+                  className="input"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+              />
+              <button type="submit">Entrar</button>
+              <p>Não tem conta, faça <Link to="/register">Registo</Link></p>
+          </form>
+      </div>
   );
 };
 

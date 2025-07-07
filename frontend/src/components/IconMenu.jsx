@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
-import {getCurrentUser} from "../services/api.js";
+import {getCurrentUser, logout} from "../services/api.js";
 import { useNavigate } from "react-router";
 
 const generateInitials = (nome) => {
@@ -15,7 +15,7 @@ const generateInitials = (nome) => {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 };
 
-const IconMenu = ({ onLogout }) => {
+const IconMenu = () => {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -64,6 +64,11 @@ const IconMenu = ({ onLogout }) => {
   };
 }, []);
 
+const handleLogout = () => {
+  logout();
+  navigate("/login");
+};
+
 return (
     <div className="user-profile" ref={profileRef}>
       <div className="avatar" onClick={toggleMenu}>
@@ -84,7 +89,7 @@ return (
               <FaCog className="action-icon" />
               Editar Perfil
             </button>
-            <button className="action-button" onClick={onLogout}>
+            <button className="action-button" onClick={handleLogout}>
               <FaSignOutAlt className="action-icon" />
               Sair
             </button>
