@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import '../assets/css/EscolherTema.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {getCurrentUser} from "../services/api.js";
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
 
-const TemaEscolha = () => {
+const EscolherTema = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -61,4 +61,4 @@ const TemaEscolha = () => {
   );
 };
 
-export default TemaEscolha;
+export default EscolherTema;

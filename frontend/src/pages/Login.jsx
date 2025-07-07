@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router';
 const Login = () => {
   const navigate = useNavigate();
 
-  const navigate = useNavigate();
 
   const handleLogin = (email) => {
     alert("Login efetuado com sucesso!");
