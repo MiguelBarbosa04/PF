@@ -167,7 +167,7 @@ const RegisterForm = () => {
             required
         >
           <option value="" disabled>Linguagem preferida</option>
-          {funcoes.length > 0 ? (
+          {linguagens.length > 0 ? (
             linguagens.map(ling => (
                 <option key={ling.id} value={ling.id}>{ling.nome}</option>
             ))

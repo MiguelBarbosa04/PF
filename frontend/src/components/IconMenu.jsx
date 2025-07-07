@@ -3,50 +3,19 @@ import "../assets/css/IconMenu.css";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import {getCurrentUser, logout} from "../services/api.js";
 import { useNavigate } from "react-router";
-
-const generateInitials = (nome) => {
-  if (!nome) return "";
-
-  const partes = nome.trim().split(" ");
-  if (partes.length === 1) {
-    return partes[0][0].toUpperCase();
-  }
-
-  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
-};
+import TokenInfo from "./TokenInfo.jsx";
 
 const IconMenu = () => {
-  const [userData, setUserData] = useState({
-    name: "",
-    email: "",
-    initials: "",
-  });
+
 
   const [showMenu, setShowMenu] = useState(false);
-  const profileRef = useRef(null);
   const navigate = useNavigate();
-
+  const profileRef = useRef(null);
   const handleEditClick = () => {
     navigate("/perfil");
   };
 
   const toggleMenu = () => setShowMenu((prev) => !prev);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const data = await getCurrentUser();
-      if (data) {
-        const initials = generateInitials(data.nome);
-        setUserData({
-          name: data.nome,
-          email: data.email,
-          initials,
-        });
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
   const handleClickOutside = (event) => {
@@ -64,6 +33,8 @@ const IconMenu = () => {
   };
 }, []);
 
+  const userData = TokenInfo();
+
 const handleLogout = () => {
   logout();
   navigate("/login");
@@ -78,7 +49,7 @@ return (
       {showMenu && (
         <div className="profile-card">
           <div className="profile-info">
-            <div className="profile-name">{userData.name}</div>
+            <div className="profile-name">{userData.nome}</div>
             <div className="profile-email">{userData.email}</div>
           </div>
 

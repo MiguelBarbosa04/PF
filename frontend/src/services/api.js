@@ -1,6 +1,5 @@
 const API_URL = 'http://localhost:8000';
 
-
 export async function createUser(userData) {
   const response = await fetch(`${API_URL}/users/`, {
     method: "POST",
@@ -17,7 +16,6 @@ export async function createUser(userData) {
 
   return response.json();
 }
-
 
 export async function loginUser({ email, password }) {
   const formData = new URLSearchParams();
@@ -40,11 +38,10 @@ export async function loginUser({ email, password }) {
   return response.json();
 }
 
-
 export const getCurrentUser = async () => {
   const token = localStorage.getItem("token");
   const token_type = localStorage.getItem("token_type");
-
+console.log("updateUser called", { token_type, token });
   const response = await fetch(`${API_URL}/users/me`, {
     headers: {
       Authorization: `${token_type} ${token}`,
@@ -62,3 +59,48 @@ export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("token_type");
 };
+
+export async function updateUser(id, userData) {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  console.log("Payload enviado para update:", userData)
+  const response = await fetch(`${API_URL}/users/me`, {
+    method: "PUT", // ou PATCH, dependendo do backend
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `${token_type} ${token}`,
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Erro ao atualizar utilizador");
+  }
+
+  return await response.json();
+}
+
+export async function getExperiencias() {
+  const response = await fetch(`${API_URL}/users/experiencia`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar experiências");
+  }
+  return await response.json();
+}
+
+export async function getFuncoes() {
+  const response = await fetch(`${API_URL}/users/funcao`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar experiências");
+  }
+  return await response.json();
+}
+
+export async function getLinguagens() {
+  const response = await fetch(`${API_URL}/users/linguagem`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar experiências");
+  }
+  return await response.json();
+}
