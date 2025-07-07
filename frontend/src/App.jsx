@@ -14,7 +14,7 @@ return (
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
           <Route path='/welcome' element={<Welcome />} />
-          <Route path='/perfil' element={<Perfil />} />
+          {/*<Route path='/perfil' element={<Perfil />} />*/}
       </Routes>
          </>
   );}
