@@ -5,7 +5,7 @@ import {getCurrentUser} from "../services/api.js";
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
 
-const TemaEscolha = () => {
+const EscolherTema = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -61,4 +61,4 @@ const TemaEscolha = () => {
   );
 };
 
-export default TemaEscolha;
+export default EscolherTema;

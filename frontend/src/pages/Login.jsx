@@ -1,12 +1,11 @@
 import React from 'react';
 import LoginForm from "../components/LoginForm.jsx";
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const navigate = useNavigate();
 
   const handleLogin = (email) => {
     alert("Login efetuado com sucesso!");
