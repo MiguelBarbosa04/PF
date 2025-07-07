@@ -4,7 +4,8 @@ import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Welcome from "./pages/Welcome.jsx";
-import Perfil from "./pages/Perfil.jsx";
+import EscolherTema from "./pages/EscolherTema.jsx";
+import Upload from "./pages/upload.jsx";
 
 function App () {
 return (
@@ -14,7 +15,8 @@ return (
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
           <Route path='/welcome' element={<Welcome />} />
-          {/*<Route path='/perfil' element={<Perfil />} />*/}
+          <Route path='/tema' element={<EscolherTema />} />
+          <Route path='/upload' element={<Upload />} />
       </Routes>
          </>
   );}

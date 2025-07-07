@@ -1,8 +1,11 @@
 import React from 'react';
 import LoginForm from "../components/LoginForm.jsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router';
+
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const navigate = useNavigate();
 
   const handleLogin = (email) => {
