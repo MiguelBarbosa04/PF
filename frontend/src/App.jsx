@@ -6,6 +6,7 @@ import Login from "./pages/Login.jsx";
 import Welcome from "./pages/Welcome.jsx";
 import EscolherTema from "./pages/EscolherTema.jsx";
 import Upload from "./pages/upload.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
 function App () {
 return (
@@ -14,9 +15,9 @@ return (
         <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
-          <Route path='/welcome' element={<Welcome />} />
-          <Route path='/tema' element={<EscolherTema />} />
-          <Route path='/upload' element={<Upload />} />
+          <Route path='/welcome' element={<PrivateRoute><Welcome /></PrivateRoute>} />
+          <Route path='/tema' element={<PrivateRoute><EscolherTema /></PrivateRoute>} />
+          <Route path='/upload' element={<PrivateRoute><Upload /></PrivateRoute>} />
       </Routes>
          </>
   );}

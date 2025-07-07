@@ -57,3 +57,8 @@ export const getCurrentUser = async () => {
 
   return await response.json();
 };
+
+export const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("token_type");
+};

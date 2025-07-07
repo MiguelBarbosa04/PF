@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/css/RegisterForm.css';
-import { useNavigate } from "react-router";
-
+import { useNavigate, Link } from "react-router";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -178,6 +177,7 @@ const RegisterForm = () => {
         </select>
 
         <button type="submit">Registar</button>
+        <p>Se já tem conta, faça <Link to="/login">Login</Link></p>
       </form>
     </div>
   );

@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div style={{ padding: '2rem', textAlign: 'center' }}>
       <h1>Bem-vindo!</h1>
-      <button onClick={handleRegisterClick} style={{ padding: '10px 20px', fontSize: '16px' }}>
+      <button onClick={handleRegisterClick} style={{ padding: '10px 20px', fontSize: '16px', marginBottom: "15px" }}>
         Ir para Registo
       </button>
       <button onClick={handleLoginClick} style={{ padding: '10px 20px', fontSize: '16px' }}>

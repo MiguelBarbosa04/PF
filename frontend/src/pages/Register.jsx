@@ -19,7 +19,6 @@ const Register = () => {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h2>Registo</h2>
       <RegisterForm onSubmit={handleRegister} />
     </div>
   );
