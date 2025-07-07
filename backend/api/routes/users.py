@@ -41,6 +41,9 @@ def read_logged_user(current_user: Users = Depends(get_current_user)):
         "id": current_user.id,
         "nome": current_user.nome,
         "email": current_user.email,
+        "funcao" : current_user.funcao,
+        "linguagem": current_user.experiencia,
+        "experiencia": current_user.experiencia,
     }
 
 @router.get("/experiencia")
