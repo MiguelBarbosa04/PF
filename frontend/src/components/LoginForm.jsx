@@ -49,7 +49,7 @@ const LoginForm = ({ onLogin }) => {
                   required
               />
               <button type="submit">Entrar</button>
-              <p>Não tem conta, faça <Link to="/register">Registo</Link></p>
+              <p>Se não tem conta, faça <Link to="/register">Registo</Link></p>
           </form>
       </div>
   );

@@ -177,7 +177,7 @@ const RegisterForm = () => {
         </select>
 
         <button type="submit">Registar</button>
-        <p>Já tem conta, faça <Link to="/login">Login</Link></p>
+        <p>Se já tem conta, faça <Link to="/login">Login</Link></p>
       </form>
     </div>
   );
