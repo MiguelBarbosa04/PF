@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { createUser } from "../services/api.js";
 import RegisterForm from "../components/RegisterForm.jsx";
 

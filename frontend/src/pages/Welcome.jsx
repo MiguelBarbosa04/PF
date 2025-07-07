@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import '../assets/css/Welcome.css';
 import '../assets/css/IconMenuWrapper.css';
 import {FaRobot} from "react-icons/fa";

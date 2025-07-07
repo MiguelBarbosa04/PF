@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import {getCurrentUser} from "../services/api.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const generateInitials = (nome) => {
   if (!nome) return "";

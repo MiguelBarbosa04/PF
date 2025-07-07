@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../assets/css/EscolherTema.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {getCurrentUser} from "../services/api.js";
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
