@@ -47,7 +47,9 @@ const EscolherTema = () => {
             {tema.nome}
           </button>
         ))}
-
+        <div className="button-perfil">
+                <button type="button" onClick={() => navigate(-1)}>Voltar</button>
+            </div>
         {isAdmin && (
           <button
             className="upload-button"
