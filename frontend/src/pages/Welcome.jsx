@@ -8,16 +8,17 @@ import TokenInfo from "../components/TokenInfo.jsx";
 
 const Welcome = () => {
   const navigate = useNavigate();
+  const userData = TokenInfo();  // chama o hook aqui dentro do componente
+
+  if (!userData) return <div>Carregando...</div>;
 
   const handleAgenteClick = () => {
-    navigate('/agente');
+    navigate('/tema');
   };
 
     const handleTutorClick = () => {
-    navigate('/tutor');
+    navigate('/tema');
   };
-
-  const userData = TokenInfo();
 
   return (
       <div className="homepage-container">
