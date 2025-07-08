@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import TokenInfo from "./TokenInfo.jsx";
 import {getExperiencias, getFuncoes, getLinguagens, updateUser} from "../services/api.js";
 import {useNavigate} from "react-router";
+import "../assets/css/PerfilForm.css"
 
 const PerfilForm = () => {
     const userData = TokenInfo();
@@ -44,15 +45,21 @@ const PerfilForm = () => {
               getFuncoes(),
               getLinguagens()
             ]);
+            const isAdmin = userData?.funcao === 7;
+
+            const funcoesFiltradas = isAdmin
+                ? func
+                : func.filter(f => f.nome !== "Administrador");
+
             setExperiencias(exp);
-            setFuncoes(func);
+            setFuncoes(funcoesFiltradas);
             setLinguagens(ling);
           } catch (err) {
             setError("Erro ao carregar dados");
           }
         };
         fetchOptions();
-      }, []);
+      }, [userData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -97,7 +104,7 @@ const PerfilForm = () => {
     return (
     <div className="container">
         <form onSubmit={handleSubmit} className="form">
-            <h2 className="title">Registo de Utilizador</h2>
+            <h2 className="title">Editar Utilizador</h2>
             {error && <div className="error">{error}</div>}
             {success && <div className="success">{success}</div>}
 
@@ -183,8 +190,11 @@ const PerfilForm = () => {
                     <option disabled>Carregando....</option>
                 )}
             </select>
+            <div className="button-perfil">
+                <button type="button" onClick={() => navigate(-1)}>Voltar</button>
+                <button type="submit">Atualizar</button>
+            </div>
 
-            <button type="submit">Atualizar</button>
         </form>
     </div>
     );
