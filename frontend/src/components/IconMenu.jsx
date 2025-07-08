@@ -49,7 +49,7 @@ return (
       {showMenu && (
         <div className="profile-card">
           <div className="profile-info">
-            <div className="profile-name">{userData.name}</div>
+            <div className="profile-name">{userData.nome}</div>
             <div className="profile-email">{userData.email}</div>
           </div>
 

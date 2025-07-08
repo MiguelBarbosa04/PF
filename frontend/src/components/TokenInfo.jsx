@@ -41,7 +41,7 @@ const TokenInfo = () => {
                 });
             }
         }catch (err){
-            print("Erro ao obter informações do utilizador: ", err);
+            console.error("Erro ao obter informações do utilizador: ", err);
         }
     };
 

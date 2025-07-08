@@ -17,15 +17,14 @@ const Welcome = () => {
     navigate('/tutor');
   };
 
-
-    const userData = TokenInfo();
+  const userData = TokenInfo();
 
   return (
       <div className="homepage-container">
           <div className="user-profile-wrapper">
               <IconMenu/>
           </div>
-          <h1 className="welcome-title">Bem-vindo {userData.name}!</h1>
+          <h1 className="welcome-title">Bem-vindo {userData.nome}!</h1>
           <div className="card-container">
               <div className="card">
                   <FaRobot className="card-icon"/>
