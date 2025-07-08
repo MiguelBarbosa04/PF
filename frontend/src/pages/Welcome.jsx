@@ -4,6 +4,7 @@ import '../assets/css/Welcome.css';
 import '../assets/css/IconMenuWrapper.css';
 import {FaRobot} from "react-icons/fa";
 import IconMenu from "../components/IconMenu.jsx";
+import TokenInfo from "../components/TokenInfo.jsx";
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -16,12 +17,15 @@ const Welcome = () => {
     navigate('/tutor');
   };
 
+
+    const userData = TokenInfo();
+
   return (
       <div className="homepage-container">
           <div className="user-profile-wrapper">
               <IconMenu/>
           </div>
-          <h1 className="welcome-title">Bem-vindo User!</h1>
+          <h1 className="welcome-title">Bem-vindo {userData.name}!</h1>
           <div className="card-container">
               <div className="card">
                   <FaRobot className="card-icon"/>

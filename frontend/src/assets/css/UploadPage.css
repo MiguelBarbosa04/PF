@@ -1,0 +1,88 @@
+
+
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #D7ECF4;
+}
+
+.upload-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+}
+
+.upload-title {
+  color: #1d4ed8;
+  margin-bottom: 20px;
+}
+
+.upload-button-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3b3e4a;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.upload-button-label:hover {
+  background-color: #50525e;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 18px;
+}
+
+.tema-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.add-temas-link {
+  font-size: 13px;
+  color: #1d4ed8;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cancel-button,
+.save-button {
+  flex: 1;
+  padding: 10px;
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-button:hover,
+.save-button:hover {
+  background-color: #2563eb;
+}
