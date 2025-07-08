@@ -5,7 +5,7 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Welcome from "./pages/Welcome.jsx";
 import EscolherTema from "./pages/EscolherTema.jsx";
-import Upload from "./pages/upload.jsx";
+import Upload from "./pages/Upload.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Perfil from "./pages/Perfil.jsx";
 
