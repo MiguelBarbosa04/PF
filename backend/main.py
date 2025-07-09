@@ -1,7 +1,12 @@
 from fastapi import FastAPI
-from backend.api.routes import users
+from backend.api.routes import users, chat_router
 from backend.database.db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 # Cria as tabelas na bd
 Base.metadata.create_all(bind=engine)
@@ -22,3 +27,4 @@ app.add_middleware(
 
 # Inclui rotas
 app.include_router(users.router)
+app.include_router(chat_router.router)
