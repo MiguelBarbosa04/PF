@@ -6,6 +6,7 @@ cd .\frontend
 npm install
 npm install react-dom react-router
 npm install react-icons
+npm install react-select
 
 cd..
 uvicorn backend.main:app --reload 

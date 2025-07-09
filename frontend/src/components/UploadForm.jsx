@@ -20,16 +20,6 @@ const UploadForm = ({ handleFileChange, handleGuardar, tema, setTema, navigate }
           />
         </label>
 
-        <input
-          type="text"
-          placeholder="Escolher Tema"
-          className="tema-input"
-          value={tema}
-          onChange={(e) => setTema(e.target.value)}
-        />
-
-        <a href="#" className="add-temas-link">Adicionar Temas</a>
-
         <div className="button-group">
           <button className="cancel-button" onClick={() => navigate('/tema')}>Cancelar</button>
           <button className="save-button" onClick={handleGuardar}>Guardar</button>
