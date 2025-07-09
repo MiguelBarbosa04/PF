@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
 import '../assets/css/EditarTema.css';
-import {FaEdit, FaRegEdit, FaRegSave, FaRobot, FaSave, FaSearch, FaTrash, FaTrashAlt} from "react-icons/fa";
-import {TbCircleX, TbFlagCancel, TbX} from "react-icons/tb";
+import {FaRegEdit, FaRegSave, FaSearch, FaTrashAlt} from "react-icons/fa";
+import {TbCircleX} from "react-icons/tb";
+import {useNavigate} from "react-router";
 
 const EditarTema = () => {
   const [temas, setTemas] = useState([
@@ -20,7 +21,7 @@ const EditarTema = () => {
     { id: 11, nome: "Procedimentos das máquinas principais" },
     { id: 12, nome: "Procedimentos das máquinas secundárias" },
   ]);
-
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [editId, setEditId] = useState(null);
   const [editedNome, setEditedNome] = useState('');
@@ -48,62 +49,65 @@ const EditarTema = () => {
   );
 
   return (
-    <div className="editar-tema-container">
-      <div className="user-profile-wrapper">
-        <IconMenu />
-      </div>
-      <h2 className="editar-tema-title">Editar temas</h2>
+      <div className="editar-tema-container">
+        <div className="user-profile-wrapper">
+          <IconMenu/>
+        </div>
+        <h2 className="editar-tema-title">Editar temas</h2>
         <div className="search-bar">
           <input
-            type="text"
-            placeholder="Pesquisar tema..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+              type="text"
+              placeholder="Pesquisar tema..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
           />
           <span className="search-icon"><FaSearch/></span>
         </div>
-      <div className="editar-tema-card">
+        <div className="editar-tema-card">
 
-        <table className="tema-table">
-          <thead>
+          <table className="tema-table">
+            <thead>
             <tr>
               <th>Tema</th>
               <th>Ação</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {filteredTemas.map((tema) => (
-              <tr key={tema.id}>
-                <td className= "tema-nome">
-                  {editId === tema.id ? (
-                    <input
-                      type="text"
-                      value={editedNome}
-                      onChange={(e) => setEditedNome(e.target.value)}
-                    />
-                  ) : (
-                    tema.nome
-                  )}
-                </td>
-                <td>
-                  {editId === tema.id ? (
-                   <div className="save-btn">
-                      <FaRegSave onClick={() => handleSave(tema.id)} className="card-icon-save" />
-                      <TbCircleX onClick={handleCancel} className="card-icon-cancel" />
-                    </div>
+                <tr key={tema.id}>
+                  <td className="tema-nome">
+                    {editId === tema.id ? (
+                        <input
+                            type="text"
+                            value={editedNome}
+                            onChange={(e) => setEditedNome(e.target.value)}
+                        />
+                    ) : (
+                        tema.nome
+                    )}
+                  </td>
+                  <td>
+                    {editId === tema.id ? (
+                        <div className="save-btn">
+                          <FaRegSave onClick={() => handleSave(tema.id)} className="card-icon-save"/>
+                          <TbCircleX onClick={handleCancel} className="card-icon-cancel"/>
+                        </div>
 
-                  ) : (
-                       <><FaRegEdit onClick={() => handleEdit(tema.id, tema.nome)} className="card-icon-edit"/>
-                       <FaTrashAlt  onClick={() => handleEdit(tema.id, tema.nome)} className="card-icon-trash"/>
-                       </>
-                  )}
-                </td>
-              </tr>
+                    ) : (
+                        <><FaRegEdit onClick={() => handleEdit(tema.id, tema.nome)} className="card-icon-edit"/>
+                          <FaTrashAlt onClick={() => handleEdit(tema.id, tema.nome)} className="card-icon-trash"/>
+                        </>
+                    )}
+                  </td>
+                </tr>
             ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
+        <div className="button-perfil">
+          <button type="button" onClick={() => navigate("/tema")}>Voltar</button>
+        </div>
       </div>
-    </div>
   );
 };
 
