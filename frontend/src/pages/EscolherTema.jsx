@@ -48,7 +48,7 @@ const EscolherTema = () => {
           </button>
         ))}
         <div className="button-perfil">
-                <button type="button" onClick={() => navigate(-1)}>Voltar</button>
+                <button type="button" onClick={() => navigate("/welcome")}>Voltar</button>
             </div>
         {isAdmin && (
           <button
