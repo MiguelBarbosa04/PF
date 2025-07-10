@@ -12,13 +12,10 @@ const Welcome = () => {
 
   if (!userData) return <div>Carregando...</div>;
 
-  const handleAgenteClick = () => {
-    navigate('/tema');
-  };
-
-    const handleTutorClick = () => {
-    navigate('/tema');
-  };
+  const handleEscolhaPapel = (papelEscolhido) => {
+      localStorage.setItem("papel", papelEscolhido); // 'agente' ou 'tutor'
+      navigate("/tema");
+    };
 
   return (
       <div className="homepage-container">
@@ -29,11 +26,11 @@ const Welcome = () => {
           <div className="card-container">
               <div className="card">
                   <FaRobot className="card-icon"/>
-                  <button className="card-button" onClick={handleAgenteClick}>Agente</button>
+                  <button className="card-button" onClick={handleEscolhaPapel("Agente")}>Agente</button>
               </div>
               <div className="card">
                   <FaRobot className="card-icon"/>
-                  <button className="card-button" onClick={handleTutorClick}>Tutor</button>
+                  <button className="card-button" onClick={handleEscolhaPapel("Tutor")}>Tutor</button>
               </div>
           </div>
       </div>

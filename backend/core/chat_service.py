@@ -1,4 +1,4 @@
-from backend.schemas.chat_schema import ChatRequest
+from backend.schemas.messages import ChatRequest
 from backend.database.models import Messages
 from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
