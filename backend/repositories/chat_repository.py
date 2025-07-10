@@ -1,16 +1,28 @@
 from sqlalchemy.orm import Session
-from backend.database.models import Session as DBSession, Messages as DBMessage
+from backend.database.models import Session as DBSession
+from backend.schemas.sessions import SessionCreate
+from datetime import datetime
+from sqlalchemy import and_
 
-def get_or_create_session(db: Session, user_id: int):
-    session = db.query(DBSession).filter_by(user_id=user_id).order_by(DBSession.inicio.desc()).first()
-    if not session:
-        session = DBSession(user_id=user_id)
-        db.add(session)
-        db.commit()
-        db.refresh(session)
-    return session
+def get_or_create_session(db: DBSession, session_data: SessionCreate) -> int:
+    existing = db.query(Session).filter(
+        and_(
+            Session.user_id == session_data.user_id,
+            Session.papel == session_data.papel,
+            Session.tema == session_data.tema
+        )
+    ).first()
 
-def save_message(db: Session, session_id: int, remetente: str, conteudo: str):
-    message = DBMessage(session_id=session_id, remetente=remetente, conteudo=conteudo)
-    db.add(message)
+    if existing:
+        return existing.id
+
+    nova_sessao = Session(
+        user_id=session_data.user_id,
+        papel=session_data.papel,
+        tema=session_data.tema,
+        inicio=session_data.inicio or datetime.utcnow()
+    )
+    db.add(nova_sessao)
     db.commit()
+    db.refresh(nova_sessao)
+    return nova_sessao.id

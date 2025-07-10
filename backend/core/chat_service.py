@@ -1,33 +1,54 @@
+from backend.schemas.chat_schema import ChatRequest
+from backend.database.models import Messages
+from sqlalchemy.orm import Session as DBSession
+from datetime import datetime
 import httpx
-from sqlalchemy.orm import Session
-from backend.repositories.chat_repository import get_or_create_session, save_message
 
-async def generate_chat_response(db: Session, user_id: int, user_message: str) -> str:
-    session = get_or_create_session(db, user_id)
-    save_message(db, session.id, "user", user_message)
+async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
+    # Guardar mensagem do utilizador
+    nova_msg = Messages(
+        session_id=request.session_id,
+        conteudo=request.conteudo,
+        tipo=request.tipo,
+        remetente=request.remetente,
+        criado_em=request.criado_em,
+        avaliacao=request.avaliacao
+    )
+    db.add(nova_msg)
+    db.commit()
 
-    payload = {
-        "model": "mistral",
-        "messages": [
-            {"role": "system", "content": "És um tutor educativo."},
-            {"role": "user", "content": user_message}
-        ],
-        "stream": True  # ativa streaming
-    }
+    # Enviar para Mistral (apenas se for remetente user)
+    resposta = ""
+    if request.remetente == "user":
+        mistral_request = {
+            "model": "mistral",
+            "messages": [
+                {"role": "user", "content": request.conteudo}
+            ]
+        }
 
-    resposta_final = ""
+        async with httpx.AsyncClient() as client:
+            response = await client.post("http://localhost:11434/api/chat", json=mistral_request, timeout=None)
 
-    async with httpx.AsyncClient(timeout=None) as client:
-        async with client.stream("POST", "http://localhost:11434/api/chat", json=payload) as response:
             async for line in response.aiter_lines():
                 if line.strip():
                     try:
-                        chunk = response.json() if isinstance(response, dict) else httpx.Response.json(response)
-                    except:
-                        import json
-                        chunk = json.loads(line)
-                    if "message" in chunk and "content" in chunk["message"]:
-                        resposta_final += chunk["message"]["content"]
+                        data = httpx.Response(200, content=line)
+                        content = data.json().get("message", {}).get("content")
+                        if content:
+                            resposta += content
+                    except Exception:
+                        continue
 
-    save_message(db, session.id, "ai", resposta_final)
-    return resposta_final
+        # Guardar resposta do bot
+        bot_msg = Messages(
+            session_id=request.session_id,
+            conteudo=resposta,
+            tipo=request.tipo,
+            remetente="bot",
+            criado_em=datetime.utcnow()
+        )
+        db.add(bot_msg)
+        db.commit()
+
+    return resposta if resposta else "Mensagem registada."

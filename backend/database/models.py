@@ -1,7 +1,7 @@
-from datetime import datetime
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, TIMESTAMP
 from sqlalchemy.orm import relationship
 from backend.database.db import Base
+
 
 class Experiencia(Base):
     __tablename__ = "experiencia"
@@ -43,7 +43,9 @@ class Session(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    inicio = Column(DateTime, default=datetime.utcnow)
+    papel = Column(String(10), nullable=False)  # 'Agente' ou 'Tutor'
+    tema = Column(String(100), nullable=True)
+    inicio = Column(TIMESTAMP, nullable=False)
 
     user = relationship("Users", back_populates="sessions")
     messages = relationship("Messages", back_populates="session")
@@ -54,8 +56,9 @@ class Messages(Base):
     id = Column(Integer, primary_key=True)
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
     conteudo = Column(String(1000), nullable=False)
-    remetente = Column(String(10), nullable=False)
-    criado_em = Column(DateTime, default=datetime.utcnow)
+    tipo = Column(String(10), nullable=False)  # 'texto' ou 'voz'
+    remetente = Column(String(10), nullable=False)  # 'user' ou 'bot'
+    criado_em = Column(TIMESTAMP, nullable=False)
     avaliacao = Column(Integer, nullable=True)
 
     session = relationship("Session", back_populates="messages")
