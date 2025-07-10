@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-
 from backend.core.chat_service import generate_chat_response
 from backend.database.db import get_db
-from backend.schemas.chat_schema import ChatRequest
-from backend.schemas.messages import MessageCreate, MessageRead, MessageUpdateRating
-from backend.repositories.messages import create_message, get_messages_by_session
+from backend.schemas.messages import ChatRequest
+from backend.schemas.messages import MessageRead, MessageUpdateRating
+from backend.repositories.messages import get_messages_by_session
 from backend.repositories import messages as repo
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
