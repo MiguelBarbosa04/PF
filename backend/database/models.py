@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, TIMESTAMP
 from sqlalchemy.orm import relationship
 from backend.database.db import Base
 
+
 class Experiencia(Base):
     __tablename__ = "experiencia"
 
