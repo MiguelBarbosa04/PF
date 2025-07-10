@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-
 class SessionBase(BaseModel):
     papel: str  # 'Agente' ou 'Tutor'
     tema: Optional[str] = None
