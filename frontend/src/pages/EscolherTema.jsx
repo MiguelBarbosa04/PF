@@ -28,10 +28,10 @@ const EscolherTema = () => {
   }, []);
 
   const temas = [
-    { label: 'Pesquisa avançada', value: '/tema/pesquisa-avancada' },
-    { label: 'Procedimentos Operacionais', value: '/tema/procedimentos' },
-    { label: 'Resolução de Problemas', value: '/tema/resolucao' },
-    { label: 'Manutenção', value: '/tema/manutencao' },
+    { label: 'Pesquisa avançada' },
+    { label: 'Procedimentos Operacionais' },
+    { label: 'Resolução de Problemas' },
+    { label: 'Manutenção' },
   ];
 
   const handleTemaSelect = (selectedOption) => {
@@ -41,6 +41,14 @@ const EscolherTema = () => {
     }
   };
 
+  const papel = localStorage.getItem("papel");
+  if (!papel) {
+    console.error("Papel não definido. Redirecionar...");
+    navigate("/welcome");
+    return;
+  }
+
+
   return (
     <div className="tema-container">
       <div className="user-profile-wrapper">
@@ -49,26 +57,37 @@ const EscolherTema = () => {
       <div className="tema-card">
         <h2 className="tema-title">Escolha o tema</h2>
         <Select
-          options={temas}
-          value={selectedTema}
-          onChange={handleTemaSelect}
-          placeholder="Pesquise ou selecione um tema..."
-          isClearable
-          className="tema-select"
+            options={temas}
+            value={selectedTema}
+            onChange={handleTemaSelect}
+            placeholder="Pesquise ou selecione um tema..."
+            isClearable
+            className="tema-select"
         />
-           <div className="button-perfil">
-          <button type="button" onClick={() => navigate("/editar_tema")}>Editar</button>
+
+        <div className="button-perfil">
+          {isAdmin && (
+              <button
+                  type="button"
+                  onClick={() => navigate('/editar_tema')}
+              >
+                Editar
+              </button>
+          )}
+        </div>
+        <div className="button-perfil">
+          <button type="button" onClick={() => navigate("/chat")}>Ir para o chat</button>
         </div>
         <div className="button-perfil">
           <button type="button" onClick={() => navigate("/welcome")}>Voltar</button>
         </div>
         {isAdmin && (
-          <button
-            className="upload-button"
-            onClick={() => navigate('/upload')}
-          >
-            📄 Upload de ficheiros
-          </button>
+            <button
+                className="upload-button"
+                onClick={() => navigate('/upload')}
+            >
+              📄 Upload de ficheiros
+            </button>
         )}
       </div>
     </div>
