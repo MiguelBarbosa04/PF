@@ -56,10 +56,19 @@ const handleTemaSelect = (selectedOption) => {
 const handleIrParaChatDireto = async () => {
   if (!userData) return;
 
-  try {
-    const temaParaEnviar = selectedTema ? selectedTema.label : null;
-    const papelParaEnviar = papel; // Já deves ter do localStorage
+  const temaParaEnviar = selectedTema ? selectedTema.label : null;
+  const papelParaEnviar = papel;
 
+  //Se não houver tema, vai para o chat sem criar sessão
+  if (!temaParaEnviar) {
+    localStorage.removeItem("sessionId");
+    localStorage.removeItem("tema");
+    localStorage.setItem("papel", papelParaEnviar || "");
+    navigate("/chat");
+    return;
+  }
+
+  try {
     const session = await createSession({
       user_id: userData.id,
       papel: papelParaEnviar,
