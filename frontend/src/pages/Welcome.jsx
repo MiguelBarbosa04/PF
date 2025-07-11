@@ -26,11 +26,11 @@ const Welcome = () => {
           <div className="card-container">
               <div className="card">
                   <FaRobot className="card-icon"/>
-                  <button className="card-button" onClick={handleEscolhaPapel("Agente")}>Agente</button>
+                 <button className="card-button" onClick={() => handleEscolhaPapel("Agente")}>Agente</button>
               </div>
               <div className="card">
                   <FaRobot className="card-icon"/>
-                  <button className="card-button" onClick={handleEscolhaPapel("Tutor")}>Tutor</button>
+                <button className="card-button" onClick={() => handleEscolhaPapel("Tutor")}>Tutor</button>
               </div>
           </div>
       </div>

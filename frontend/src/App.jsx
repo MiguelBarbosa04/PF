@@ -9,6 +9,7 @@ import Upload from "./pages/Upload.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import EditarTema from "./pages/EditarTema.jsx";
+import Chat from "./pages/Chat.jsx"
 
 function App () {
 return (
@@ -21,7 +22,8 @@ return (
           <Route path='/tema' element={<PrivateRoute><EscolherTema /></PrivateRoute>} />
           <Route path='/upload' element={<PrivateRoute><Upload /></PrivateRoute>} />
           <Route path='/perfil' element={<PrivateRoute><Perfil /></PrivateRoute>} />
-            <Route path='/editar_tema' element={<PrivateRoute><EditarTema /></PrivateRoute>} />
+          <Route path='/editar_tema' element={<PrivateRoute><EditarTema /></PrivateRoute>} />
+              <Route path='/chat' element={<PrivateRoute><Chat/></PrivateRoute>} />
       </Routes>
          </>
   );}

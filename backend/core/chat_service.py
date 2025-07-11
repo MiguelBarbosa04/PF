@@ -1,10 +1,32 @@
+from backend.database.models import Session as DBSessionModel
+from backend.schemas.sessions import SessionCreate
+from backend.repositories.sessions import create_session
+from sqlalchemy.orm import Session as DBSession
+from fastapi import Depends
+from sqlalchemy.orm import Session
 from backend.schemas.messages import ChatRequest
 from backend.database.models import Messages
-from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
 
-async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
+async def generate_chat_response(db: Session, request: ChatRequest) -> str:
+    # Criar nova sessão se não tiver session_id
+    if not request.session_id:
+        if not request.user_id or not request.papel:
+            raise ValueError("user_id e papel são obrigatórios se não houver session_id")
+
+        #Gerar tema a partir da pergunta
+        tema_inferido = await inferir_tema_com_llm(request.conteudo)
+
+        nova_sessao = SessionCreate(
+            user_id=request.user_id,
+            papel=request.papel,
+            tema=tema_inferido,
+            inicio=request.criado_em
+        )
+        session_obj = create_session(db, nova_sessao)
+        request.session_id = session_obj.id
+
     # Guardar mensagem do utilizador
     nova_msg = Messages(
         session_id=request.session_id,
@@ -16,8 +38,9 @@ async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
     )
     db.add(nova_msg)
     db.commit()
+    db.refresh(nova_msg)
 
-    # Enviar para Mistral (apenas se for remetente user)
+    # Se for o utilizador, gerar resposta
     resposta = ""
     if request.remetente == "user":
         mistral_request = {
