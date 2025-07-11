@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from backend.core.chat_service import generate_chat_response
+from backend.services.chat_service import generate_chat_response
 from backend.database.db import get_db
 from backend.schemas.messages import ChatRequest
 from backend.schemas.messages import MessageRead, MessageUpdateRating

@@ -1,7 +1,7 @@
 from sqlalchemy import  create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from backend.core.config import Settings
+from backend.services.config import Settings
 
 URL_DATABASE = 'postgresql://postgres:superuser123@localhost:5432/pf'
 settings = Settings()
