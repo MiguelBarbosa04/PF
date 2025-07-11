@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class ChatRequest(BaseModel):
-    session_id: int
+    session_id: Optional[int] = None
     conteudo: str
     tipo: str
     remetente: str

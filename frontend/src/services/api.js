@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = 'http://localhost:8000';
 
 export async function createUser(userData) {
@@ -104,3 +106,43 @@ export async function getLinguagens() {
   }
   return await response.json();
 }
+
+
+export const createSession = async (sessionData) => {
+  const response = await fetch(`${API_URL}/sessions/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(sessionData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao criar sessão");
+  }
+
+  return await response.json();
+};
+
+
+export const sendMessage = async (sessionId, content) => {
+  const response = await axios.post(`${API_URL}/messages/`, {
+    session_id: sessionId,
+    content: content
+  });
+  return response.data;
+};
+
+
+export const getMessagesBySession = async (sessionId) => {
+  const response = await axios.get(`${API_URL}/messages/${sessionId}`);
+  return response.data;
+};
+
+export const rateMessage = async (messageId, rating) => {
+  const response = await axios.post(`${API_URL}/messages/${messageId}/rating`, {
+    rating: rating
+  });
+  return response.data;
+};
+
