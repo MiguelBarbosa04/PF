@@ -1,0 +1,114 @@
+.sidebar {
+  width: 260px;
+  background-color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #ccc;
+  padding: 10px;
+}
+
+.sidebar-search {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.new-chat-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.chat-options {
+  color: #888;
+}
+
+.sidebar-user {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.user-circle {
+  background-color: #999;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.username {
+  flex-grow: 1;
+}
+
+.sidebar-actions {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.sidebar-actions.menu-open {
+  max-height: 500px; /* alto o suficiente para tudo caber */
+  opacity: 1;
+}
+
+.sidebar-actions.menu-closed {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.sidebar-actions li {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.search{
+  display: flex;
+}
+
+.search-icon{
+  padding-left: 10px;
+  margin-right: 0;
+  margin-top: 10px;
+}
+
+.arrow{
+  margin-left: 0.5vw;
+}
+
+.chat-item-wrapper {
+  position: relative;
+}

@@ -1,0 +1,132 @@
+import React, {useEffect, useState, useRef} from "react";
+import { useNavigate } from "react-router-dom";
+import "../assets/css/Sidebar.css";
+import TokenInfo from "./TokenInfo.jsx";
+import {
+    FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaHome, FaSignOutAlt, FaSearch, FaPlus,
+    FaAngleDown, FaAngleUp, FaEllipsisH
+} from "react-icons/fa";
+import {logout, getSessionsByUser} from "../services/api.js";
+import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
+
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const userData = TokenInfo();
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [sessions, setSessions] = useState([]);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        if (userData?.id) {
+          const userSessions = await getSessionsByUser(userData.id);
+          setSessions(userSessions);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar sessões:", error);
+      }
+    };
+
+    fetchSessions();
+  }, [userData]);
+
+  const handleLogout = () => {
+    logout()
+    navigate("/login");
+  };
+  const toggleMenu = () => setShowMenu(prev => !prev);
+  const toggleSessionMenu = (sessionId) => {
+    setActiveMenuId(prev => prev === sessionId ? null : sessionId);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+      <div className="sidebar">
+          <div className="sidebar-header">
+              <div className="search">
+                  <input type="text" placeholder="Procura" className="sidebar-search"/>
+                  <span className="search-icon"><FaSearch/></span>
+              </div>
+              <button className="new-chat-btn" onClick={()=>navigate("/chat")}>Novo Chat <FaPlus/></button>
+          </div>
+
+          <div className="sidebar-chats">
+              {sessions.length > 0 ? (
+                  sessions.map((session) => (
+                      <div key={session.id} className="chat-item-wrapper">
+                          <div className="chat-item" >
+                              <span onClick={() => navigate(`/chat/${session.id}`)}>
+                                  {session.tema || "Chat sem tema"}
+                              </span>
+                              <div className="chat-options"
+                                   onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleSessionMenu(session.id);
+                                  }}
+                              >
+                                  <FaEllipsisH/>
+                              </div>
+                          </div>
+
+                          {activeMenuId === session.id && (
+                              <ChatOptionsMenu session={session}
+                              userData={userData} onSessionUpdated={(id, novoTema)=>{
+                                  setSessions(prev =>
+                                    prev.map(s=>s.id === id ? { ...s, tema:novoTema } : s)
+                                  );
+                                  setActiveMenuId(null);
+                              }}
+                              onDelete={(id)=>{
+
+                              }}/>
+                          )}
+                      </div>
+                  ))
+              ) : (
+                  <div className="no-chats-msg">
+                      <p>Sem chats disponíveis.</p>
+                      <button className="new-chat-btn" onClick={() => navigate("/chat")}>
+                          Criar novo chat
+                      </button>
+                  </div>
+              )}
+          </div>
+
+          <div className="sidebar-user">
+              <div className="user-info" onClick={toggleMenu}>
+                  <div className="user-circle">{userData.initials}</div>
+                  <span className="username">{userData.nome}</span>
+                  <span className="arrow">
+                {showMenu ? <FaAngleUp/> : <FaAngleDown/>}
+            </span>
+              </div>
+
+              <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
+                  <li><FaFileAlt/> Ficheiros (Admin)</li>
+                  <li><FaComments/> Trocar chat</li>
+                  <li><FaRobot/> LLM</li>
+                  <li><FaBrain/> RAG</li>
+                  <li><FaUserEdit/> Editar Perfil</li>
+                  <li><FaHome/> Voltar início</li>
+                  <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
+              </ul>
+          </div>
+      </div>
+  );
+};
+
+export default Sidebar;

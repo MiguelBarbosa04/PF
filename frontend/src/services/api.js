@@ -133,6 +133,18 @@ export const sendMessage = async (sessionId, content) => {
   return response.data;
 };
 
+// export const sendMessage = async (messageData) => {
+//   const res = await fetch(`${API_URL}/messages/`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${localStorage.getItem("token")}`,
+//     },
+//     body: JSON.stringify(messageData),
+//   });
+//   return res.json();
+// };
+
 
 export const getMessagesBySession = async (sessionId) => {
   const response = await axios.get(`${API_URL}/messages/${sessionId}`);
@@ -146,3 +158,10 @@ export const rateMessage = async (messageId, rating) => {
   return response.data;
 };
 
+export const getSessionsByUser = async (userId) => {
+  const response = await fetch(`${API_URL}/sessions/user/${userId}`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar sessões do utilizador");
+  }
+  return await response.json();
+};
