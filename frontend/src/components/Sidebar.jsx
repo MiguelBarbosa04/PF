@@ -12,6 +12,7 @@ import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 const Sidebar = () => {
   const navigate = useNavigate();
   const userData = TokenInfo();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [sessions, setSessions] = useState([]);
@@ -22,7 +23,14 @@ const Sidebar = () => {
       try {
         if (userData?.id) {
           const userSessions = await getSessionsByUser(userData.id);
-          setSessions(userSessions);
+          if (userData.funcao === 7) {
+              setIsAdmin(true);
+            }
+          const papelSelecionado = localStorage.getItem("papel");
+          const sessionsFiltradas = userSessions.filter(
+            (s) => s.papel === papelSelecionado
+          );
+          setSessions(sessionsFiltradas);
         }
       } catch (error) {
         console.error("Erro ao carregar sessões:", error);
@@ -36,6 +44,7 @@ const Sidebar = () => {
     logout()
     navigate("/login");
   };
+
   const toggleMenu = () => setShowMenu(prev => !prev);
   const toggleSessionMenu = (sessionId) => {
     setActiveMenuId(prev => prev === sessionId ? null : sessionId);
@@ -54,6 +63,16 @@ const Sidebar = () => {
     };
   }, []);
 
+  const handleFicheirosClick = () => {
+    navigate("/upload");
+  };
+  const handleTrocaChatClick = () => {
+    navigate("/welcome");
+  };
+  const handleEditarPerfilClick = () => {
+    navigate("/perfil");
+  };
+
   return (
       <div className="sidebar">
           <div className="sidebar-header">
@@ -68,8 +87,8 @@ const Sidebar = () => {
               {sessions.length > 0 ? (
                   sessions.map((session) => (
                       <div key={session.id} className="chat-item-wrapper">
-                          <div className="chat-item" >
-                              <span onClick={() => navigate(`/chat/${session.id}`)}>
+                          <div className="chat-item" onClick={() => navigate(`/chat/${session.id}`)}>
+                              <span>
                                   {session.tema || "Chat sem tema"}
                               </span>
                               <div className="chat-options"
@@ -102,9 +121,6 @@ const Sidebar = () => {
               ) : (
                   <div className="no-chats-msg">
                       <p>Sem chats disponíveis.</p>
-                      <button className="new-chat-btn" onClick={() => navigate("/chat")}>
-                          Criar novo chat
-                      </button>
                   </div>
               )}
           </div>
@@ -119,12 +135,13 @@ const Sidebar = () => {
               </div>
 
               <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
-                  <li><FaFileAlt/> Ficheiros (Admin)</li>
-                  <li><FaComments/> Trocar chat</li>
+                  {isAdmin && (
+                    <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros (Admin)</li>
+                  )}
+                  <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
                   <li><FaRobot/> LLM</li>
                   <li><FaBrain/> RAG</li>
-                  <li><FaUserEdit/> Editar Perfil</li>
-                  <li><FaHome/> Voltar início</li>
+                  <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
                   <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
               </ul>
           </div>

@@ -25,6 +25,7 @@ return (
           <Route path='/perfil' element={<PrivateRoute><Perfil /></PrivateRoute>} />
           <Route path='/editar_tema' element={<PrivateRoute><EditarTema /></PrivateRoute>} />
           <Route path='/chat' element={<PrivateRoute><Chat/></PrivateRoute>}/>
+          <Route path='/chat/:sessionId' element={<PrivateRoute><Chat/></PrivateRoute>} />
       </Routes>
          </>
   );}
