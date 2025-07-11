@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import "../assets/css/ChatOptionsMenu.css";
-import TokenInfo from "./TokenInfo.jsx";
-import {getSessionsByUser} from "../services/api.js";
 import {FaEdit, FaQuestionCircle, FaTrash} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
+import {updateSession} from "../services/api.js";
 
 const ChatOptionsMenu = ({session, userData, onSessionUpdated, onDelete}) => {
     const navigate = useNavigate();

@@ -165,3 +165,39 @@ export const getSessionsByUser = async (userId) => {
   }
   return await response.json();
 };
+
+export async function updateSession(sessionId, data) {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `${token_type} ${token}`,
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar sessão");
+  }
+
+  return await response.json();
+}
+
+export async function deleteSession(sessionId) {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `${token_type} ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao eliminar sessão");
+  }
+
+  return true;
+}

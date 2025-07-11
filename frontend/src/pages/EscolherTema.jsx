@@ -76,8 +76,6 @@ const handleIrParaChatDireto = async () => {
   }
 };
 
-
-
   return (
     <div className="tema-container">
       <div className="user-profile-wrapper">

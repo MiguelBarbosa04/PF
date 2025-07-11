@@ -6,7 +6,7 @@ import {
     FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaHome, FaSignOutAlt, FaSearch, FaPlus,
     FaAngleDown, FaAngleUp, FaEllipsisH
 } from "react-icons/fa";
-import {logout, getSessionsByUser} from "../services/api.js";
+import {logout, getSessionsByUser, deleteSession} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 
 const Sidebar = () => {
@@ -91,7 +91,10 @@ const Sidebar = () => {
                                   setActiveMenuId(null);
                               }}
                               onDelete={(id)=>{
-
+                                deleteSession(id).then(()=>{
+                                    setSessions(prev => prev.filter(s=>s.id !== id));
+                                    setActiveMenuId(null);
+                                  }).catch(console.error);
                               }}/>
                           )}
                       </div>
