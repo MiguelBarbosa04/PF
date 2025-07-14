@@ -14,9 +14,10 @@ async def upload_pdf(file: UploadFile = File(...)):
     os.makedirs(storage_folder, exist_ok=True)
     file_path = os.path.join(storage_folder, file.filename)
 
-    #Descomentar quando estiver a funcionar
-    # if os.path.exists(file_path):
-    #     raise HTTPException(status_code=400, detail="Esse ficheiro já existe em 'data/'")
+    #Se o nome for igual não deixa fazer upload
+    if os.path.exists(file_path):
+        raise HTTPException(status_code=400, detail="Esse ficheiro já existe, por favor mude o nome.'")
+
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Só PDFs são permitidos")
 
