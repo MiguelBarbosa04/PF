@@ -43,7 +43,6 @@ export async function loginUser({ email, password }) {
 export const getCurrentUser = async () => {
   const token = localStorage.getItem("token");
   const token_type = localStorage.getItem("token_type");
-console.log("updateUser called", { token_type, token });
   const response = await fetch(`${API_URL}/users/me`, {
     headers: {
       Authorization: `${token_type} ${token}`,
@@ -107,7 +106,6 @@ export async function getLinguagens() {
   return await response.json();
 }
 
-
 export const createSession = async (sessionData) => {
   const response = await fetch(`${API_URL}/sessions/`, {
     method: "POST",
@@ -124,25 +122,95 @@ export const createSession = async (sessionData) => {
   return await response.json();
 };
 
+export const sendMessage = async (messageData) => {
+   const token = localStorage.getItem("token");
+   const token_type = localStorage.getItem("token_type");
+   const res = await fetch(`${API_URL}/messages/`, {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       Authorization: `${token_type} ${token}`,
+    },
+    body: JSON.stringify(messageData),
+   });
 
-export const sendMessage = async (sessionId, content) => {
-  const response = await axios.post(`${API_URL}/messages/`, {
-    session_id: sessionId,
-    content: content
-  });
-  return response.data;
+   if (!res.ok) {
+    throw new Error("Erro ao enviar mensagem");
+  }
+
+   return await res.json();
 };
 
 
 export const getMessagesBySession = async (sessionId) => {
-  const response = await axios.get(`${API_URL}/messages/${sessionId}`);
+  const response = await axios.get(`${API_URL}/messages/session/${sessionId}`);
   return response.data;
 };
 
-export const rateMessage = async (messageId, rating) => {
-  const response = await axios.post(`${API_URL}/messages/${messageId}/rating`, {
-    rating: rating
+export const rateMessage = async (messageId, avaliacao) => {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  const response = await axios.put(
+    `${API_URL}/messages/${messageId}/rating`,
+    { avaliacao },
+    {
+      headers: {
+        Authorization: `${token_type} ${token}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+  return response.data;
+};
+
+export const getSessionsByUser = async (userId) => {
+  const response = await fetch(`${API_URL}/sessions/user/${userId}/`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar sessões do utilizador");
+  }
+  return await response.json();
+};
+
+export async function updateSession(sessionId, data) {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `${token_type} ${token}`,
+    },
+    body: JSON.stringify(data)
   });
-  return response.data;
-};
 
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar sessão");
+  }
+
+  return await response.json();
+}
+
+export async function deleteSession(sessionId) {
+  const token = localStorage.getItem("token");
+  const token_type = localStorage.getItem("token_type");
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `${token_type} ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao eliminar sessão");
+  }
+
+  return true;
+}
+
+export const getSessionsByUserOrdered = async (userId) => {
+  const response = await fetch(`${API_URL}/sessions/user/${userId}/ordered`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar sessões do utilizador ordenadas");
+  }
+  return await response.json();
+};

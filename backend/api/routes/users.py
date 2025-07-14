@@ -20,13 +20,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 def create_user_endpoint(user: UserCreate, db: db_dependency):
     return create_user(db, user)
 
-# @router.post("/login", response_model=UserRead)
-# def login_user(user: UserLogin, db: db_dependency):
-#     db_user = authenticate_user(db, user.email, user.password)
-#     if not db_user:
-#         raise HTTPException(status_code=401, detail="Credenciais inválidas")
-#     return db_user
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 @router.post("/login")

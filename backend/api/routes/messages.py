@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from backend.auth.auth import get_current_user
+from backend.schemas.users import UserRead
 from backend.services.chat_service import generate_chat_response
 from backend.database.db import get_db
 from backend.schemas.messages import ChatRequest
@@ -10,10 +12,10 @@ from backend.repositories import messages as repo
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
 
-@router.post("/")
-async def chat(request: ChatRequest, db: Session = Depends(get_db)):
-     resposta = await generate_chat_response(db, request)
-     return {"resposta": resposta}
+@router.post("/", response_model=ChatFullResponse)
+async def chat(request: ChatRequest, db: Session = Depends(get_db), current_user: UserRead=Depends(get_current_user),):
+    message, session_id = await generate_chat_response(db, request, user_id=current_user.id, papel=request.papel)
+    return {"resposta": message.conteudo, "session_id": session_id, "id": message.id}
 
 @router.get("/session/{session_id}", response_model=List[MessageRead])
 def read_messages_by_session(session_id: int, db: Session = Depends(get_db)):

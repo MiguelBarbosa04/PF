@@ -17,3 +17,6 @@ class SessionRead(SessionBase):
 
     class Config:
         orm_mode = True
+
+class SessionUpdate(BaseModel):
+    tema: Optional[str] = None
