@@ -13,16 +13,6 @@ from backend.repositories import messages as repo
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
 
-# @router.post("/")
-# async def chat(request: ChatRequest, db: Session = Depends(get_db)):
-#      resposta = await generate_chat_response(db, request)
-#      return {"resposta": resposta}
-
-# @router.post("/", response_model=MessageRead)
-# async def chat(request: ChatRequest, db: Session = Depends(get_db)):
-#     message, session_id = await generate_chat_response(db, request)
-#     return message
-
 @router.post("/", response_model=ChatFullResponse)
 async def chat(request: ChatRequest, db: Session = Depends(get_db), current_user: UserRead=Depends(get_current_user),):
     message, session_id = await generate_chat_response(db, request, user_id=current_user.id, papel=request.papel)
