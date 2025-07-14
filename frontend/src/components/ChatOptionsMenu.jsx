@@ -1,11 +1,13 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import "../assets/css/ChatOptionsMenu.css";
-import {FaEdit, FaQuestionCircle, FaTrash} from "react-icons/fa";
-import {useNavigate} from "react-router-dom";
-import {updateSession} from "../services/api.js";
+import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import { updateSession } from "../services/api.js";
 
-const ChatOptionsMenu = ({session, userData, onSessionUpdated, onDelete}) => {
-    const navigate = useNavigate();
+const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete }, ref) => {
+  const navigate = useNavigate();
+  const TUTOR_AI = "Tutor";
+  const papelAtual = localStorage.getItem("papel");
 
   const handleEdit = async () => {
     const novoTema = prompt("Novo nome para a sessão:", session.tema || "");
@@ -32,14 +34,14 @@ const ChatOptionsMenu = ({session, userData, onSessionUpdated, onDelete}) => {
   };
 
   return (
-    <div className="chat-options-menu">
+    <div className="chat-options-menu" ref={ref}>
       <button onClick={handleEdit}><FaEdit /> Editar</button>
       <button onClick={handleDelete}><FaTrash /> Eliminar</button>
-      {userData?.funcao === "tutor" && (
+      {papelAtual === TUTOR_AI && (
         <button onClick={handleQuiz}><FaQuestionCircle /> Quiz</button>
       )}
     </div>
   );
-};
+});
 
 export default ChatOptionsMenu;

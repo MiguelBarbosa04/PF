@@ -49,7 +49,7 @@ class Session(Base):
     inicio = Column(TIMESTAMP, nullable=False)
 
     user = relationship("Users", back_populates="sessions")
-    messages = relationship("Messages", back_populates="session")
+    messages = relationship("Messages", back_populates="session", cascade="all, delete-orphan")
 
 class Messages(Base):
     __tablename__ = "messages"
