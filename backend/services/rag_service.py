@@ -26,7 +26,7 @@ async def generate_rag_response(user_query: str) -> str:
     }
 
     resposta = ""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=60) as client:
         response = await client.post("http://localhost:11434/api/chat", json=mistral_request)
 
         async for line in response.aiter_lines():
