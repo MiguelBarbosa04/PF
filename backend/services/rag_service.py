@@ -1,7 +1,7 @@
 import chromadb
 import httpx
 
-CHROMA_PATH = "chroma_db"
+CHROMA_PATH = "chroma/"
 chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
 collection = chroma_client.get_or_create_collection(name="tutor_agent_docs")
 
