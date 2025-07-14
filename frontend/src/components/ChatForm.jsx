@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import Sidebar from "../components/Sidebar";
 import "../assets/css/ChatForm.css";
 import {getMessagesBySession, rateMessage, sendMessage} from "../services/api.js";
@@ -11,10 +11,15 @@ const ChatForm = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isBotTyping, setIsBotTyping] = useState(false);
+  const navigate = useNavigate();
+  const[refreshSidebar, setRefreshSidebar] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (!sessionId) return;
+      if (!sessionId){
+          setMessages([]);
+          return;
+      }
       try {
         const msgs = await getMessagesBySession(sessionId);
         setMessages(msgs);
@@ -33,20 +38,27 @@ const ChatForm = () => {
       }
   }, [messages]);
 
+  const papelSelecionado = localStorage.getItem("papel");
+
+  const handleMensagemEnviada = () => {
+    setRefreshSidebar(prev => !prev); // alterna o estado para disparar refresh no Sidebar
+  };
+
   const handleEnviarMensagem = async () => {
       if (!input.trim()) return;
 
       const novaMensagemUser = {
-        session_id: Number(sessionId),
+        session_id: sessionId ? Number(sessionId) : null,
         conteudo: input,
         tipo: "texto",
         remetente: "user",
         criado_em: new Date().toISOString(),
-        avaliacao: null
+        avaliacao: null,
+        papel: !sessionId ? papelSelecionado : undefined, // só envia se for nova sessão
       };
 
-      // Adiciona a mensagem do utilizador ao chat imediatamente
       setMessages((prev) => [...prev, novaMensagemUser]);
+      setInput("");
 
       try {
         // Envia para a API
@@ -54,16 +66,34 @@ const ChatForm = () => {
         const resposta = await sendMessage(novaMensagemUser);
         setIsBotTyping(false);
 
-        // Adiciona a resposta do bot
-        const novaMensagemBot = {
-          conteudo: resposta.resposta,  // <- conforme o que recebes do backend
-          tipo: "texto",
-          remetente: "bot",
-          criado_em: new Date().toISOString(),
-          avaliacao: null
-        };
+        if(!sessionId && resposta.session_id){
+            // Adiciona a resposta do bot
+            const novaMensagemBot = {
+              id: resposta.id,
+              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              tipo: "texto",
+              remetente: "bot",
+              criado_em: new Date().toISOString(),
+              avaliacao: null
+            };
+            setMessages((prev) => [...prev, novaMensagemBot]);
+            navigate(`/chat/${resposta.session_id}`)
 
-        setMessages((prev) => [...prev, novaMensagemBot]);
+            handleMensagemEnviada();
+        }else{
+            // Adiciona a resposta do bot
+            const novaMensagemBot = {
+              id: resposta.id,
+              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              tipo: "texto",
+              remetente: "bot",
+              criado_em: new Date().toISOString(),
+              avaliacao: null
+            };
+            setMessages((prev) => [...prev, novaMensagemBot]);
+
+            handleMensagemEnviada();
+        }
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
       }
@@ -87,7 +117,7 @@ const ChatForm = () => {
 
   return (
     <div className="chat-wrapper">
-      <Sidebar />
+      <Sidebar key={sessionId || "default"} refreshTrigger={refreshSidebar}/>
       <div className="chat-main">
         {messages.length === 0 ? (
           <h2 className="chat-welcome">No que posso ajudar?</h2>

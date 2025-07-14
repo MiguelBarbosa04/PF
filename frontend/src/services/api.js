@@ -133,7 +133,12 @@ export const sendMessage = async (messageData) => {
     },
     body: JSON.stringify(messageData),
    });
-   return res.json();
+
+   if (!res.ok) {
+    throw new Error("Erro ao enviar mensagem");
+  }
+
+   return await res.json();
 };
 
 
@@ -159,7 +164,7 @@ export const rateMessage = async (messageId, avaliacao) => {
 };
 
 export const getSessionsByUser = async (userId) => {
-  const response = await fetch(`${API_URL}/sessions/user/${userId}`);
+  const response = await fetch(`${API_URL}/sessions/user/${userId}/`);
   if (!response.ok) {
     throw new Error("Erro ao buscar sessões do utilizador");
   }
@@ -201,3 +206,11 @@ export async function deleteSession(sessionId) {
 
   return true;
 }
+
+export const getSessionsByUserOrdered = async (userId) => {
+  const response = await fetch(`${API_URL}/sessions/user/${userId}/ordered`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar sessões do utilizador ordenadas");
+  }
+  return await response.json();
+};

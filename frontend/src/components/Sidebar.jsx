@@ -6,10 +6,11 @@ import {
     FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaHome, FaSignOutAlt, FaSearch, FaPlus,
     FaAngleDown, FaAngleUp, FaEllipsisH
 } from "react-icons/fa";
-import {logout, getSessionsByUser, deleteSession} from "../services/api.js";
+import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
+import {useParams} from "react-router";
 
-const Sidebar = () => {
+const Sidebar = ({refreshTrigger}) => {
   const navigate = useNavigate();
   const userData = TokenInfo();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -17,12 +18,12 @@ const Sidebar = () => {
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [sessions, setSessions] = useState([]);
   const menuRef = useRef(null);
+  const { sessionId } = useParams();
 
-  useEffect(() => {
-    const fetchSessions = async () => {
+  const fetchSessions = async () => {
       try {
         if (userData?.id) {
-          const userSessions = await getSessionsByUser(userData.id);
+          const userSessions = await getSessionsByUserOrdered(userData.id);
           if (userData.funcao === 7) {
               setIsAdmin(true);
             }
@@ -37,8 +38,9 @@ const Sidebar = () => {
       }
     };
 
+  useEffect(() => {
     fetchSessions();
-  }, [userData]);
+  }, [userData, sessionId, refreshTrigger]);
 
   const handleLogout = () => {
     logout()
@@ -88,7 +90,7 @@ const Sidebar = () => {
                   sessions.map((session) => (
                       <div key={session.id} className="chat-item-wrapper">
                           <div className="chat-item" onClick={() => navigate(`/chat/${session.id}`)}>
-                              <span>
+                              <span className="chat-tema">
                                   {session.tema || "Chat sem tema"}
                               </span>
                               <div className="chat-options"
@@ -102,8 +104,10 @@ const Sidebar = () => {
                           </div>
 
                           {activeMenuId === session.id && (
-                              <ChatOptionsMenu session={session}
-                              userData={userData} onSessionUpdated={(id, novoTema)=>{
+                              <ChatOptionsMenu
+                                  ref={menuRef}
+                                  session={session}
+                                  userData={userData} onSessionUpdated={(id, novoTema)=>{
                                   setSessions(prev =>
                                     prev.map(s=>s.id === id ? { ...s, tema:novoTema } : s)
                                   );
@@ -113,6 +117,11 @@ const Sidebar = () => {
                                 deleteSession(id).then(()=>{
                                     setSessions(prev => prev.filter(s=>s.id !== id));
                                     setActiveMenuId(null);
+
+                                    const currentPath = window.location.pathname;
+                                    if (currentPath.includes(`/chat/${id}`)){
+                                        navigate("/chat");
+                                    }
                                   }).catch(console.error);
                               }}/>
                           )}

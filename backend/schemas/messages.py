@@ -9,6 +9,7 @@ class ChatRequest(BaseModel):
     remetente: str
     criado_em: datetime
     avaliacao: Optional[int] = None
+    papel: Optional[str] = None
 
 class MessageRead(ChatRequest):
     id: int
@@ -24,3 +25,8 @@ class MessageUpdateRating(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+class ChatFullResponse(BaseModel):
+    resposta: str
+    session_id: int
+    id: int

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from backend.database.models import Session as Sessions
+from backend.database.models import Session as Sessions, Messages
 from backend.schemas.sessions import SessionCreate, SessionUpdate
+from sqlalchemy import desc, func
 
 def create_session(db: Session, session_data: SessionCreate):
     new_session = Sessions(**session_data.dict())
@@ -35,3 +36,21 @@ def delete_session(db: Session, session_id: int):
     db.delete(db_session)
     db.commit()
     return True
+
+def get_sessions_ordered_by_last_message(db: Session, user_id: int):
+    subquery = (
+        db.query(
+            Messages.session_id,
+            func.max(Messages.criado_em).label("ultima_msg")
+        )
+        .group_by(Messages.session_id)
+        .subquery()
+    )
+
+    return (
+        db.query(Sessions)
+        .outerjoin(subquery, Sessions.id == subquery.c.session_id)
+        .filter(Sessions.user_id == user_id)
+        .order_by(desc(subquery.c.ultima_msg), desc(Sessions.inicio))
+        .all()
+    )
