@@ -1,15 +1,18 @@
 from typing import Optional
-
-from backend.database.models import Session as DBSessionModel
 from backend.schemas.sessions import SessionCreate
 from backend.repositories.sessions import create_session
-from sqlalchemy.orm import Session as DBSession
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from backend.schemas.messages import ChatRequest
 from backend.database.models import Messages
 from datetime import datetime
 import httpx
+import re
+
+def limpar_tema(texto: str) -> str:
+    texto = texto.strip()
+    texto = texto.strip('"\'')  # Remove aspas simples ou duplas do início/fim
+    texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)  # Adiciona espaço entre palavras coladas tipo "MatemáticaBásica"
+    return texto
 
 async def inferir_tema_com_llm(conteudo: str) -> str:
     prompt = f"""
@@ -41,7 +44,7 @@ Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: '
                 except Exception:
                     continue
 
-    return resposta.strip() or "Tema Desconhecido"
+    return limpar_tema(resposta.strip()) or "Tema Desconhecido"
 
 async def generate_chat_response(db: Session, request: ChatRequest, user_id: int, papel: Optional[str]) -> tuple[Messages, int]:
     nova_session = None
