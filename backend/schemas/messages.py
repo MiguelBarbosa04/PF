@@ -2,17 +2,16 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-class MessageBase(BaseModel):
+class ChatRequest(BaseModel):
+    session_id: Optional[int] = None
     conteudo: str
-    tipo: str  # 'texto' ou 'voz'
-    remetente: str  # 'user' ou 'bot'
-
-class MessageCreate(MessageBase):
-    session_id: int
+    tipo: str
+    remetente: str
     criado_em: datetime
     avaliacao: Optional[int] = None
+    papel: Optional[str] = None
 
-class MessageRead(MessageBase):
+class MessageRead(ChatRequest):
     id: int
     session_id: int
     criado_em: datetime
@@ -23,3 +22,11 @@ class MessageRead(MessageBase):
 
 class MessageUpdateRating(BaseModel):
     avaliacao: int
+
+class ChatResponse(BaseModel):
+    response: str
+
+class ChatFullResponse(BaseModel):
+    resposta: str
+    session_id: int
+    id: int
