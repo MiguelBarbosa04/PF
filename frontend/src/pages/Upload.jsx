@@ -3,6 +3,7 @@ import '../assets/css/UploadPage.css';
 import { useNavigate } from 'react-router';
 import UploadForm from "../components/UploadForm.jsx";
 import IconMenu from "../components/IconMenu.jsx";
+import {uploadPDF} from "../services/api.js";
 
 const Upload = () => {
 
@@ -11,16 +12,26 @@ const Upload = () => {
   const [tema, setTema] = useState('');
 
   const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  setFile(selectedFile);
-  console.log('Ficheiro selecionado:', selectedFile);
+      const file = event.target.files[0];
+      setFile(file);
   };
 
-  const handleGuardar = (e) => {
-    e.preventDefault();
-    // Aqui podes tratar o upload (ex: com FormData)
-    alert("Ficheiro guardado com sucesso!");
-  };
+  const handleGuardar = async (e) => {
+      e.preventDefault();
+
+      if (!file) {
+        alert("Por favor selecione um ficheiro antes de guardar.");
+        return;
+      }
+
+      try {
+        const data = await uploadPDF(file);
+        alert(data.message);
+      } catch (error) {
+        console.error("Erro ao fazer upload:", error);
+        alert(error.message);
+      }
+    };
 
 
  return (
@@ -34,6 +45,7 @@ const Upload = () => {
         tema={tema}
         setTema={setTema}
         navigate={navigate}
+        file={file}
       />
     </div>
   );

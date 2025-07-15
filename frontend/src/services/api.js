@@ -214,3 +214,20 @@ export const getSessionsByUserOrdered = async (userId) => {
   }
   return await response.json();
 };
+
+export const uploadPDF = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${API_URL}/uploads/`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Erro ao fazer upload do ficheiro");
+  }
+
+  return await response.json();
+};
