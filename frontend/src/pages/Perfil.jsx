@@ -3,7 +3,6 @@ import PerfilForm from "../components/PerfilForm.jsx";
 import {updateUser} from "../services/api.js";
 import {useNavigate} from "react-router";
 
-
 const Perfil = () => {
     const navigate = useNavigate();
     const handleUpdate = async (data) => {

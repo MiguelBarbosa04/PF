@@ -1,8 +1,6 @@
 import {FaFileUpload} from "react-icons/fa";
 import React from "react";
-import Upload from "../pages/Upload.jsx";
 import '../assets/css/UploadPage.css';
-
 
 const UploadForm = ({ handleFileChange, handleGuardar, tema, setTema, navigate }) => {
   return (
