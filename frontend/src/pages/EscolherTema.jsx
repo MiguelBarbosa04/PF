@@ -13,8 +13,6 @@ const EscolherTema = () => {
   const [userData, setUserData] = useState(null);
   const papel = localStorage.getItem("papel");
 
-
-
   // Navegação segura para /welcome se não houver papel
   useEffect(() => {
     if (!papel) {

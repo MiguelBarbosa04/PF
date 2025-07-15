@@ -11,7 +11,6 @@ import Perfil from "./pages/Perfil.jsx";
 import EditarTema from "./pages/EditarTema.jsx";
 import Chat from "./pages/Chat.jsx";
 
-
 function App () {
 return (
     <>
