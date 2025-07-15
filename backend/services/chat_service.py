@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 from backend.schemas.sessions import SessionCreate
 from backend.repositories.sessions import create_session
 from sqlalchemy.orm import Session as DBSession
@@ -48,20 +48,25 @@ Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: '
 
     return limpar_tema(resposta.strip()) or "Tema Desconhecido"
 
-async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
-    nova_session = None
+
+# async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
+async def generate_chat_response(db: DBSession, request: ChatRequest,
+                                     user_id: Optional[int] = None,
+                                     papel: Optional[str] = None
+                                     ) -> Tuple[Messages, int]:
+    nova_session = request.session_id
 
     # Criar nova sessão se não tiver session_id
     if not request.session_id:
-        if not request.user_id or not request.papel:
+        if not user_id or not papel:
             raise ValueError("user_id e papel são obrigatórios se não houver session_id")
 
         # Gerar tema a partir da pergunta
         tema_inferido = await inferir_tema_com_llm(request.conteudo)
 
         nova_sessao = SessionCreate(
-            user_id=request.user_id,
-            papel=request.papel,
+            user_id=user_id,
+            papel=papel,
             tema=tema_inferido,
             inicio=request.criado_em
         )
@@ -135,4 +140,8 @@ Responde com base apenas no contexto acima.
         db.commit()
         db.refresh(bot_msg)
 
-    return resposta if resposta else "Mensagem registada."
+        # return resposta if resposta else "Mensagem registada."
+
+        return bot_msg, nova_session
+
+    return nova_msg, nova_session
