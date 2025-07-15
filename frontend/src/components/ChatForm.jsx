@@ -13,6 +13,8 @@ const ChatForm = () => {
   const [isBotTyping, setIsBotTyping] = useState(false);
   const navigate = useNavigate();
   const[refreshSidebar, setRefreshSidebar] = useState(false);
+  const USER = "user";
+  const BOT = "bot";
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -51,7 +53,7 @@ const ChatForm = () => {
         session_id: sessionId ? Number(sessionId) : null,
         conteudo: input,
         tipo: "texto",
-        remetente: "user",
+        remetente: USER,
         criado_em: new Date().toISOString(),
         avaliacao: null,
         papel: !sessionId ? papelSelecionado : undefined, // só envia se for nova sessão
@@ -72,7 +74,7 @@ const ChatForm = () => {
               id: resposta.id,
               conteudo: resposta.resposta,  // <- conforme o que recebes do backend
               tipo: "texto",
-              remetente: "bot",
+              remetente: BOT,
               criado_em: new Date().toISOString(),
               avaliacao: null
             };
@@ -86,7 +88,7 @@ const ChatForm = () => {
               id: resposta.id,
               conteudo: resposta.resposta,  // <- conforme o que recebes do backend
               tipo: "texto",
-              remetente: "bot",
+              remetente: BOT,
               criado_em: new Date().toISOString(),
               avaliacao: null
             };
@@ -124,9 +126,9 @@ const ChatForm = () => {
         ) : (
           <div className="chat-messages">
             {messages.map((msg) => (
-              <div key={msg.id} className={`chat-message ${msg.remetente === "user" ? "user" : "bot"}`}>
+              <div key={msg.id} className={`chat-message ${msg.remetente === USER ? USER : BOT}`}>
                   <div>{msg.conteudo}</div>
-                  {msg.remetente === "bot" && (
+                  {msg.remetente === BOT && (
                       <StarsRating avaliacao={msg.avaliacao}
                                    onAvaliar={(nota)=>handleAvaliarMensagem(msg.id, nota)}
                       />

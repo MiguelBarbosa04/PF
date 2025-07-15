@@ -2,7 +2,6 @@ import React from 'react';
 import LoginForm from "../components/LoginForm.jsx";
 import { useNavigate } from 'react-router';
 
-
 const Login = () => {
   const navigate = useNavigate();
 

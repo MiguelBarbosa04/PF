@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router';
 import UploadForm from "../components/UploadForm.jsx";
 import IconMenu from "../components/IconMenu.jsx";
 
-
 const Upload = () => {
 
   const navigate = useNavigate();

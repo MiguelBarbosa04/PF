@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-    FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaHome, FaSignOutAlt, FaSearch, FaPlus,
+    FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaSignOutAlt, FaSearch, FaPlus,
     FaAngleDown, FaAngleUp, FaEllipsisH
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";

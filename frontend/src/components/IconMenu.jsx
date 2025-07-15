@@ -1,12 +1,11 @@
 import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
-import {getCurrentUser, logout} from "../services/api.js";
+import { logout } from "../services/api.js";
 import { useNavigate } from "react-router";
 import TokenInfo from "./TokenInfo.jsx";
 
 const IconMenu = () => {
-
 
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
