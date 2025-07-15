@@ -9,6 +9,7 @@ from backend.schemas.messages import ChatRequest
 from backend.schemas.messages import MessageRead, MessageUpdateRating
 from backend.repositories.messages import get_messages_by_session
 from backend.repositories import messages as repo
+from backend.schemas.messages import ChatFullResponse
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
 
