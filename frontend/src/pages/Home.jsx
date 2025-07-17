@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { FaRobot } from "react-icons/fa";
+import "../assets/css/Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const handleRegisterClick = () => {
-    navigate('/register');
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/login');
+    }, 3000); // 3 segundos
 
-    const handleLoginClick = () => {
-    navigate('/login');
-  };
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Bem-vindo!</h1>
-      <button onClick={handleRegisterClick} style={{ padding: '10px 20px', fontSize: '16px', marginBottom: "15px" }}>
-        Ir para Registo
-      </button>
-      <button onClick={handleLoginClick} style={{ padding: '10px 20px', fontSize: '16px' }}>
-        Ir para Login
-      </button>
+    <div className="splash-container">
+      <div className="splash-content">
+       <div className="splash-content">
+  <FaRobot className="splash-logo" />
+  <h1 className="splash-title">Tutor/Agente</h1>
+  <p className="splash-subtitle">A sua aprendizagem, guiada por inteligência</p>
+</div>
+      </div>
     </div>
   );
 };
