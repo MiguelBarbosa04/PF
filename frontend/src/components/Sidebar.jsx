@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-    FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaSignOutAlt, FaSearch, FaPlus,
-    FaAngleDown, FaAngleUp, FaEllipsisH
+  FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaSignOutAlt,
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
@@ -17,33 +17,34 @@ const Sidebar = ({refreshTrigger}) => {
   const [showMenu, setShowMenu] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [sessions, setSessions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const menuRef = useRef(null);
   const { sessionId } = useParams();
 
   const fetchSessions = async () => {
-      try {
-        if (userData?.id) {
-          const userSessions = await getSessionsByUserOrdered(userData.id);
-          if (userData.funcao === 7) {
-              setIsAdmin(true);
-            }
-          const papelSelecionado = localStorage.getItem("papel");
-          const sessionsFiltradas = userSessions.filter(
-            (s) => s.papel === papelSelecionado
-          );
-          setSessions(sessionsFiltradas);
+    try {
+      if (userData?.id) {
+        const userSessions = await getSessionsByUserOrdered(userData.id);
+        if (userData.funcao === 7) {
+          setIsAdmin(true);
         }
-      } catch (error) {
-        console.error("Erro ao carregar sessões:", error);
+        const papelSelecionado = localStorage.getItem("papel");
+        const sessionsFiltradas = userSessions.filter(
+          (s) => s.papel === papelSelecionado
+        );
+        setSessions(sessionsFiltradas);
       }
-    };
+    } catch (error) {
+      console.error("Erro ao carregar sessões:", error);
+    }
+  };
 
   useEffect(() => {
     fetchSessions();
   }, [userData, sessionId, refreshTrigger]);
 
   const handleLogout = () => {
-    logout()
+    logout();
     navigate("/login");
   };
 
@@ -52,13 +53,20 @@ const Sidebar = ({refreshTrigger}) => {
     setActiveMenuId(prev => prev === sessionId ? null : sessionId);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setActiveMenuId(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -75,86 +83,118 @@ const Sidebar = ({refreshTrigger}) => {
     navigate("/perfil");
   };
 
+  const filteredSessions = sessions.filter((session) =>
+    (session.tema || "chat sem tema").toLowerCase().includes(searchTerm)
+  );
+
   return (
-      <div className="sidebar">
-          <div className="sidebar-header">
-              <div className="search">
-                  <input type="text" placeholder="Procura" className="sidebar-search"/>
-                  <span className="search-icon"><FaSearch/></span>
-              </div>
-              <button className="new-chat-btn" onClick={()=>navigate("/chat")}>Novo Chat <FaPlus/></button>
-          </div>
-
-          <div className="sidebar-chats">
-              {sessions.length > 0 ? (
-                  sessions.map((session) => (
-                      <div key={session.id} className="chat-item-wrapper">
-                          <div className="chat-item" onClick={() => navigate(`/chat/${session.id}`)}>
-                              <span className="chat-tema">
-                                  {session.tema || "Chat sem tema"}
-                              </span>
-                              <div className="chat-options"
-                                   onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleSessionMenu(session.id);
-                                  }}
-                              >
-                                  <FaEllipsisH/>
-                              </div>
-                          </div>
-
-                          {activeMenuId === session.id && (
-                              <ChatOptionsMenu
-                                  ref={menuRef}
-                                  session={session}
-                                  userData={userData} onSessionUpdated={(id, novoTema)=>{
-                                  setSessions(prev =>
-                                    prev.map(s=>s.id === id ? { ...s, tema:novoTema } : s)
-                                  );
-                                  setActiveMenuId(null);
-                              }}
-                              onDelete={(id)=>{
-                                deleteSession(id).then(()=>{
-                                    setSessions(prev => prev.filter(s=>s.id !== id));
-                                    setActiveMenuId(null);
-
-                                    const currentPath = window.location.pathname;
-                                    if (currentPath.includes(`/chat/${id}`)){
-                                        navigate("/chat");
-                                    }
-                                  }).catch(console.error);
-                              }}/>
-                          )}
-                      </div>
-                  ))
-              ) : (
-                  <div className="no-chats-msg">
-                      <p>Sem chats disponíveis.</p>
-                  </div>
-              )}
-          </div>
-
-          <div className="sidebar-user">
-              <div className="user-info" onClick={toggleMenu}>
-                  <div className="user-circle">{userData.initials}</div>
-                  <span className="username">{userData.nome}</span>
-                  <span className="arrow">
-                {showMenu ? <FaAngleUp/> : <FaAngleDown/>}
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <div className="search">
+          <input
+            type="text"
+            placeholder="Procura"
+            className="sidebar-search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          {searchTerm ? (
+            <span className="search-icon clear-icon" onClick={handleClearSearch}>
+              <FaTimes />
             </span>
+          ) : (
+            <span className="search-icon">
+              <FaSearch />
+            </span>
+          )}
+        </div>
+        <button className="new-chat-btn" onClick={() => navigate("/chat")}>
+          Novo Chat <FaPlus />
+        </button>
+      </div>
+
+      <div className="sidebar-chats">
+        {filteredSessions.length > 0 ? (
+          filteredSessions.map((session) => (
+            <div key={session.id} className="chat-item-wrapper">
+              <div
+                className="chat-item"
+                onClick={() => navigate(`/chat/${session.id}`)}
+              >
+                <span className="chat-tema">
+                  {session.tema || "Chat sem tema"}
+                </span>
+                <div
+                  className="chat-options"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSessionMenu(session.id);
+                  }}
+                >
+                  <FaEllipsisH />
+                </div>
               </div>
 
-              <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
-                  {isAdmin && (
-                    <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros (Admin)</li>
-                  )}
-                  <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
-                  <li><FaRobot/> LLM</li>
-                  <li><FaBrain/> RAG</li>
-                  <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
-                  <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
-              </ul>
+              {activeMenuId === session.id && (
+                <ChatOptionsMenu
+                  ref={menuRef}
+                  session={session}
+                  userData={userData}
+                  onSessionUpdated={(id, novoTema) => {
+                    setSessions((prev) =>
+                      prev.map((s) =>
+                        s.id === id ? { ...s, tema: novoTema } : s
+                      )
+                    );
+                    setActiveMenuId(null);
+                  }}
+                  onDelete={(id) => {
+                    deleteSession(id)
+                      .then(() => {
+                        setSessions((prev) =>
+                          prev.filter((s) => s.id !== id)
+                        );
+                        setActiveMenuId(null);
+
+                        const currentPath = window.location.pathname;
+                        if (currentPath.includes(`/chat/${id}`)) {
+                          navigate("/chat");
+                        }
+                      })
+                      .catch(console.error);
+                  }}
+                />
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="no-chats-msg">
+            <p>Sem chats encontrados.</p>
           </div>
+        )}
       </div>
+
+      <div className="sidebar-user">
+        <div className="user-info" onClick={toggleMenu}>
+          <div className="user-circle">{userData.initials}</div>
+          <span className="username">{userData.nome}</span>
+          <span className="arrow">
+            {showMenu ? <FaAngleUp /> : <FaAngleDown />}
+          </span>
+        </div>
+
+        <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
+          {isAdmin && (
+            <li onClick={handleFicheirosClick}><FaFileAlt /> Ficheiros (Admin)</li>
+          )}
+          <li onClick={handleTrocaChatClick}><FaComments /> Trocar chat</li>
+          <li><FaRobot /> LLM</li>
+          <li><FaBrain /> RAG</li>
+          <li onClick={handleEditarPerfilClick}><FaUserEdit /> Editar Perfil</li>
+          <li onClick={handleLogout}><FaSignOutAlt /> Sair</li>
+        </ul>
+      </div>
+    </div>
   );
 };
 
