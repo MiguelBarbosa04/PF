@@ -14,8 +14,11 @@ async def generate_rag_response(user_query: str) -> str:
         return "Não sei. Não foram encontrados documentos relevantes."
 
     system_prompt = f"""
-    Responde à pergunta do utilizador apenas com base nos dados seguintes. Não inventes nada.
-    Se não souberes a resposta, diz: Não sei.
+   És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais, instruções operacionais fornecidos e data.
+A sua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
+Não utilize nenhum conhecimento externo.
+Caso a resposta não possa ser encontrada no texto fornecido, deves declarar explicitamente que a informação não está disponível no documento.
+Seja conciso e responda à pergunta diretamente com base no texto.
 
     Dados:e
     {'\n'.join(retrieved_docs)}
