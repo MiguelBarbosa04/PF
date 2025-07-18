@@ -1,5 +1,6 @@
 import chromadb
 import httpx
+import json
 
 CHROMA_PATH = "chroma/"
 chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
@@ -9,11 +10,14 @@ async def generate_rag_response(user_query: str) -> str:
     results = collection.query(query_texts=[user_query], n_results=4)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
+    if not retrieved_docs:
+        return "Não sei. Não foram encontrados documentos relevantes."
+
     system_prompt = f"""
     Responde à pergunta do utilizador apenas com base nos dados seguintes. Não inventes nada.
     Se não souberes a resposta, diz: Não sei.
 
-    Dados:
+    Dados:e
     {'\n'.join(retrieved_docs)}
     """
 
@@ -32,8 +36,8 @@ async def generate_rag_response(user_query: str) -> str:
         async for line in response.aiter_lines():
             if line.strip():
                 try:
-                    data = httpx.Response(200, content=line)
-                    content = data.json().get("message", {}).get("content")
+                    data = json.loads(line)
+                    content = data.get("message", {}).get("content")
                     if content:
                         resposta += content
                 except Exception:
