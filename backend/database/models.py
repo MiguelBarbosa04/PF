@@ -61,3 +61,10 @@ class Messages(Base):
     avaliacao = Column(Integer, nullable=True)
 
     session = relationship("Session", back_populates="messages")
+
+class GlobalSettings(Base):
+    __tablename__ = "global_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    modelo = Column(String(20), nullable=False)
+    atualizado_em = Column(TIMESTAMP, nullable=False)
