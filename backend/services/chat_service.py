@@ -1,4 +1,7 @@
+import json
 from typing import Optional, Tuple
+
+from backend.repositories.global_settings import get_global_settings
 from backend.schemas.sessions import SessionCreate
 from backend.repositories.sessions import create_session
 from sqlalchemy.orm import Session as DBSession
@@ -9,6 +12,9 @@ import httpx
 import re
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OllamaEmbeddings
+from backend.services.rag_service import generate_rag_response
+
+
 
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()
@@ -16,7 +22,7 @@ def limpar_tema(texto: str) -> str:
     texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)  # Adiciona espaço entre palavras coladas tipo "MatemáticaBásica"
     return texto
 
-async def inferir_tema_com_llm(conteudo: str) -> str:
+async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
     prompt = f"""
 A seguinte mensagem faz parte de uma conversa entre um utilizador e um assistente.
 
@@ -25,26 +31,45 @@ Mensagem: "{conteudo}"
 Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: 'Energia Cinética', 'Contabilidade Financeira', etc.). Apenas devolve o tema, sem explicações.
 """
 
-    mistral_request = {
-        "model": "mistral",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
+    # Obter modelo atual
+    settings = get_global_settings(db)
+    modelo = settings.modelo if settings else "mistral"
 
+    url = (
+        "http://localhost:11434/api/chat"
+        if modelo in ["mistral", "llama3"]
+        else "https://generativeai.googleapis.com/v1beta/models/gemini-pro:generateContent"
+    )
+
+    API_KEY = "12345"
     resposta = ""
     async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.post("http://localhost:11434/api/chat", json=mistral_request)
-        response.raise_for_status()
-        async for line in response.aiter_lines():
-            if line.strip():
-                try:
-                    data = httpx.Response(200, content=line)
-                    content = data.json().get("message", {}).get("content")
-                    if content:
-                        resposta += content.strip()
-                except Exception:
-                    continue
+        if modelo in ["mistral", "llama3"]:
+            request_data = {
+                "model": modelo,
+                "messages": [{"role": "user", "content": prompt}]
+            }
+            response = await client.post(url, json=request_data)
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if line.strip():
+                    try:
+                        data = json.loads(line)
+                        content = data.json().get("message", {}).get("content")
+                        if content:
+                            resposta += content.strip()
+                    except Exception:
+                        continue
+        elif modelo == "gemini":
+            request_data = {
+                "contents": [{"parts": [{"text": prompt}], "role": "user"}]
+            }
+            response = await client.post(url, params={"key": API_KEY}, json=request_data)
+            if response.status_code == 200:
+                data = response.json()
+                parts = data.get("candidates", [])[0].get("content", {}).get("parts", [])
+                if parts:
+                    resposta = parts[0].get("text", "").strip()
 
     return limpar_tema(resposta.strip()) or "Tema Desconhecido"
 
@@ -62,7 +87,7 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
             raise ValueError("user_id e papel são obrigatórios se não houver session_id")
 
         # Gerar tema a partir da pergunta
-        tema_inferido = await inferir_tema_com_llm(request.conteudo)
+        tema_inferido = await inferir_tema_com_llm(request.conteudo, db)
 
         nova_sessao = SessionCreate(
             user_id=user_id,
@@ -83,64 +108,32 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
         tipo=request.tipo,
         remetente=request.remetente,
         criado_em=request.criado_em,
-        avaliacao=request.avaliacao
+        avaliacao=request.avaliacao,
+        modelo=""
     )
     db.add(nova_msg)
     db.commit()
     db.refresh(nova_msg)
 
     # Se for o utilizador, gerar resposta com RAG
-    resposta = ""
     if request.remetente == "user":
-        # Recuperar contexto com ChromaDB
-        embeddings = OllamaEmbeddings(model="mistral")
-        db_chroma = Chroma(persist_directory="chroma/", embedding_function=embeddings)
+        resposta = await generate_rag_response(request.conteudo, db)
 
-        docs = db_chroma.similarity_search(request.conteudo, k=3)
-        contexto = "\n\n".join([doc.page_content for doc in docs]) if docs else "Sem contexto relevante encontrado."
+        # Obter o modelo usado para gravar na BD
+        settings = get_global_settings(db)
+        modelo_usado = settings.modelo if settings else "mistral"
 
-        # Construir prompt com contexto
-        mensagem = f"""Contexto:
-{contexto}
-
-Pergunta: {request.conteudo}
-
-Responde com base apenas no contexto acima.
-"""
-
-        mistral_request = {
-            "model": "mistral",
-            "messages": [
-                {"role": "user", "content": mensagem}
-            ]
-        }
-
-        async with httpx.AsyncClient(timeout=60) as client:
-            response = await client.post("http://localhost:11434/api/chat", json=mistral_request, timeout=None)
-            response.raise_for_status()
-            async for line in response.aiter_lines():
-                if line.strip():
-                    try:
-                        data = httpx.Response(200, content=line)
-                        content = data.json().get("message", {}).get("content")
-                        if content:
-                            resposta += content
-                    except Exception:
-                        continue
-
-        # Guardar resposta do bot
         bot_msg = Messages(
             session_id=request.session_id,
             conteudo=resposta,
             tipo=request.tipo,
             remetente="bot",
-            criado_em=datetime.utcnow()
+            criado_em=datetime.utcnow(),
+            modelo=modelo_usado
         )
         db.add(bot_msg)
         db.commit()
         db.refresh(bot_msg)
-
-        # return resposta if resposta else "Mensagem registada."
 
         return bot_msg, nova_session
 

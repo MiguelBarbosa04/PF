@@ -1,14 +1,20 @@
 import chromadb
 import httpx
 import json
+from sqlalchemy.orm import Session as DBSession
+from backend.repositories.global_settings import get_global_settings
+from backend.services.llm_service import get_chroma_collection
 
-CHROMA_PATH = "chroma/"
-chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-collection = chroma_client.get_or_create_collection(name="tutor_agent_docs")
-
-async def generate_rag_response(user_query: str) -> str:
+async def generate_rag_response(user_query: str, db: DBSession) -> str:
+    collection = get_chroma_collection()
     results = collection.query(query_texts=[user_query], n_results=4)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
+
+    settings = get_global_settings(db)
+    modelo = settings.modelo if settings else "mistral"
+
+    url = f"http://localhost:11434/api/chat" if modelo in ["mistral", "llama3"] \
+        else "https://generativeai.googleapis.com/v1beta/models/gemini-pro:generateContent"
 
     if not retrieved_docs:
         return "Não sei. Não foram encontrados documentos relevantes."
@@ -24,8 +30,8 @@ Seja conciso e responda à pergunta diretamente com base no texto.
     {'\n'.join(retrieved_docs)}
     """
 
-    mistral_request = {
-        "model": "mistral",
+    model_request = {
+        "model": modelo,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_query}
@@ -34,7 +40,7 @@ Seja conciso e responda à pergunta diretamente com base no texto.
 
     resposta = ""
     async with httpx.AsyncClient(timeout=60) as client:
-        response = await client.post("http://localhost:11434/api/chat", json=mistral_request)
+        response = await client.post(url, json=model_request)
 
         async for line in response.aiter_lines():
             if line.strip():

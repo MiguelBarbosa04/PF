@@ -24,7 +24,7 @@ def detalhes_collection(limit: int = 5):
         collection = client.get_collection(COLLECTION_NAME)
         results = collection.get(limit=limit)
         return {
-            "total_documentos": len(results["documents"]),
+            "trechos_documentos": len(results["documents"]),
             "documentos": results["documents"],
             "metadados": results["metadatas"]
         }
