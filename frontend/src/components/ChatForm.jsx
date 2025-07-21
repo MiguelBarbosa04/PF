@@ -151,6 +151,12 @@ const ChatForm = () => {
             onChange={(e) => setInput(e.target.value)}
             rows={3}
             maxLength={1000}
+            onKeyDown={(e)=>{
+                if(e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleEnviarMensagem();
+                }
+            }}
           />
           <button className="chat-send-button" onClick={handleEnviarMensagem}><FaArrowCircleRight/></button>
         </div>
