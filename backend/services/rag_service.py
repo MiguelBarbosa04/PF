@@ -1,42 +1,95 @@
+import os
 import chromadb
 import httpx
+import json
+from sqlalchemy.orm import Session as DBSession
+from backend.repositories.global_settings import get_global_settings
+from backend.services.llm_service import get_chroma_collection
+from dotenv import load_dotenv
+load_dotenv()
 
-CHROMA_PATH = "chroma/"
-chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-collection = chroma_client.get_or_create_collection(name="tutor_agent_docs")
+GEMINI_URL = os.getenv('GEMINI_URL')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+OLLAMA_URL = os.getenv('OLLAMA_URL')
 
-async def generate_rag_response(user_query: str) -> str:
+async def generate_rag_response(user_query: str, db: DBSession) -> str:
+    collection = get_chroma_collection()
     results = collection.query(query_texts=[user_query], n_results=4)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
-    system_prompt = f"""
-    Responde à pergunta do utilizador apenas com base nos dados seguintes. Não inventes nada.
-    Se não souberes a resposta, diz: Não sei.
+    settings = get_global_settings(db)
+    modelo = settings.modelo if settings else "mistral"
 
-    Dados:
+    url = (
+        OLLAMA_URL
+        if modelo in ["mistral", "llama3"]
+        else GEMINI_URL
+    )
+
+    if not retrieved_docs:
+        return "Não sei. Não foram encontrados documentos relevantes."
+
+    headers = {}
+    if modelo == "gemini":
+        headers = {
+            "Content-Type": "application/json",
+            "X-goog-api-key": GEMINI_API_KEY
+        }
+
+    system_prompt = f"""
+   És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais, instruções operacionais fornecidos e data.
+A sua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
+Não utilize nenhum conhecimento externo.
+Caso a resposta não possa ser encontrada no texto fornecido, deves declarar explicitamente que a informação não está disponível no documento.
+Seja conciso e responda à pergunta diretamente com base no texto.
+
+    Dados:e
     {'\n'.join(retrieved_docs)}
     """
 
-    mistral_request = {
-        "model": "mistral",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_query}
-        ]
-    }
-
     resposta = ""
     async with httpx.AsyncClient(timeout=60) as client:
-        response = await client.post("http://localhost:11434/api/chat", json=mistral_request)
+        if modelo in ["mistral", "llama3"]:
+            model_request = {
+                "model": modelo,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_query}
+                ]
+            }
+            response = await client.post(url, json=model_request)
 
-        async for line in response.aiter_lines():
-            if line.strip():
-                try:
-                    data = httpx.Response(200, content=line)
-                    content = data.json().get("message", {}).get("content")
-                    if content:
-                        resposta += content
-                except Exception:
-                    continue
+            async for line in response.aiter_lines():
+                if line.strip():
+                    try:
+                        data = json.loads(line)
+                        content = data.get("message", {}).get("content")
+                        if content:
+                            resposta += content
+                    except Exception:
+                        continue
+
+        elif modelo == "gemini":
+            if not GEMINI_API_KEY:
+                raise ValueError("GEMINI_API_KEY não está definida nas variáveis de ambiente.")
+
+            headers = {
+                "Content-Type": "application/json",
+                "X-goog-api-key": GEMINI_API_KEY
+            }
+
+            model_request = {
+                "contents": [
+                    {"role": "user", "parts": [{"text": system_prompt + "\nPergunta: " + user_query}]}
+                ]
+            }
+
+            response = await client.post(url, headers=headers, json=model_request)
+            data = response.json()
+
+            try:
+                resposta = data["candidates"][0]["content"]["parts"][0]["text"]
+            except Exception:
+                resposta = "Não foi possível gerar resposta com Gemini."
 
     return resposta.strip() if resposta else "Não foi possível gerar resposta."

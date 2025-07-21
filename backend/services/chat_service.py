@@ -1,50 +1,87 @@
+import os
+import json
 from typing import Optional, Tuple
-from backend.schemas.sessions import SessionCreate
-from backend.repositories.sessions import create_session
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session as DBSession
-from backend.schemas.messages import ChatRequest
-from backend.database.models import Messages
 from datetime import datetime
 import httpx
 import re
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OllamaEmbeddings
+from backend.repositories.global_settings import get_global_settings
+from backend.schemas.sessions import SessionCreate
+from backend.repositories.sessions import create_session
+from backend.schemas.messages import ChatRequest
+from backend.database.models import Messages
+from backend.services.rag_service import generate_rag_response
+from dotenv import load_dotenv
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_URL = os.getenv("GEMINI_URL")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
 
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()
     texto = texto.strip('"\'')  # Remove aspas simples ou duplas do início/fim
-    texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)  # Adiciona espaço entre palavras coladas tipo "MatemáticaBásica"
+    texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)
     return texto
 
-async def inferir_tema_com_llm(conteudo: str) -> str:
+async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
     prompt = f"""
-A seguinte mensagem faz parte de uma conversa entre um utilizador e um assistente.
+    Mensagem: "{conteudo}"
 
-Mensagem: "{conteudo}"
+    Dá um título curto e claro com 2-4 palavras que represente o tema desta mensagem. Apenas devolve o título, sem explicações.
+    """
 
-Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: 'Energia Cinética', 'Contabilidade Financeira', etc.). Apenas devolve o tema, sem explicações.
-"""
+    # Obter modelo atual
+    settings = get_global_settings(db)
+    modelo = settings.modelo if settings else "mistral"
 
-    mistral_request = {
-        "model": "mistral",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
+    url = (
+        OLLAMA_URL
+        if modelo in ["mistral", "llama3"]
+        else GEMINI_URL
+    )
 
     resposta = ""
     async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.post("http://localhost:11434/api/chat", json=mistral_request)
-        response.raise_for_status()
-        async for line in response.aiter_lines():
-            if line.strip():
-                try:
-                    data = httpx.Response(200, content=line)
-                    content = data.json().get("message", {}).get("content")
-                    if content:
-                        resposta += content.strip()
-                except Exception:
-                    continue
+        if modelo in ["mistral", "llama3"]:
+            request_data = {
+                "model": modelo,
+                "messages": [{"role": "user", "content": prompt}]
+            }
+            response = await client.post(url, json=request_data)
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if line.strip():
+                    try:
+                        data = json.loads(line)
+                        content = data.get("message", {}).get("content")
+                        if content:
+                            resposta += content.strip()
+                    except Exception:
+                        continue
+        elif modelo == "gemini":
+            if not GEMINI_API_KEY:
+                raise EnvironmentError("A variável de ambiente GEMINI_API_KEY não está definida.")
+
+            request_data = {
+                "contents": [{"parts": [{"text": prompt}], "role": "user"}]
+            }
+            response = await client.post(url,
+                                         params={"key": GEMINI_API_KEY},
+                                         json=request_data,
+                                         headers={"X-goog-api-key": GEMINI_API_KEY})
+            if response.status_code == 200:
+                data = response.json()
+                parts = data.get("candidates", [])[0].get("content", {}).get("parts", [])
+                if parts:
+                    resposta = parts[0].get("text", "").strip()
+            elif response.status_code == 503:
+                raise HTTPException(status_code=503, detail="O modelo está temporariamente indisponível. "
+                                                            "Por favor, tente novamente mais tarde.")
+            else:
+                raise RuntimeError(f"Erro na API Gemini: {response.status_code} - {response.text}")
 
     return limpar_tema(resposta.strip()) or "Tema Desconhecido"
 
@@ -62,7 +99,7 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
             raise ValueError("user_id e papel são obrigatórios se não houver session_id")
 
         # Gerar tema a partir da pergunta
-        tema_inferido = await inferir_tema_com_llm(request.conteudo)
+        tema_inferido = await inferir_tema_com_llm(request.conteudo, db)
 
         nova_sessao = SessionCreate(
             user_id=user_id,
@@ -83,64 +120,32 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
         tipo=request.tipo,
         remetente=request.remetente,
         criado_em=request.criado_em,
-        avaliacao=request.avaliacao
+        avaliacao=request.avaliacao,
+        modelo=""
     )
     db.add(nova_msg)
     db.commit()
     db.refresh(nova_msg)
 
     # Se for o utilizador, gerar resposta com RAG
-    resposta = ""
     if request.remetente == "user":
-        # Recuperar contexto com ChromaDB
-        embeddings = OllamaEmbeddings(model="mistral")
-        db_chroma = Chroma(persist_directory="chroma/", embedding_function=embeddings)
+        resposta = await generate_rag_response(request.conteudo, db)
 
-        docs = db_chroma.similarity_search(request.conteudo, k=3)
-        contexto = "\n\n".join([doc.page_content for doc in docs]) if docs else "Sem contexto relevante encontrado."
+        # Obter o modelo usado para gravar na BD
+        settings = get_global_settings(db)
+        modelo_usado = settings.modelo if settings else "mistral"
 
-        # Construir prompt com contexto
-        mensagem = f"""Contexto:
-{contexto}
-
-Pergunta: {request.conteudo}
-
-Responde com base apenas no contexto acima.
-"""
-
-        mistral_request = {
-            "model": "mistral",
-            "messages": [
-                {"role": "user", "content": mensagem}
-            ]
-        }
-
-        async with httpx.AsyncClient(timeout=60) as client:
-            response = await client.post("http://localhost:11434/api/chat", json=mistral_request, timeout=None)
-            response.raise_for_status()
-            async for line in response.aiter_lines():
-                if line.strip():
-                    try:
-                        data = httpx.Response(200, content=line)
-                        content = data.json().get("message", {}).get("content")
-                        if content:
-                            resposta += content
-                    except Exception:
-                        continue
-
-        # Guardar resposta do bot
         bot_msg = Messages(
             session_id=request.session_id,
             conteudo=resposta,
             tipo=request.tipo,
             remetente="bot",
-            criado_em=datetime.utcnow()
+            criado_em=datetime.utcnow(),
+            modelo=modelo_usado
         )
         db.add(bot_msg)
         db.commit()
         db.refresh(bot_msg)
-
-        # return resposta if resposta else "Mensagem registada."
 
         return bot_msg, nova_session
 

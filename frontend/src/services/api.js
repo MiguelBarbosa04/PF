@@ -135,7 +135,11 @@ export const sendMessage = async (messageData) => {
    });
 
    if (!res.ok) {
-    throw new Error("Erro ao enviar mensagem");
+     if (res.status === 503) {
+      throw new Error("O modelo está ocupado. Tente novamente dentro de momentos.");
+     } else {
+         throw new Error("Erro ao enviar mensagem");
+     }
   }
 
    return await res.json();
@@ -161,14 +165,6 @@ export const rateMessage = async (messageId, avaliacao) => {
     }
   );
   return response.data;
-};
-
-export const getSessionsByUser = async (userId) => {
-  const response = await fetch(`${API_URL}/sessions/user/${userId}/`);
-  if (!response.ok) {
-    throw new Error("Erro ao buscar sessões do utilizador");
-  }
-  return await response.json();
 };
 
 export async function updateSession(sessionId, data) {
@@ -231,3 +227,26 @@ export const uploadPDF = async (file) => {
 
   return await response.json();
 };
+
+export async function getLLM() {
+  const response = await fetch(`${API_URL}/global-settings/`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar experiências");
+  }
+  return await response.json();
+}
+
+export async function updateLLM(modelo) {
+  const response = await fetch(`${API_URL}/global-settings/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ modelo })
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar modelo LLM");
+  }
+  return await response.json();
+}

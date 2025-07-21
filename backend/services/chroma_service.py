@@ -1,3 +1,5 @@
+
+import os
 import chromadb
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -8,8 +10,8 @@ CHROMA_PATH = "chroma/"
 chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
 collection = chroma_client.get_or_create_collection(name="tutor_agent_docs")
 
-def load_and_store_documents():
-    loader = PyPDFLoader(DATA_PATH)
+def load_and_store_documents(file_path: str, collection) -> int:
+    loader = PyPDFLoader(file_path)
     raw_documents = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(
@@ -18,12 +20,9 @@ def load_and_store_documents():
     )
     chunks = text_splitter.split_documents(raw_documents)
 
-    documents, metadata, ids = [], [], []
-    for i, chunk in enumerate(chunks):
-        documents.append(chunk.page_content)
-        metadata.append(chunk.metadata)
-        ids.append(f"ID{i}")
+    documents = [chunk.page_content for chunk in chunks]
+    metadata = [chunk.metadata for chunk in chunks]
+    ids = [f"{os.path.basename(file_path)}chunk{i}" for i in range(len(chunks))]
 
     collection.upsert(documents=documents, metadatas=metadata, ids=ids)
-
-    return len(documents)
+    return len(chunks)
