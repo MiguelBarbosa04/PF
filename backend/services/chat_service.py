@@ -1,6 +1,8 @@
 import os
 import json
 from typing import Optional, Tuple
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
@@ -75,6 +77,9 @@ async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
                 parts = data.get("candidates", [])[0].get("content", {}).get("parts", [])
                 if parts:
                     resposta = parts[0].get("text", "").strip()
+            elif response.status_code == 503:
+                raise HTTPException(status_code=503, detail="O modelo está temporariamente indisponível. "
+                                                            "Por favor, tente novamente mais tarde.")
             else:
                 raise RuntimeError(f"Erro na API Gemini: {response.status_code} - {response.text}")
 

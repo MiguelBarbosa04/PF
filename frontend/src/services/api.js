@@ -135,7 +135,11 @@ export const sendMessage = async (messageData) => {
    });
 
    if (!res.ok) {
-    throw new Error("Erro ao enviar mensagem");
+     if (res.status === 503) {
+      throw new Error("O modelo está ocupado. Tente novamente dentro de momentos.");
+     } else {
+         throw new Error("Erro ao enviar mensagem");
+     }
   }
 
    return await res.json();

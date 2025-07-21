@@ -98,6 +98,7 @@ const ChatForm = () => {
         }
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
+        alert(error.message);
       }
 
       setInput(""); // Limpa o campo de input
