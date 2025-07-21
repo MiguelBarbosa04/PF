@@ -72,7 +72,7 @@ const ChatForm = () => {
             // Adiciona a resposta do bot
             const novaMensagemBot = {
               id: resposta.id,
-              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              conteudo: resposta.resposta,
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
@@ -86,7 +86,7 @@ const ChatForm = () => {
             // Adiciona a resposta do bot
             const novaMensagemBot = {
               id: resposta.id,
-              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              conteudo: resposta.resposta,
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),

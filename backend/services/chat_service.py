@@ -21,17 +21,15 @@ OLLAMA_URL = os.getenv("OLLAMA_URL")
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()
     texto = texto.strip('"\'')  # Remove aspas simples ou duplas do início/fim
-    texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)  # Adiciona espaço entre palavras coladas tipo "MatemáticaBásica"
+    texto = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', texto)
     return texto
 
 async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
     prompt = f"""
-A seguinte mensagem faz parte de uma conversa entre um utilizador e um assistente.
+    Mensagem: "{conteudo}"
 
-Mensagem: "{conteudo}"
-
-Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: 'Energia Cinética', 'Contabilidade Financeira', etc.). Apenas devolve o tema, sem explicações.
-"""
+    Dá um título curto e claro com 2-4 palavras que represente o tema desta mensagem. Apenas devolve o título, sem explicações.
+    """
 
     # Obter modelo atual
     settings = get_global_settings(db)
@@ -56,7 +54,7 @@ Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: '
                 if line.strip():
                     try:
                         data = json.loads(line)
-                        content = data.json().get("message", {}).get("content")
+                        content = data.get("message", {}).get("content")
                         if content:
                             resposta += content.strip()
                     except Exception:

@@ -5,7 +5,6 @@ import json
 from sqlalchemy.orm import Session as DBSession
 from backend.repositories.global_settings import get_global_settings
 from backend.services.llm_service import get_chroma_collection
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -71,7 +70,6 @@ Seja conciso e responda à pergunta diretamente com base no texto.
                         continue
 
         elif modelo == "gemini":
-            url = GEMINI_URL
             if not GEMINI_API_KEY:
                 raise ValueError("GEMINI_API_KEY não está definida nas variáveis de ambiente.")
 
