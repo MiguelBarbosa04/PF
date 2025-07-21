@@ -231,3 +231,29 @@ export const uploadPDF = async (file) => {
 
   return await response.json();
 };
+
+export const getTemas = async () => {
+  const response = await fetch("http://localhost:8000/inspect-colecao/temas");
+  if (!response.ok) {
+    throw new Error("Erro ao buscar os temas");
+  }
+  return response.json();
+};
+
+export async function updateTema(id, data) {
+  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Erro ao atualizar tema");
+  return res.json();
+}
+
+export async function deleteTema(id) {
+  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Erro ao apagar tema");
+  return res.json();
+}

@@ -9,16 +9,20 @@ router = APIRouter(prefix="/uploads", tags=["Uploads"])
 
 @router.post("/")
 async def upload_pdf(file: UploadFile = File(...)):
-
     storage_folder = "data/"
     os.makedirs(storage_folder, exist_ok=True)
-    file_path = os.path.join(storage_folder, file.filename)
+
+    # Remove a extensão .pdf (se existir) do nome do ficheiro
+    original_filename = file.filename
+    if not original_filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Só PDFs são permitidos")
+
+    filename_base = original_filename.removesuffix(".pdf")
+
+    file_path = os.path.join(storage_folder, f"{filename_base}")
 
     if os.path.exists(file_path):
         raise HTTPException(status_code=400, detail="Esse ficheiro já existe, por favor mude o nome.")
-
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Só PDFs são permitidos")
 
     contents = await file.read()
     with open(file_path, "wb") as f:
@@ -28,6 +32,6 @@ async def upload_pdf(file: UploadFile = File(...)):
     num_chunks = load_and_store_documents(file_path, collection)
 
     return {
-        "message": f"Ficheiro {file.filename} guardado em 'data/' e indexado com sucesso.",
+        "message": f"Ficheiro {filename_base} guardado em 'data/' e indexado com sucesso.",
         "chunks_indexados": num_chunks
     }

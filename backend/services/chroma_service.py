@@ -1,4 +1,3 @@
-
 import os
 import chromadb
 from langchain_community.document_loaders import PyPDFLoader
@@ -20,9 +19,16 @@ def load_and_store_documents(file_path: str, collection) -> int:
     )
     chunks = text_splitter.split_documents(raw_documents)
 
+    filename_with_ext = os.path.basename(file_path)
+    filename = os.path.splitext(filename_with_ext)[0]
+
+    for chunk in chunks:
+        chunk.metadata["filename"] = filename
+
     documents = [chunk.page_content for chunk in chunks]
     metadata = [chunk.metadata for chunk in chunks]
     ids = [f"{os.path.basename(file_path)}chunk{i}" for i in range(len(chunks))]
 
     collection.upsert(documents=documents, metadatas=metadata, ids=ids)
     return len(chunks)
+
