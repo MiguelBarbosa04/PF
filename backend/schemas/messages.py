@@ -16,6 +16,7 @@ class MessageRead(ChatRequest):
     session_id: int
     criado_em: datetime
     avaliacao: Optional[int]
+    modelo: str
 
     class Config:
         orm_mode = True

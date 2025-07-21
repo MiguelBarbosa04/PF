@@ -1,20 +1,22 @@
+import os
 import json
 from typing import Optional, Tuple
-
-from backend.repositories.global_settings import get_global_settings
-from backend.schemas.sessions import SessionCreate
-from backend.repositories.sessions import create_session
 from sqlalchemy.orm import Session as DBSession
-from backend.schemas.messages import ChatRequest
-from backend.database.models import Messages
 from datetime import datetime
 import httpx
 import re
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OllamaEmbeddings
+from backend.repositories.global_settings import get_global_settings
+from backend.schemas.sessions import SessionCreate
+from backend.repositories.sessions import create_session
+from backend.schemas.messages import ChatRequest
+from backend.database.models import Messages
 from backend.services.rag_service import generate_rag_response
+from dotenv import load_dotenv
+load_dotenv()
 
-
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_URL = os.getenv("GEMINI_URL")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
 
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()
@@ -36,12 +38,11 @@ Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: '
     modelo = settings.modelo if settings else "mistral"
 
     url = (
-        "http://localhost:11434/api/chat"
+        OLLAMA_URL
         if modelo in ["mistral", "llama3"]
-        else "https://generativeai.googleapis.com/v1beta/models/gemini-pro:generateContent"
+        else GEMINI_URL
     )
 
-    API_KEY = "12345"
     resposta = ""
     async with httpx.AsyncClient(timeout=30) as client:
         if modelo in ["mistral", "llama3"]:
@@ -61,15 +62,23 @@ Resume esta mensagem num único tema ou título com 2-4 palavras (por exemplo: '
                     except Exception:
                         continue
         elif modelo == "gemini":
+            if not GEMINI_API_KEY:
+                raise EnvironmentError("A variável de ambiente GEMINI_API_KEY não está definida.")
+
             request_data = {
                 "contents": [{"parts": [{"text": prompt}], "role": "user"}]
             }
-            response = await client.post(url, params={"key": API_KEY}, json=request_data)
+            response = await client.post(url,
+                                         params={"key": GEMINI_API_KEY},
+                                         json=request_data,
+                                         headers={"X-goog-api-key": GEMINI_API_KEY})
             if response.status_code == 200:
                 data = response.json()
                 parts = data.get("candidates", [])[0].get("content", {}).get("parts", [])
                 if parts:
                     resposta = parts[0].get("text", "").strip()
+            else:
+                raise RuntimeError(f"Erro na API Gemini: {response.status_code} - {response.text}")
 
     return limpar_tema(resposta.strip()) or "Tema Desconhecido"
 
