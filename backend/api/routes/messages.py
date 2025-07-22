@@ -15,8 +15,11 @@ router = APIRouter(prefix="/messages", tags=["Messages"])
 
 @router.post("/", response_model=ChatFullResponse)
 async def chat(request: ChatRequest, db: Session = Depends(get_db), current_user: UserRead=Depends(get_current_user),):
-    message, session_id = await generate_chat_response(db, request, user_id=current_user.id, papel=request.papel)
-    return {"resposta": message.conteudo, "session_id": session_id, "id": message.id}
+    try:
+        message, session_id = await generate_chat_response(db, request, user_id=current_user.id, papel=request.papel)
+        return {"resposta": message.conteudo, "session_id": session_id, "id": message.id}
+    except Exception as e:
+        raise e
 
 @router.get("/session/{session_id}", response_model=List[MessageRead])
 def read_messages_by_session(session_id: int, db: Session = Depends(get_db)):
