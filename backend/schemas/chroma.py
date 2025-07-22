@@ -7,3 +7,6 @@ class TemaSchema(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class TemaUpdateRequest(BaseModel):
+    nome_novo: str
