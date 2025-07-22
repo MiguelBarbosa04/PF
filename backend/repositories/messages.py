@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from backend.database.models import Messages
 
 def get_messages_by_session(db: Session, session_id: int):
-    return db.query(Messages).filter(Messages.session_id == session_id).all()
+    return db.query(Messages).filter(Messages.session_id == session_id).order_by(Messages.id).all()
 
 def update_message_rating(db: Session, message_id: int, rating: int):
     db_message = db.query(Messages).filter(Messages.id == message_id).first()

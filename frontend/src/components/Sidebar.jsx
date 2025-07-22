@@ -185,11 +185,9 @@ const Sidebar = ({refreshTrigger}) => {
 
         <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
           {isAdmin && (
-            <li onClick={handleFicheirosClick}><FaFileAlt /> Ficheiros (Admin)</li>
+                <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
           <li onClick={handleTrocaChatClick}><FaComments /> Trocar chat</li>
-          <li><FaRobot /> LLM</li>
-          <li><FaBrain /> RAG</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit /> Editar Perfil</li>
           <li onClick={handleLogout}><FaSignOutAlt /> Sair</li>
         </ul>

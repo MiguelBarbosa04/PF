@@ -72,7 +72,7 @@ const ChatForm = () => {
             // Adiciona a resposta do bot
             const novaMensagemBot = {
               id: resposta.id,
-              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              conteudo: resposta.resposta,
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
@@ -86,7 +86,7 @@ const ChatForm = () => {
             // Adiciona a resposta do bot
             const novaMensagemBot = {
               id: resposta.id,
-              conteudo: resposta.resposta,  // <- conforme o que recebes do backend
+              conteudo: resposta.resposta,
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
@@ -98,6 +98,7 @@ const ChatForm = () => {
         }
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
+        alert(error.message);
       }
 
       setInput(""); // Limpa o campo de input
@@ -151,6 +152,12 @@ const ChatForm = () => {
             onChange={(e) => setInput(e.target.value)}
             rows={3}
             maxLength={1000}
+            onKeyDown={(e)=>{
+                if(e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleEnviarMensagem();
+                }
+            }}
           />
           <button className="chat-send-button" onClick={handleEnviarMensagem}><FaArrowCircleRight/></button>
         </div>
