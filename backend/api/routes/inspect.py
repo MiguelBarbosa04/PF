@@ -119,22 +119,33 @@ def update_tema(nome: str, data: dict, db: Session = Depends(get_db)):
 
     return {"message": "Tema atualizado com sucesso"}
 
-@router.delete("/temas/{nome}")
-def delete_tema(nome: str, db: Session = Depends(get_db)):
-    tema = db.query(Tema).filter(Tema.Nome == nome).first()
-    if not tema:
-        raise HTTPException(status_code=404, detail="Tema não encontrado")
 
-    db.delete(tema)
-    db.commit()
-
-    # Apagar da ChromaDB pelo nome
+@router.delete("/temas/apagar-por-nome/{filename}")
+def apagar_tema_por_nome(filename: str):
     try:
         client = chromadb.PersistentClient(path=CHROMA_PATH)
         collection = client.get_collection(COLLECTION_NAME)
 
-        collection.delete(where={"filename": nome})
-    except Exception as e:
-        print("Erro ao apagar vetor da ChromaDB:", e)
+        # Obter os metadados e os IDs (os IDs vêm por padrão)
+        results = collection.get(include=["metadatas"])
+        metadatas = results["metadatas"]
+        ids = results["ids"]
 
-    return {"message": "Tema apagado com sucesso"}
+        # Filtrar os documentos com o filename correspondente
+        ids_para_apagar = [
+            id_
+            for id_, meta in zip(ids, metadatas)
+            if meta.get("filename") == filename
+        ]
+
+        if not ids_para_apagar:
+            raise HTTPException(status_code=404, detail="Nenhum documento com esse filename.")
+
+        # Apagar os documentos
+        collection.delete(ids=ids_para_apagar)
+
+        return {"message": f"Documentos associados a '{filename}' apagados com sucesso."}
+
+    except Exception as e:
+        print("Erro ao apagar documentos:", str(e))
+        raise HTTPException(status_code=500, detail="Erro ao apagar documentos.")
