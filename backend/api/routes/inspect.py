@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException
 import shutil
 from backend.database.db import get_db
 from backend.database.models import Tema
-from backend.services import chroma_service
 from backend.services.chroma_service import *
 from sqlalchemy.orm import Session
 from fastapi import Depends
 import os
 import gc
+
 router = APIRouter(prefix="/inspect-colecao", tags=["Inspeção"])
 
 CHROMA_PATH = "chroma/"
@@ -141,10 +141,23 @@ def apagar_tema_por_nome(filename: str):
         if not ids_para_apagar:
             raise HTTPException(status_code=404, detail="Nenhum documento com esse filename.")
 
+
         # Apagar os documentos
         collection.delete(ids=ids_para_apagar)
 
-        return {"message": f"Documentos associados a '{filename}' apagados com sucesso."}
+        # Caminho completo do ficheiro na pasta data
+        file_path = os.path.join(DATA_PATH, filename)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            file_deleted = True
+        else:
+            file_deleted = False
+
+        return {
+            "message": f"Documentos associados a '{filename}' apagados com sucesso.",
+            "ficheiro_fisico_apagado": file_deleted
+        }
 
     except Exception as e:
         print("Erro ao apagar documentos:", str(e))
