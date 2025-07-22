@@ -7,8 +7,9 @@ from backend.database.models import Messages
 from datetime import datetime
 import httpx
 import re
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OllamaEmbeddings
+
 
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()

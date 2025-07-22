@@ -61,6 +61,9 @@ class Messages(Base):
     avaliacao = Column(Integer, nullable=True)
 
     session = relationship("Session", back_populates="messages")
-#
-# class TemaUpdate(Base):
-#     Nome:str
+
+class Tema(Base):
+    __tablename__ = "temas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    Nome = Column(String, nullable=False)
