@@ -1,12 +1,13 @@
 import os
 import json
 from typing import Optional, Tuple
-
 from fastapi import HTTPException
 from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
 import re
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OllamaEmbeddings
 from backend.repositories.global_settings import get_global_settings
 from backend.schemas.sessions import SessionCreate
 from backend.repositories.sessions import create_session
@@ -19,6 +20,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_URL = os.getenv("GEMINI_URL")
 OLLAMA_URL = os.getenv("OLLAMA_URL")
+
 
 def limpar_tema(texto: str) -> str:
     texto = texto.strip()

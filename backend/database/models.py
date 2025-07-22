@@ -63,9 +63,17 @@ class Messages(Base):
 
     session = relationship("Session", back_populates="messages")
 
+
+class Tema(Base):
+    __tablename__ = "temas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    Nome = Column(String, nullable=False)
+
 class GlobalSettings(Base):
     __tablename__ = "global_settings"
 
     id = Column(Integer, primary_key=True, index=True)
     modelo = Column(String(20), nullable=False)
     atualizado_em = Column(TIMESTAMP, nullable=False)
+

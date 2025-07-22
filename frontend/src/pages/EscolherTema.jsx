@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import '../assets/css/EscolherTema.css';
 import { useNavigate } from 'react-router';
-import { getCurrentUser, createSession } from "../services/api.js";
+import { getCurrentUser, createSession, getTemas } from "../services/api.js";
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
 
@@ -11,14 +11,17 @@ const EscolherTema = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedTema, setSelectedTema] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [temas, setTemas] = useState([]);
+  const [loadingTemas, setLoadingTemas] = useState(true);
   const papel = localStorage.getItem("papel");
 
-  // Navegação segura para /welcome se não houver papel
+  // Redireciona para /welcome se não houver papel
   useEffect(() => {
     if (!papel) {
       navigate("/welcome");
     }
   }, [papel, navigate]);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,53 +38,65 @@ const EscolherTema = () => {
     fetchUser();
   }, []);
 
-  const temas = [
-    { label: 'Pesquisa avançada', value: '/pesquisa-avancada' },
-    { label: 'Procedimentos Operacionais', value: '/procedimentos-operacionais' },
-    { label: 'Resolução de Problemas', value: '/resolucao-problemas' },
-    { label: 'Manutenção', value: '/manutencao' },
-  ];
 
-const handleTemaSelect = (selectedOption) => {
-  setSelectedTema(selectedOption);
-  if (selectedOption) {
-    localStorage.setItem("tema", selectedOption.label);
-  } else {
-    localStorage.removeItem("tema");
-  }
-};
+  useEffect(() => {
+    const fetchTemas = async () => {
+      try {
+        const data = await getTemas();
+        console.log(data)
+        const opcoes = data.map((item) => ({
+          label: item.Nome,
+          value: item.Nome,
+        }));
+        setTemas(opcoes);
+      } catch (error) {
+        console.error("Erro ao buscar temas:", error);
+      } finally {
+        setLoadingTemas(false);
+      }
+    };
+    fetchTemas();
+  }, []);
 
-const handleIrParaChatDireto = async () => {
-  if (!userData) return;
+  const handleTemaSelect = (selectedOption) => {
+    setSelectedTema(selectedOption);
+    if (selectedOption) {
+      localStorage.setItem("tema", selectedOption.label);
+    } else {
+      localStorage.removeItem("tema");
+    }
+  };
 
-  const temaParaEnviar = selectedTema ? selectedTema.label : null;
-  const papelParaEnviar = papel;
+  const handleIrParaChatDireto = async () => {
+    if (!userData) return;
 
-  //Se não houver tema, vai para o chat sem criar sessão
-  if (!temaParaEnviar) {
-    localStorage.removeItem("sessionId");
-    localStorage.removeItem("tema");
-    localStorage.setItem("papel", papelParaEnviar || "");
-    navigate("/chat");
-    return;
-  }
+    const temaParaEnviar = selectedTema ? selectedTema.label : null;
+    const papelParaEnviar = papel;
 
-  try {
-    const session = await createSession({
-      user_id: userData.id,
-      papel: papelParaEnviar,
-      tema: temaParaEnviar,
-      inicio: new Date().toISOString()
-    });
+    if (!temaParaEnviar) {
+      localStorage.removeItem("sessionId");
+      localStorage.removeItem("tema");
+      localStorage.setItem("papel", papelParaEnviar || "");
+      navigate("/chat");
+      return;
+    }
 
-    localStorage.setItem("sessionId", session.id);
-    localStorage.setItem("tema", temaParaEnviar || "");
-    localStorage.setItem("papel", papelParaEnviar || "");
-    navigate("/chat");
-  } catch (error) {
-    console.error("Erro ao criar sessão direta:", error);
-  }
-};
+    try {
+      const session = await createSession({
+        user_id: userData.id,
+        papel: papelParaEnviar,
+        tema: temaParaEnviar,
+        inicio: new Date().toISOString(),
+      });
+
+      localStorage.setItem("sessionId", session.id);
+      localStorage.setItem("tema", temaParaEnviar || "");
+      localStorage.setItem("papel", papelParaEnviar || "");
+      navigate("/chat");
+    } catch (error) {
+      console.error("Erro ao criar sessão direta:", error);
+    }
+  };
 
   return (
     <div className="tema-container">
@@ -90,14 +105,20 @@ const handleIrParaChatDireto = async () => {
       </div>
       <div className="tema-card">
         <h2 className="tema-title">Escolha o tema</h2>
-        <Select
-          options={temas}
-          value={selectedTema}
-          onChange={handleTemaSelect}
-          placeholder="Pesquise ou selecione um tema..."
-          isClearable
-          className="tema-select"
-        />
+
+        {loadingTemas ? (
+          <p>Carregando temas...</p>
+        ) : (
+          <Select
+            options={temas}
+            value={selectedTema}
+            onChange={handleTemaSelect}
+            placeholder="Pesquise ou selecione um tema..."
+            isClearable
+            className="tema-select"
+          />
+        )}
+
         <div className="button-perfil">
           {isAdmin && (
             <button
