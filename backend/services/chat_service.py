@@ -6,8 +6,6 @@ from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
 import re
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import OllamaEmbeddings
 from backend.repositories.global_settings import get_global_settings
 from backend.schemas.sessions import SessionCreate
 from backend.repositories.sessions import create_session
