@@ -43,7 +43,6 @@ const EscolherTema = () => {
     const fetchTemas = async () => {
       try {
         const data = await getTemas();
-        console.log(data)
         const opcoes = data.map((item) => ({
           label: item.Nome,
           value: item.Nome,

@@ -1,18 +1,20 @@
 import os
-import chromadb
 import httpx
 import json
 from sqlalchemy.orm import Session as DBSession
+from backend.database.models import Users
 from backend.repositories.global_settings import get_global_settings
 from backend.services.llm_service import get_chroma_collection
 from dotenv import load_dotenv
+from backend.auth.auth import get_current_user
+from fastapi import Depends
 load_dotenv()
 
 GEMINI_URL = os.getenv('GEMINI_URL')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OLLAMA_URL = os.getenv('OLLAMA_URL')
 
-async def generate_rag_response(user_query: str, db: DBSession) -> str:
+async def generate_rag_response(user_query: str,db: DBSession,current_user: Users) -> str:
     collection = get_chroma_collection()
     results = collection.query(query_texts=[user_query], n_results=4)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
@@ -20,11 +22,7 @@ async def generate_rag_response(user_query: str, db: DBSession) -> str:
     settings = get_global_settings(db)
     modelo = settings.modelo if settings else "mistral"
 
-    url = (
-        OLLAMA_URL
-        if modelo in ["mistral", "llama3"]
-        else GEMINI_URL
-    )
+    url = OLLAMA_URL if modelo in ["mistral", "llama3"] else GEMINI_URL
 
     if not retrieved_docs:
         return "Não sei. Não foram encontrados documentos relevantes."
@@ -36,16 +34,24 @@ async def generate_rag_response(user_query: str, db: DBSession) -> str:
             "X-goog-api-key": GEMINI_API_KEY
         }
 
-    system_prompt = f"""
-   És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais, instruções operacionais fornecidos e data.
-A sua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
-Não utilize nenhum conhecimento externo.
-Caso a resposta não possa ser encontrada no texto fornecido, deves declarar explicitamente que a informação não está disponível no documento.
-Seja conciso e responda à pergunta diretamente com base no texto.
+    linguagem = current_user.ling_preferida
 
-    Dados:e
-    {'\n'.join(retrieved_docs)}
-    """
+    estilo_texto = (
+        "Usa um tom informal e descontraído, como se estivesses a conversar com um colega ou amigo. Simplifica termos técnicos, evita jargões e escreve de forma direta e leve. É permitido usar exemplos simples ou expressões comuns do dia a dia."
+        if linguagem == "Informal"
+        else "Usa um tom formal, profissional e técnico. Evita expressões coloquiais. Utiliza vocabulário mais preciso e técnico, frases completas, e uma estrutura clara e objetiva. Escreve como se estivesses a preparar um relatório para uma organização ou apresentação académica."
+    )
+
+    system_prompt = f"""
+És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais e instruções operacionais fornecidos.
+A tua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
+Não utilizes conhecimento externo.
+Caso a resposta não esteja no texto fornecido, deves dizer claramente que essa informação não está disponível no documento.
+{estilo_texto}
+
+Documentos disponíveis:
+{'\n'.join(retrieved_docs)}
+"""
 
     resposta = ""
     async with httpx.AsyncClient(timeout=60) as client:
@@ -70,14 +76,6 @@ Seja conciso e responda à pergunta diretamente com base no texto.
                         continue
 
         elif modelo == "gemini":
-            if not GEMINI_API_KEY:
-                raise ValueError("GEMINI_API_KEY não está definida nas variáveis de ambiente.")
-
-            headers = {
-                "Content-Type": "application/json",
-                "X-goog-api-key": GEMINI_API_KEY
-            }
-
             model_request = {
                 "contents": [
                     {"role": "user", "parts": [{"text": system_prompt + "\nPergunta: " + user_query}]}
