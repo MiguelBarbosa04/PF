@@ -14,7 +14,7 @@ GEMINI_URL = os.getenv('GEMINI_URL')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OLLAMA_URL = os.getenv('OLLAMA_URL')
 
-async def generate_rag_response(user_query: str,db: DBSession,current_user: Users = Depends(get_current_user)  ) -> str:
+async def generate_rag_response(user_query: str,db: DBSession,current_user: Users) -> str:
     collection = get_chroma_collection()
     results = collection.query(query_texts=[user_query], n_results=4)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
