@@ -54,7 +54,7 @@ class Messages(Base):
 
     id = Column(Integer, primary_key=True)
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
-    conteudo = Column(String(1000), nullable=False)
+    conteudo = Column(String(2000), nullable=False)
     tipo = Column(String(10), nullable=False)  # 'texto' ou 'voz'
     remetente = Column(String(10), nullable=False)  # 'user' ou 'bot'
     criado_em = Column(TIMESTAMP, nullable=False)

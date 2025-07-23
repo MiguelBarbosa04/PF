@@ -6,7 +6,7 @@ import {getMessagesBySession, rateMessage, sendMessage} from "../services/api.js
 import {FaArrowCircleRight} from "react-icons/fa";
 import StarsRating from "./StarsRating.jsx";
 
-const ChatForm = () => {
+const ChatForm = ({modo, setModo}) => {
   const { sessionId } = useParams(); // obtém o ID da sessão da URL
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -56,6 +56,7 @@ const ChatForm = () => {
         remetente: USER,
         criado_em: new Date().toISOString(),
         avaliacao: null,
+        modo: modo,
         papel: !sessionId ? papelSelecionado : undefined, // só envia se for nova sessão
       };
 
@@ -120,7 +121,7 @@ const ChatForm = () => {
 
   return (
     <div className="chat-wrapper">
-      <Sidebar key={sessionId || "default"} refreshTrigger={refreshSidebar}/>
+      <Sidebar modo={modo}  setModo={setModo}  key={sessionId || "default"} refreshTrigger={refreshSidebar}/>
       <div className="chat-main">
         {messages.length === 0 ? (
           <h2 className="chat-welcome">No que posso ajudar?</h2>

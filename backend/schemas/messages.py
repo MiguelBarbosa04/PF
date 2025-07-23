@@ -10,6 +10,7 @@ class ChatRequest(BaseModel):
     criado_em: datetime
     avaliacao: Optional[int] = None
     papel: Optional[str] = None
+    modo: Optional[str] = "exploratório"
 
 class MessageRead(ChatRequest):
     id: int
