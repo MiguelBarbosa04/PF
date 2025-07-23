@@ -93,7 +93,7 @@ const PerfilForm = () => {
         setSuccess("Perfil atualizado com sucesso!");
         setError("");
         alert("Perfil atualizado com sucesso!");
-        navigate("/welcome");
+        navigate(-1);
       } catch (err) {
         setError(err.message);
         setSuccess("");

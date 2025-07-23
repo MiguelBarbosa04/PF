@@ -1,19 +1,6 @@
-:root {
-  --color-bg: #d7ecf4;
-  --color-primary: #2F5AAE;
-  --color-primary-hover: #0d3a91;
-  --color-text-heading: #2F5AAE;
-  --color-text-body: #374151;
-  --radius-card: 16px;
-  --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.08);
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
-  --transition-fast: 0.2s ease;
-  --transition-med: 0.3s ease;
-  --max-card-width: 360px;
-}
+@import url('./variables.css');
 
-html,
-body {
+html, body {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -34,7 +21,6 @@ body {
   position: relative;
 }
 
-/* o wrapper do IconMenu pode já ter estilos próprios; só garantimos que fica no canto */
 .user-profile-wrapper {
   position: absolute;
   top: 1rem;
@@ -48,7 +34,6 @@ body {
   margin-bottom: 3rem;
 }
 
-/* container responsivo dos cartões */
 .role-card-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--max-card-width)), 1fr));
@@ -58,45 +43,40 @@ body {
   justify-items: center;
 }
 
-/* botão = cartão clicável */
 .role-card {
-  background-color: #ffffff;
+  background-color: var(--color-card-white);
   width: 100%;
   max-width: var(--max-card-width);
   padding: 2rem 1.75rem 2.5rem;
   border: none;
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-medium);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-med);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-
-  /* remove estilo default de botão */
   font: inherit;
   color: inherit;
 }
 
-/* foco teclado acessível */
 .role-card:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 4px;
 }
 
-/* hover / active */
 .role-card:hover {
-  background-color: #2c64d3;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-strong);
 }
 
 .role-card:active {
   transform: scale(0.99);
 }
 
-/* conteúdo do cartão */
 .role-card-icon {
   font-size: 3rem;
   color: var(--color-primary);
@@ -118,10 +98,9 @@ body {
   max-width: 28ch;
 }
 
-/* CTA interna do cartão */
 .role-card-cta {
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-white);
   padding: 0.5rem 1.75rem;
   border-radius: 999px;
   font-size: 1rem;
@@ -129,25 +108,17 @@ body {
   transition: background-color var(--transition-fast);
 }
 
-.role-card:hover {
-  background-color: var(--color-primary);
-  color: white;
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: var(--shadow-card-hover);
-}
-
 .role-card:hover .role-card-icon,
 .role-card:hover .role-card-title,
 .role-card:hover .role-card-desc {
-  color: white;
+  color: var(--color-white);
 }
 
 .role-card:hover .role-card-cta {
-  background-color: white;
+  background-color: var(--color-white);
   color: var(--color-primary);
 }
 
-/* mobile tweaks */
 @media (max-width: 480px) {
   .welcome-title {
     margin-bottom: 2rem;

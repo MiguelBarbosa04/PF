@@ -64,7 +64,6 @@ export const logout = () => {
 export async function updateUser(id, userData) {
   const token = localStorage.getItem("token");
   const token_type = localStorage.getItem("token_type");
-  console.log("Payload enviado para update:", userData)
   const response = await fetch(`${API_URL}/users/me`, {
     method: "PUT", // ou PATCH, dependendo do backend
     headers: {

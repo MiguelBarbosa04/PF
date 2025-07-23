@@ -1,11 +1,13 @@
+@import url('./variables.css');
+
 * {
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-base);
 }
 
 body {
   margin: 0;
-  background-color: #D7ECF4; /* azul bebê */
+  background-color: var(--color-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,10 +15,10 @@ body {
 }
 
 .container {
-  background-color: #fff;
+  background-color: var(--color-card-white);
   padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
   width: 100%;
   max-width: 400px;
 }
@@ -24,7 +26,7 @@ body {
 .container h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #2F5AAE; /* título azul escuro */
+  color: var(--color-text-heading);
 }
 
 input,
@@ -32,11 +34,11 @@ select {
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 1px solid #000; /* borda preta */
-  border-radius: 8px;
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
   font-size: 1rem;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--color-white);
+  color: var(--color-black);
 }
 
 select {
@@ -50,25 +52,25 @@ select {
 button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #2F5AAE;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   font-size: 1rem;
   font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color var(--transition-normal);
 }
 
 button:hover {
-  background-color: #1f4a93;
+  background-color: var(--color-primary-hover);
 }
 
 .error {
-  background-color: #ff4d4d;
+  background-color: var(--color-error);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   text-align: center;
-  color: #fff;
+  color: var(--color-white);
 }
