@@ -63,7 +63,7 @@ const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
           </div>
         </div>
         <div className="cancel-wrapper">
-          <button className="cancel-button" onClick={() => navigate(-1)}>Cancelar</button>
+          <button className="cancel-button" onClick={() => navigate(-1)}>Voltar</button>
         </div>
       </div>
   );

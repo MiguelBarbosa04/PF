@@ -1,15 +1,17 @@
+@import url('./variables.css');
+
 .user-profile {
   flex-direction: column;
   align-items: center;
-  background-color: #D7ECF4;
+  background-color: var(--color-bg);
   padding: 20px;
   height: 100vh;
   width: 220px;
 }
 
 .avatar {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: var(--color-avatar-bg);
+  color: var(--color-text-body);
   font-size: 24px;
   font-weight: bold;
   border-radius: 50%;
@@ -22,11 +24,11 @@
 }
 
 .profile-card {
-  background-color: white;
-  border-radius: 12px;
+  background-color: var(--color-card-white);
+  border-radius: var(--radius-lg);
   padding: 15px;
   width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
 }
 
 .profile-info {
@@ -36,16 +38,17 @@
 
 .profile-name {
   font-weight: bold;
-  color: #1a4fbf;
+  color: var(--color-text-heading);
 }
 
 .profile-email {
   font-size: 12px;
-  color: #555;
+  color: var(--color-text-body);
 }
 
 .profile-divider {
-  border-top: 1px solid #ccc;
+  border-top: 1px solid;
+  color: var(--color-divider);
   margin: 10px 0;
 }
 
@@ -61,12 +64,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #222;
+  color: var(--color-black);
   font-size: 14px;
   cursor: pointer;
+  transition: color var(--transition-fast);
 }
 
 .action-button:hover {
-  color: white;
+  color: var(--color-white);
 }
-
