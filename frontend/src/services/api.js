@@ -276,3 +276,12 @@ export async function updateLLM(modelo) {
   return await response.json();
 }
 
+export async function getLowRatedMessages() {
+  const response = await fetch('/feedback/avaliacoes-baixas');
+  return response.json();
+}
+
+export async function getLowRatedModels() {
+  const response = await fetch('/feedback/avaliacoes-baixas-por-modelo');
+  return response.json();
+}

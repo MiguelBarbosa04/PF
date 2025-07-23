@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import EditarTema from "./pages/EditarTema.jsx";
 import Chat from "./pages/Chat.jsx";
+import Feedback from "./pages/Feedback.jsx";
 
 function App () {
 return (
@@ -25,6 +26,7 @@ return (
           <Route path='/editar_tema' element={<PrivateRoute><EditarTema /></PrivateRoute>} />
           <Route path='/chat' element={<PrivateRoute><Chat/></PrivateRoute>}/>
           <Route path='/chat/:sessionId' element={<PrivateRoute><Chat/></PrivateRoute>} />
+          <Route path='/feedback/avaliacoes-baixas' element={<PrivateRoute><Feedback/></PrivateRoute>} />
       </Routes>
          </>
   );}

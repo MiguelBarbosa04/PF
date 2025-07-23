@@ -1,0 +1,59 @@
+@import url('./variables.css');
+
+.feedback-container {
+  padding: 40px;
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  font-family: var(--font-base);
+}
+
+.feedback-title {
+  font-size: 2em;
+  font-weight: bold;
+  color: var(--color-text-heading);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feedback-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-light);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: box-shadow var(--transition-fast);
+}
+
+.feedback-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.feedback-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.feedback-rating {
+  color: var(--color-error);
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.feedback-model {
+  font-size: 0.9em;
+  color: var(--color-chat-model);
+}
+
+.feedback-question,
+.feedback-answer {
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+.feedback-label {
+  font-weight: bold;
+  color: var(--color-text-heading);
+  margin-right: 4px;
+}

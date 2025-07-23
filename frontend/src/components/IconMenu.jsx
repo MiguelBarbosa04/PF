@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
-import { FaCog, FaSignOutAlt } from "react-icons/fa";
+import {FaCog, FaComments, FaSignOutAlt} from "react-icons/fa";
 import { logout } from "../services/api.js";
 import { useNavigate } from "react-router";
 import TokenInfo from "./TokenInfo.jsx";
@@ -12,6 +12,10 @@ const IconMenu = () => {
   const profileRef = useRef(null);
   const handleEditClick = () => {
     navigate("/perfil");
+  };
+
+  const handleFeedbackClick = () => {
+    navigate("/feedback/");
   };
 
   const toggleMenu = () => setShowMenu((prev) => !prev);
@@ -56,18 +60,22 @@ return (
 
           <div className="profile-actions">
             <button className="action-button" onClick={handleEditClick}>
-              <FaCog className="action-icon" />
+              <FaCog className="action-icon"/>
               Editar Perfil
             </button>
+            <button className="action-button" onClick={handleFeedbackClick}>
+              <FaComments className="action-icon"/>
+              Feedback
+            </button>
             <button className="action-button" onClick={handleLogout}>
-              <FaSignOutAlt className="action-icon" />
+              <FaSignOutAlt className="action-icon"/>
               Sair
             </button>
           </div>
         </div>
       )}
     </div>
-  );
+);
 };
 
 export default IconMenu;
