@@ -130,9 +130,12 @@ const ChatForm = () => {
               <div key={msg.id} className={`chat-message ${msg.remetente === USER ? USER : BOT}`}>
                   <div>{msg.conteudo}</div>
                   {msg.remetente === BOT && (
-                      <StarsRating avaliacao={msg.avaliacao}
-                                   onAvaliar={(nota)=>handleAvaliarMensagem(msg.id, nota)}
-                      />
+                      <div className="chat-feed">
+                          <StarsRating className="chat-star" avaliacao={msg.avaliacao}
+                                       onAvaliar={(nota)=>handleAvaliarMensagem(msg.id, nota)}
+                          />
+                          <p className="chat-modelo">Modelo: {msg.modelo}</p>
+                      </div>
                   )}
               </div>
             ))}
