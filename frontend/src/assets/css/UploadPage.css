@@ -3,8 +3,9 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #D7ECF4;
+  background-color: var(--color-bg);
   flex-direction: column;
+  font-family: var(--font-base);
 }
 
 .cards-wrapper {
@@ -15,26 +16,18 @@
   gap: 100px;
 }
 
-.upload-card {
-  background-color: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 400px;
-}
-
+.upload-card,
 .llm-card {
-  background-color: white;
+  background-color: var(--color-card-white);
   padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
   text-align: center;
   width: 400px;
 }
 
 .upload-title {
-  color: #1d4ed8;
+  color: var(--color-primary);
   margin-bottom: 20px;
 }
 
@@ -42,19 +35,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #3b3e4a;
-  color: white;
+  background-color: var(--color-dark-button);
+  color: var(--color-white);
   padding: 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   cursor: pointer;
   margin-bottom: 20px;
   gap: 8px;
-  transition: background-color 0.3s;
+  transition: background-color var(--transition-normal);
 }
 
 .upload-button-label:hover {
-  background-color: #50525e;
+  background-color: var(--color-dark-button-hover);
 }
 
 .file-input {
@@ -69,13 +62,15 @@
   width: 100%;
   padding: 10px;
   margin-bottom: 6px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-divider);
+  font-family: var(--font-base);
+  font-size: var(--font-sm);
 }
 
 .add-temas-link {
   font-size: 13px;
-  color: #1d4ed8;
+  color: var(--color-primary);
   text-decoration: none;
   display: block;
   margin-bottom: 20px;
@@ -90,21 +85,23 @@
 .save-button {
   flex: 1;
   padding: 10px;
-  background-color: #1d4ed8;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  transition: background-color var(--transition-normal);
 }
 
 .save-button:hover {
-  background-color: #2563eb;
+  background-color: #2563eb; /* Mantive esse tom específico pois está OK */
 }
 
 .selected-file-name {
   margin-top: 10px;
   font-size: 14px;
-  color: #333;
+  color: var(--color-text-body);
+  font-family: var(--font-base);
 }
 
 .cancel-wrapper {
@@ -115,11 +112,15 @@
 }
 
 .cancel-button {
-  background-color: #1d4ed8;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-white);
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color var(--transition-normal);;
+}
+
+.cancel-button:hover {
+  background-color: var(--color-primary-hover);
 }

@@ -1,0 +1,44 @@
+:root {
+  --color-bg: #d7ecf4;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-primary: #2F5AAE;
+  --color-primary-hover: #0d3a91;
+  --color-text-heading: #2F5AAE;
+  --color-text-body: #374151;
+  --color-new-chat-btn: #007BFF;
+  --color-card-white: #fff;
+  --color-options: #888;
+  --color-error:#ff4d4d;
+  --color-delete: red;
+  --color-dark-button: #3b3e4a;
+  --color-dark-button-hover: #50525e;
+  --color-avatar-bg: #e0e0e0;
+  --color-divider: #ccc;
+  --color-hover-light: #f2f2f2;
+  --radius-card: 16px;
+  --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --transition-fast: 0.2s ease;
+  --transition-med: 0.3s ease;
+  --max-card-width: 360px;
+
+  /* BORDAS E RAIO */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* FONTES */
+  --font-base: 'Arial', sans-serif;
+  --font-sm: 14px;
+
+  /* SOMBRAS */
+  --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  /* TRANSIÇÕES */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
