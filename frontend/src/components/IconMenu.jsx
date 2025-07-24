@@ -10,6 +10,8 @@ const IconMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
   const profileRef = useRef(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const handleEditClick = () => {
     navigate("/perfil");
   };
@@ -37,6 +39,13 @@ const IconMenu = () => {
 }, []);
 
   const userData = TokenInfo();
+  useEffect(() => {
+    if (userData?.funcao === 7) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [userData]);
 
 const handleLogout = () => {
   logout();
@@ -63,10 +72,12 @@ return (
               <FaCog className="action-icon"/>
               Editar Perfil
             </button>
-            <button className="action-button" onClick={handleFeedbackClick}>
-              <FaComments className="action-icon"/>
-              Feedback
-            </button>
+            {isAdmin && (
+              <button className="action-button" onClick={handleFeedbackClick}>
+                <FaComments className="action-icon"/>
+                Feedback
+              </button>
+            )}
             <button className="action-button" onClick={handleLogout}>
               <FaSignOutAlt className="action-icon"/>
               Sair
