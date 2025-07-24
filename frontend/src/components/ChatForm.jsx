@@ -76,7 +76,8 @@ const ChatForm = () => {
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
-              avaliacao: null
+              avaliacao: null,
+              modelo: resposta.modelo
             };
             setMessages((prev) => [...prev, novaMensagemBot]);
             navigate(`/chat/${resposta.session_id}`)
@@ -90,7 +91,8 @@ const ChatForm = () => {
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
-              avaliacao: null
+              avaliacao: null,
+              modelo: resposta.modelo
             };
             setMessages((prev) => [...prev, novaMensagemBot]);
 

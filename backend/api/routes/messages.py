@@ -17,7 +17,7 @@ router = APIRouter(prefix="/messages", tags=["Messages"])
 async def chat(request: ChatRequest, db: Session = Depends(get_db), current_user: UserRead=Depends(get_current_user),):
     try:
         message, session_id = await generate_chat_response(db, request, user_id=current_user.id, papel=request.papel)
-        return {"resposta": message.conteudo, "session_id": session_id, "id": message.id}
+        return {"resposta": message.conteudo, "session_id": session_id, "id": message.id, "modelo": message.modelo}
     except Exception as e:
         raise e
 

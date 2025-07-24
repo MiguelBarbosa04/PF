@@ -31,3 +31,4 @@ class ChatFullResponse(BaseModel):
     resposta: str
     session_id: int
     id: int
+    modelo: str

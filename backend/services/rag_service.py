@@ -22,7 +22,7 @@ async def generate_rag_response(user_query: str,db: DBSession,current_user: User
     settings = get_global_settings(db)
     modelo = settings.modelo if settings else "mistral"
 
-    url = OLLAMA_URL if modelo in ["mistral", "llama3"] else GEMINI_URL
+    url = OLLAMA_URL if modelo in ["mistral"] else GEMINI_URL
 
     if not retrieved_docs:
         return "Não sei. Não foram encontrados documentos relevantes."
@@ -43,25 +43,26 @@ async def generate_rag_response(user_query: str,db: DBSession,current_user: User
     )
 
     system_prompt = f"""
-És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais e instruções operacionais fornecidos.
-A tua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
-Não utilizes conhecimento externo.
-Caso a resposta não esteja no texto fornecido, deves dizer claramente que essa informação não está disponível no documento.
-{estilo_texto}
+        És um assistente de IA especializado em responder a perguntas com base em documentos técnicos, manuais e instruções operacionais fornecidos.
+        A tua principal diretriz é usar apenas as informações fornecidas no documento de contexto para responder às perguntas do utilizador.
+        Não utilizes conhecimento externo.
+        Caso a resposta não esteja no texto fornecido, deves dizer claramente que essa informação não está disponível no documento.
+        {estilo_texto}
 
-Documentos disponíveis:
-{'\n'.join(retrieved_docs)}
-"""
+        Documentos disponíveis:
+        {'\n'.join(retrieved_docs)}
+    """
 
     resposta = ""
     async with httpx.AsyncClient(timeout=60) as client:
-        if modelo in ["mistral", "llama3"]:
+        if modelo in ["mistral"]:
             model_request = {
                 "model": modelo,
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_query}
-                ]
+                ],
+                "temperature": 0.5
             }
             response = await client.post(url, json=model_request)
 
