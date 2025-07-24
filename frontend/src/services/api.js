@@ -50,7 +50,9 @@ export const getCurrentUser = async () => {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar o utilizador autenticado");
+    const error = new Error("Erro ao buscar o utilizador autenticado");
+    error.status = response.status;
+    throw error
   }
 
   return await response.json();
