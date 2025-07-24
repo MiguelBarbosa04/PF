@@ -277,11 +277,11 @@ export async function updateLLM(modelo) {
 }
 
 export async function getLowRatedMessages() {
-  const response = await fetch('/feedback/avaliacoes-baixas');
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas`);
   return response.json();
 }
 
 export async function getLowRatedModels() {
-  const response = await fetch('/feedback/avaliacoes-baixas-por-modelo');
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
   return response.json();
 }
