@@ -14,8 +14,9 @@ class RAGRequest(BaseModel):
 @router.post("/rag")
 async def get_rag_response(
     request: RAGRequest,
+    modo: str = "exploratório",
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user),
 ):
-    resposta = await generate_rag_response(request.query, db, current_user)
+    resposta = await generate_rag_response(request.query, db, current_user, modo)
     return {"resposta": resposta}

@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-  FaFileAlt, FaComments, FaRobot, FaBrain, FaUserEdit, FaSignOutAlt,
+  FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
   FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
+import {FaNoteSticky} from "react-icons/fa6";
 
-const Sidebar = ({refreshTrigger}) => {
+const Sidebar = ({modo, setModo, refreshTrigger}) => {
   const navigate = useNavigate();
   const userData = TokenInfo();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -20,6 +21,7 @@ const Sidebar = ({refreshTrigger}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const menuRef = useRef(null);
   const { sessionId } = useParams();
+
 
   const fetchSessions = async () => {
     try {
@@ -81,6 +83,10 @@ const Sidebar = ({refreshTrigger}) => {
   };
   const handleEditarPerfilClick = () => {
     navigate("/perfil");
+  };
+
+   const handleAlternarModo = () => {
+    setModo((prev) => (prev === "exploratório" ? "instrucional" : "exploratório"));
   };
 
   const filteredSessions = sessions.filter((session) =>
@@ -187,6 +193,7 @@ const Sidebar = ({refreshTrigger}) => {
           {isAdmin && (
                 <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
+         <li onClick={handleAlternarModo}><FaNoteSticky /> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}</li>
           <li onClick={handleTrocaChatClick}><FaComments /> Trocar chat</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit /> Editar Perfil</li>
           <li onClick={handleLogout}><FaSignOutAlt /> Sair</li>
