@@ -57,6 +57,10 @@ html, body {
   color: var(--color-text-body);
 }
 
+.chat-btns {
+  display: flex;
+}
+
 .chat-send-button {
   flex: 0 0 40px;
   background: none;
@@ -69,6 +73,36 @@ html, body {
 }
 
 .chat-send-button:hover {
+  color: var(--color-primary-hover);
+  background: none;
+}
+
+.chat-voice-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 8px;
+  color: var(--color-new-chat-btn);
+}
+
+.chat-voice-button:hover {
+  color: var(--color-primary-hover);
+  background: none;
+}
+
+.chat-speak {
+  width: 10%;
+  background: none;
+  border: none;
+  color: var(--color-new-chat-btn);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.chat-speak:hover {
   color: var(--color-primary-hover);
   background: none;
 }
@@ -113,6 +147,12 @@ html, body {
   justify-content: space-between;
   max-width: 100%;
   align-items: center;
+}
+
+.chat-feed-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .chat-star {
