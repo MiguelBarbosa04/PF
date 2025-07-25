@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 from backend.database.models import Quiz, Pergunta, Opcao, RespostaUser
 from backend.schemas.quiz import QuizCreate, RespostaUserCreate
 
 def criar_quiz(db: Session, quiz_data: QuizCreate):
-    quiz = Quiz(titulo=quiz_data.titulo, descricao=quiz_data.descricao, session_id=quiz_data.session_id)
+    quiz = Quiz(titulo=quiz_data.titulo, descricao=quiz_data.descricao, session_id=quiz_data.session_id, data=datetime.utcnow())
     db.add(quiz)
     db.flush()
 
@@ -20,11 +22,13 @@ def criar_quiz(db: Session, quiz_data: QuizCreate):
     return quiz
 
 def registar_resposta(db: Session, resposta: RespostaUserCreate):
+    opcao = db.query(Opcao).filter_by(id=resposta.opcao_id).first()
+    correta = opcao.correta if opcao else False
     resposta_db = RespostaUser(
         user_id=resposta.user_id,
         pergunta_id=resposta.pergunta_id,
         opcao_id=resposta.opcao_id,
-        correta=resposta.correta
+        correta=correta
     )
     db.add(resposta_db)
     db.commit()

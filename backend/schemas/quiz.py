@@ -45,6 +45,7 @@ class QuizBase(BaseModel):
 class QuizCreate(QuizBase):
     session_id: int
     perguntas: List[PerguntaCreate]
+    data: datetime
 
 
 class QuizRead(QuizBase):

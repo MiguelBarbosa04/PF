@@ -81,6 +81,7 @@ class Quiz(Base):
     titulo = Column(String(100), nullable=False)
     descricao = Column(Text)
     session_id = Column(Integer, ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False)
+    data = Column(TIMESTAMP, nullable=False)
 
     perguntas = relationship("Pergunta", back_populates="quiz", cascade="all, delete")
 
