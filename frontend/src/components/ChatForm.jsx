@@ -77,7 +77,8 @@ const ChatForm = ({modo, setModo}) => {
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
-              avaliacao: null
+              avaliacao: null,
+              modelo: resposta.modelo
             };
             setMessages((prev) => [...prev, novaMensagemBot]);
             navigate(`/chat/${resposta.session_id}`)
@@ -91,7 +92,8 @@ const ChatForm = ({modo, setModo}) => {
               tipo: "texto",
               remetente: BOT,
               criado_em: new Date().toISOString(),
-              avaliacao: null
+              avaliacao: null,
+              modelo: resposta.modelo
             };
             setMessages((prev) => [...prev, novaMensagemBot]);
 
@@ -131,9 +133,12 @@ const ChatForm = ({modo, setModo}) => {
               <div key={msg.id} className={`chat-message ${msg.remetente === USER ? USER : BOT}`}>
                   <div>{msg.conteudo}</div>
                   {msg.remetente === BOT && (
-                      <StarsRating avaliacao={msg.avaliacao}
-                                   onAvaliar={(nota)=>handleAvaliarMensagem(msg.id, nota)}
-                      />
+                      <div className="chat-feed">
+                          <StarsRating className="chat-star" avaliacao={msg.avaliacao}
+                                       onAvaliar={(nota)=>handleAvaliarMensagem(msg.id, nota)}
+                          />
+                          <p className="chat-modelo">Modelo: {msg.modelo}</p>
+                      </div>
                   )}
               </div>
             ))}

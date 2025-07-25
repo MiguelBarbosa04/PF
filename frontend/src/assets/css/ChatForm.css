@@ -108,6 +108,21 @@ html, body {
   box-shadow: var(--shadow-light);
 }
 
+.chat-feed {
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+  align-items: center;
+}
+
+.chat-star {
+  align-self: flex-start;
+}
+.chat-modelo {
+  align-self: flex-end;
+  color: var(--color-chat-model);
+}
+
 .typing-indicator span {
   font-weight: bold;
   font-size: 1.5em;

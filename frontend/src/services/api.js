@@ -50,7 +50,9 @@ export const getCurrentUser = async () => {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar o utilizador autenticado");
+    const error = new Error("Erro ao buscar o utilizador autenticado");
+    error.status = response.status;
+    throw error
   }
 
   return await response.json();
@@ -276,3 +278,12 @@ export async function updateLLM(modelo) {
   return await response.json();
 }
 
+export async function getLowRatedMessages() {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas`);
+  return response.json();
+}
+
+export async function getLowRatedModels() {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
+  return response.json();
+}
