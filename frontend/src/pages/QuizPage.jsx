@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import '../assets/css/QuizPage.css';
+import getTokenInfo from "../services/api.js";
 
 const QuizPage = () => {
   const { id: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
+
+  const buscar_id = getTokenInfo();
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -32,9 +35,19 @@ const QuizPage = () => {
   };
 
   const enviarRespostas = async () => {
+    const payload = {
+      user_id: buscar_id,
+      respostas,
+      respondido_em: new Date().toISOString()
+    };
+
+    console.log("Payload a enviar:", payload);  // ✅ debug
+
     try {
-      const payload = { respostas };
-      const response = await axios.post(`http://localhost:8000/quizzes/${quiz.id}/respostas`, payload);
+      const response = await axios.post(
+        `http://localhost:8000/quizzes/${quiz.id}/respostas/corrigir`,
+        payload
+      );
       alert("Respostas enviadas com sucesso!");
       console.log("Resultado:", response.data);
     } catch (error) {

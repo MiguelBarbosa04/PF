@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db
-from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest
+from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest, RespostaEnvio
 import backend.repositories.quiz as quiz_repo
 from backend.repositories.global_settings import obter_modelo_mais_recente
 from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
-from backend.database.models import Session as SessionModel, Quiz
+from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta
 
 router = APIRouter(prefix="/quizzes", tags=["Quizzes"])
 
@@ -50,3 +52,50 @@ def get_quiz_by_session(session_id: int, db: Session = Depends(get_db)):
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
     return quiz
+
+
+@router.post("/{quiz_id}/respostas/corrigir")
+def corrigir_respostas(quiz_id: int, payload: RespostaEnvio, db: Session = Depends(get_db)):
+    total = 0
+    corretas = 0
+    resultados = []
+
+    for pergunta_id, opcao_escolhida_id in payload.respostas.items():
+        pergunta = db.query(Pergunta).filter_by(id=pergunta_id, quiz_id=quiz_id).first()
+        if not pergunta:
+            raise HTTPException(status_code=404, detail=f"Pergunta {pergunta_id} não encontrada.")
+
+        opcao_correta = next((opcao for opcao in pergunta.opcoes if opcao.correta), None)
+        if not opcao_correta:
+            raise HTTPException(status_code=400, detail=f"Pergunta {pergunta_id} não tem opção correta definida.")
+
+        correta = opcao_escolhida_id == opcao_correta.id
+        total += 1
+        if correta:
+            corretas += 1
+
+        # Guardar resposta no histórico (opcional)
+        resposta_user = RespostaUser(
+            user_id=payload.user_id,
+            pergunta_id=pergunta_id,
+            opcao_id=opcao_escolhida_id,
+            correta=correta,
+            respondido_em = payload.respondido_em
+        )
+        db.add(resposta_user)
+        resultados.append({
+            "pergunta_id": pergunta_id,
+            "resposta_correta": opcao_correta.id,
+            "resposta_user": opcao_escolhida_id,
+            "correta": correta
+        })
+
+    db.commit()
+
+    return {
+        "pontuacao": f"{corretas} / {total}",
+        "acertos": corretas,
+        "total": total,
+        "resultados": resultados
+    }
+

@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 from pydantic import BaseModel, ConfigDict
+
 
 # === Opção ===
 class OpcaoBase(BaseModel):
@@ -68,3 +69,9 @@ class RespostaUserRead(BaseModel):
     respondido_em: datetime
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+class RespostaEnvio(BaseModel):
+    user_id: int
+    respostas: Dict[int, int]  # { pergunta_id: opcao_id }
+    respondido_em: datetime
+

@@ -288,3 +288,13 @@ export async function getLowRatedModels() {
   return response.json();
 }
 
+export default function getTokenInfo() {
+  try {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    return data?.id || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+
