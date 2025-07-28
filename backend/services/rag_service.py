@@ -1,6 +1,8 @@
 import os
 import httpx
 import json
+import requests
+
 from sqlalchemy.orm import Session as DBSession
 from backend.database.models import Users
 from backend.repositories.global_settings import get_global_settings
@@ -205,7 +207,7 @@ async def gerar_quiz_ollama(tema: str) -> dict:
 
     async with httpx.AsyncClient(timeout=60) as client:
         response = await client.post(OLLAMA_URL, json={
-            "model": "llama3",  # ou "mistral", se for o teu caso
+            "model": "mistral",
             "messages": [
                 {"role": "system", "content": "Gera quizzes no formato especificado."},
                 {"role": "user", "content": prompt}
@@ -224,5 +226,24 @@ async def gerar_quiz_ollama(tema: str) -> dict:
                 except Exception:
                     continue
 
-    return json.loads(full_response)
+    print("Resposta bruta do Ollama:", repr(full_response))
 
+    if not full_response.strip():
+        raise ValueError("Resposta do Ollama está vazia.")
+
+    import re
+    json_match = re.search(r"\{.*\}", full_response, re.DOTALL)
+    if json_match:
+        json_text = json_match.group(0)
+        return json.loads(json_text)
+    else:
+        raise ValueError("Não foi possível extrair JSON da resposta do Ollama.")
+
+
+async def gerar_quiz_com_rag(tema: str, modelo: str = "gemini") -> dict:
+    if modelo == "gemini":
+        return await gerar_quiz_gemini(tema)
+    elif modelo == "mistral":
+        return await gerar_quiz_ollama(tema)
+    else:
+        raise ValueError(f"Modelo desconhecido: {modelo}")

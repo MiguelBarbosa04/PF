@@ -20,15 +20,12 @@ class OpcaoRead(OpcaoBase):
 
 
 # === Pergunta ===
-class PerguntaBase(BaseModel):
+class PerguntaCreate(BaseModel):
     enunciado: str
+    opcoes: list[OpcaoCreate]
 
 
-class PerguntaCreate(PerguntaBase):
-    opcoes: List[OpcaoCreate]
-
-
-class PerguntaRead(PerguntaBase):
+class PerguntaRead(PerguntaCreate):
     id: int
     opcoes: List[OpcaoRead]
 
@@ -37,18 +34,17 @@ class PerguntaRead(PerguntaBase):
 
 
 # === Quiz ===
-class QuizBase(BaseModel):
+class QuizCreate(BaseModel):
     titulo: str
-    descricao: Optional[str] = None
-
-
-class QuizCreate(QuizBase):
+    descricao: str
     session_id: int
-    perguntas: List[PerguntaCreate]
-    data: datetime
+    perguntas: list[PerguntaCreate]
+
+class QuizGenerationRequest(BaseModel):
+    session_id: int
 
 
-class QuizRead(QuizBase):
+class QuizRead(QuizCreate):
     id: int
     perguntas: List[PerguntaRead]
 

@@ -6,26 +6,24 @@ import '../assets/css/QuizPage.css';
 const QuizPage = () => {
 
   const {id} = useParams();
-  const { sessionId } = useParams();
+  const { id: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await axios.post("http://localhost:8000/quizzes/gerar_quiz", {
-          session_id: parseInt(sessionId),
-        });
+        const response = await axios.get(`http://localhost:8000/quizzes/session/${sessionId}`);
         setQuiz(response.data);
       } catch (error) {
-        console.error("Erro ao criar o quiz:", error);
+        console.error("Erro ao buscar o quiz:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchQuiz();
-  }, [sessionId]);
+}, [sessionId]);
 
   if (loading) return <p>A carregar quiz...</p>;
   if (!quiz) return <p>Nenhum quiz criado.</p>;

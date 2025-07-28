@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db
-from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead
+from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest
 import backend.repositories.quiz as quiz_repo
 from backend.repositories.global_settings import obter_modelo_mais_recente
-from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini
-from backend.database.models import Session as SessionModel
+from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
+from backend.database.models import Session as SessionModel, Quiz
 
 router = APIRouter(prefix="/quizzes", tags=["Quizzes"])
 
@@ -26,31 +26,27 @@ def ver_respostas(user_id: int, db: Session = Depends(get_db)):
     return quiz_repo.listar_respostas_do_user(db, user_id)
 
 @router.post("/gerar_quiz", response_model=QuizRead)
-async def gerar_quiz_para_sessao(payload: dict, db: Session = Depends(get_db)):
-    session_id = payload.get("session_id")
+async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = Depends(get_db)):
+    session_id = payload.session_id
 
-    # Obter a sessão
     session = db.query(SessionModel).filter_by(id=session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Sessão não encontrada")
 
-    # Obter o tema da sessão
     tema = session.tema
     if not tema:
-        raise HTTPException(status_code=400, detail="Sessão não tem tema ou nome de ficheiro definido.")
+        raise HTTPException(status_code=400, detail="Sessão não tem tema definido.")
 
-    # Obter modelo preferido
-    modelo = obter_modelo_mais_recente(db)
+    modelo = obter_modelo_mais_recente(db)  # retorna "gemini" ou "mistral" / "ollama"
 
-    # Gerar quiz com o modelo correspondente
-    if modelo == "ollama":
-        quiz_data = await gerar_quiz_ollama(tema)
-    elif modelo == "gemini":
+    quiz_data = await gerar_quiz_com_rag(tema, modelo=modelo)
 
-        quiz_data = await gerar_quiz_gemini(tema)
-    else:
-        raise HTTPException(status_code=400, detail="Modelo não suportado")
+    quiz = quiz_repo.criar_quiz(db, QuizCreate(**quiz_data, session_id=session_id))
+    return quiz
 
-    # Guardar na base de dados
-    quiz = criar_quiz(QuizCreate(**quiz_data, session_id=session_id), db)
+@router.get("/session/{session_id}", response_model=QuizRead)
+def get_quiz_by_session(session_id: int, db: Session = Depends(get_db)):
+    quiz = db.query(Quiz).filter(Quiz.session_id == session_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz não encontrado")
     return quiz
