@@ -61,6 +61,7 @@ class RespostaUserCreate(BaseModel):
     user_id: int
     pergunta_id: int
     opcao_id: int
+    respondido_em: datetime
 
 
 class RespostaUserRead(BaseModel):

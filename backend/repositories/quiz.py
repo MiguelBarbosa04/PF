@@ -28,7 +28,8 @@ def registar_resposta(db: Session, resposta: RespostaUserCreate):
         user_id=resposta.user_id,
         pergunta_id=resposta.pergunta_id,
         opcao_id=resposta.opcao_id,
-        correta=correta
+        correta=correta,
+        respondido_em=resposta.respondido_em
     )
     db.add(resposta_db)
     db.commit()
