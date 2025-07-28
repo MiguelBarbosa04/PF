@@ -137,3 +137,92 @@ Só podes responder com base nos documentos fornecidos abaixo.
                 resposta = "Não foi possível gerar resposta com Gemini."
 
     return resposta.strip() if resposta else "Não foi possível gerar resposta."
+
+
+
+async def gerar_quiz_gemini(tema: str) -> dict:
+    prompt = f"""
+    Gera um quiz com 5 perguntas de múltipla escolha sobre o tema: {tema}.
+    Retorna em JSON com perguntas, opções e qual é a correta:
+    {{
+        "titulo": "...",
+        "descricao": "...",
+        "perguntas": [
+            {{
+                "enunciado": "...",
+                "opcoes": [
+                    {{"texto": "...", "correta": true/false}},
+                    ...
+                ]
+            }}
+        ]
+    }}
+    """
+
+    headers = {
+        "Content-Type": "application/json",
+        "X-goog-api-key": GEMINI_API_KEY
+    }
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        response = await client.post(GEMINI_URL, headers=headers, json={
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}]
+                }
+            ]
+        })
+
+        data = response.json()
+
+        try:
+            resposta = data["candidates"][0]["content"]["parts"][0]["text"]
+            return json.loads(resposta)
+        except Exception:
+            raise ValueError("Não foi possível gerar quiz com Gemini.")
+
+
+async def gerar_quiz_ollama(tema: str) -> dict:
+    prompt = f"""
+    Gera um quiz com 5 perguntas de múltipla escolha sobre o tema: {tema}.
+    Retorna em formato JSON com esta estrutura:
+    {{
+        "titulo": "Título do quiz",
+        "descricao": "Descrição breve",
+        "perguntas": [
+            {{
+                "enunciado": "Pergunta...",
+                "opcoes": [
+                    {{"texto": "Opção 1", "correta": false}},
+                    {{"texto": "Opção 2", "correta": true}},
+                    ...
+                ]
+            }}
+        ]
+    }}
+    """
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        response = await client.post(OLLAMA_URL, json={
+            "model": "llama3",  # ou "mistral", se for o teu caso
+            "messages": [
+                {"role": "system", "content": "Gera quizzes no formato especificado."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.2
+        })
+
+        full_response = ""
+        async for line in response.aiter_lines():
+            if line.strip():
+                try:
+                    data = json.loads(line)
+                    content = data.get("message", {}).get("content")
+                    if content:
+                        full_response += content
+                except Exception:
+                    continue
+
+    return json.loads(full_response)
+

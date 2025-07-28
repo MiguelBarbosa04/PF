@@ -32,7 +32,6 @@ class Users(Base):
     ling_preferida = Column(Integer, ForeignKey("linguagem.id"))
     password = Column(String(20), nullable=False)
 
-    # Relacionamentos (usando o nome correto da classe e __tablename__)
     experiencia_rel = relationship("Experiencia", backref="users")
     funcao_rel = relationship("Funcao", backref="users")
     linguagem_rel = relationship("Linguagem", backref="users")
