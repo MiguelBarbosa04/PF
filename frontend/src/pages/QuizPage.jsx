@@ -4,11 +4,10 @@ import axios from "axios";
 import '../assets/css/QuizPage.css';
 
 const QuizPage = () => {
-
-  const {id} = useParams();
   const { id: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [respostas, setRespostas] = useState({});
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -23,28 +22,65 @@ const QuizPage = () => {
     };
 
     fetchQuiz();
-}, [sessionId]);
+  }, [sessionId]);
+
+  const handleSelectOption = (perguntaId, opcaoId) => {
+    setRespostas((prev) => ({
+      ...prev,
+      [perguntaId]: opcaoId
+    }));
+  };
+
+  const enviarRespostas = async () => {
+    try {
+      const payload = { respostas };
+      const response = await axios.post(`http://localhost:8000/quizzes/${quiz.id}/respostas`, payload);
+      alert("Respostas enviadas com sucesso!");
+      console.log("Resultado:", response.data);
+    } catch (error) {
+      console.error("Erro ao enviar respostas:", error);
+      alert("Erro ao enviar respostas, tenta novamente.");
+    }
+  };
 
   if (loading) return <p>A carregar quiz...</p>;
   if (!quiz) return <p>Nenhum quiz criado.</p>;
 
-return (
-  <div className="quiz-container">
-    <h2 className="quiz-title">{quiz.titulo}</h2>
-    <p className="quiz-description">{quiz.descricao}</p>
-    {quiz.perguntas.map((pergunta, index) => (
-      <div key={pergunta.id} className="pergunta">
-        <h4>{index + 1}. {pergunta.enunciado}</h4>
-        <ul className="opcoes">
-          {pergunta.opcoes.map((opcao) => (
-            <li key={opcao.id}>{opcao.texto}</li>
-          ))}
-        </ul>
-      </div>
-    ))}
-  </div>
-);
+  return (
+    <div className="quiz-container">
+      <h2 className="quiz-title">{quiz.titulo}</h2>
+      <p className="quiz-description">{quiz.descricao}</p>
 
+      {quiz.perguntas.map((pergunta, index) => (
+        <div key={pergunta.id} className="pergunta">
+          <h4>{index + 1}. {pergunta.enunciado}</h4>
+          <ul className="opcoes">
+            {pergunta.opcoes.map((opcao) => (
+              <li key={opcao.id}>
+                <label>
+                  <input
+                    type="radio"
+                    name={`pergunta-${pergunta.id}`}
+                    value={opcao.id}
+                    checked={respostas[pergunta.id] === opcao.id}
+                    onChange={() => handleSelectOption(pergunta.id, opcao.id)}
+                  />
+                  {opcao.texto}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <button
+        onClick={enviarRespostas}
+        disabled={Object.keys(respostas).length !== quiz.perguntas.length}
+      >
+        Enviar Respostas
+      </button>
+    </div>
+  );
 };
 
 export default QuizPage;

@@ -287,3 +287,4 @@ export async function getLowRatedModels() {
   const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
   return response.json();
 }
+
