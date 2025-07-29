@@ -11,6 +11,9 @@ import "../assets/css/ChatForm.css";
 import { FaArrowCircleRight, FaMicrophone } from "react-icons/fa";
 import useVoiceRecognition from "../hooks/useVoiceRecognition.js";
 import useSpeechSynthesis from "../hooks/useSpeechSynthesis.js";
+import {useAzureSpeechRecognition} from "../hooks/useAzureSpeechRecognition.js";
+import useAzureTTS from "../hooks/useAzureTTS.js";
+
 
 const ChatForm = ({ modo, setModo }) => {
   const { sessionId } = useParams();
@@ -22,8 +25,20 @@ const ChatForm = ({ modo, setModo }) => {
   const location = useLocation();
   const papelSelecionado = localStorage.getItem("papel");
   const chatContainerRef = useRef(null);
-  const { isListening, toggleListening, isVoiceMessage } = useVoiceRecognition(setInput);
-  const { speak, stop } = useSpeechSynthesis();
+  //const { isListening, toggleListening, isVoiceMessage } = useVoiceRecognition(setInput);
+  //const { speak, stop } = useSpeechSynthesis();
+  //const audioRefs = useRef([]);
+  //const { speak } = useAzureTTS();
+  const stopFnsRef = useRef([]);
+
+  const [isVoiceInput, setIsVoiceInput] = useState(false);
+  const [lastSpokenMessageId, setLastSpokenMessageId] = useState(null);
+
+  const { startListening, stopListening, isListening } = useAzureSpeechRecognition({
+    azureKey: import.meta.env.VITE_AZURE_SPEECH_KEY,
+    azureRegion: import.meta.env.VITE_AZURE_SPEECH_REGION,
+    onResult: (text) => {setInput(text); setIsVoiceInput(true);},
+  });
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -68,17 +83,18 @@ const ChatForm = ({ modo, setModo }) => {
         criado_em: new Date().toISOString(),
         avaliacao: null,
         modelo: resposta.modelo,
+        autoSpeak: isVoiceInput,
       };
 
       setMessages((prev) => [...prev, novaMensagemBot]);
-      if (isVoiceMessage.current) speak(novaMensagemBot.conteudo);
-      isVoiceMessage.current = false;
+      setLastSpokenMessageId(resposta.id);
 
       if (!sessionId && resposta.session_id) {
+        stopAll();
         navigate(`/chat/${resposta.session_id}`);
       }
-
       setRefreshSidebar((prev) => !prev);
+      setIsVoiceInput(false);
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
       alert(error.message);
@@ -93,10 +109,26 @@ const ChatForm = ({ modo, setModo }) => {
   };
 
   useEffect(() => {
-  if (chatContainerRef.current) {
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-  }
-}, [messages]);
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+  }, [messages]);
+
+  const addStopFn = (stopFn) => {
+    if (typeof stopFn === "function" && !stopFnsRef.current.includes(stopFn)) {
+      stopFnsRef.current.push(stopFn);
+    }
+  };
+
+  const stopAll = () => {
+    stopFnsRef.current.forEach((stopFn) => stopFn());
+    stopFnsRef.current = [];
+  };
+
+  useEffect(() => {
+    stopAll(); // para a fala da sessão anterior
+    setLastSpokenMessageId(null); // limpa o ID da mensagem falada
+  }, [sessionId]);
 
   return (
     <div className="chat-wrapper">
@@ -107,7 +139,8 @@ const ChatForm = ({ modo, setModo }) => {
         ) : (
           <div className="chat-messages" ref={chatContainerRef}>
             {messages.map((msg) => (
-              <ChatMessage key={msg.id} msg={msg} onRate={handleAvaliarMensagem} onSpeak={speak} onStop={stop} />
+              <ChatMessage key={msg.id} msg={msg} onRate={handleAvaliarMensagem} stopAll={stopAll} addStopFn={addStopFn}
+                    isVoiceInput={msg.remetente === "bot" && msg.id === lastSpokenMessageId}/>
             ))}
             {isBotTyping && (
               <div className="chat-message bot typing-indicator">
@@ -132,7 +165,7 @@ const ChatForm = ({ modo, setModo }) => {
             }}
           />
           <div className="chat-btns">
-            <button className="chat-voice-button" onClick={toggleListening}>
+            <button className="chat-voice-button" onClick={isListening ? stopListening : startListening}>
               {isListening ? "A ouvir..." : <FaMicrophone />}
             </button>
             <button className="chat-send-button" onClick={handleEnviarMensagem}>
