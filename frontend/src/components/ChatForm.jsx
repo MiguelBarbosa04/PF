@@ -87,7 +87,9 @@ const ChatForm = ({ modo, setModo }) => {
       };
 
       setMessages((prev) => [...prev, novaMensagemBot]);
-      setLastSpokenMessageId(resposta.id);
+      if (isVoiceInput) {
+        setLastSpokenMessageId(resposta.id);
+      }
 
       if (!sessionId && resposta.session_id) {
         stopAll();
