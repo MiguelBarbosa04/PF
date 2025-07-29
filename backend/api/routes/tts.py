@@ -16,11 +16,13 @@ def azure_tts(payload: TextRequest):
     token_url = f"https://{VITE_AZURE_REGION}.api.cognitive.microsoft.com/sts/v1.0/issueToken"
     headers = {"Ocp-Apim-Subscription-Key": VITE_AZURE_TTS_KEY}
     token = requests.post(token_url, headers=headers).text
+    #voice = "pt-PT-FernandaNeural"
+    voice = "pt-PT-DuarteNeural"
 
     tts_url = f"https://{VITE_AZURE_REGION}.tts.speech.microsoft.com/cognitiveservices/v1"
     ssml = f"""
     <speak version='1.0' xml:lang='pt-PT'>
-      <voice name='pt-PT-FernandaNeural'>{text}</voice>
+      <voice name='{voice}'>{text}</voice>
     </speak>"""
 
     headers = {

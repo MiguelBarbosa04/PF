@@ -2,33 +2,39 @@ import React, {useEffect, useRef} from "react";
 import StarsRating from "./StarsRating.jsx";
 import { FaVolumeUp } from "react-icons/fa";
 import useAzureTTS from "../hooks/useAzureTTS.js";
+import useWebSpeechTTS from "../hooks/useWebSpeechTTS.js";
 
-const ChatMessage = ({ msg, onRate, stopAll, addStopFn, isVoiceInput = false }) => {
+const ChatMessage = ({ msg, onRate, stopAll, addStopFn, isVoiceInput = false, ttsProvider = "azure"  }) => {
   const isBot = msg.remetente === "bot";
-  //const [isSpeaking, setIsSpeaking] = useState(false);
-  const { isSpeaking, speak, stop } = useAzureTTS(() => addStopFn && addStopFn(stop));
   const hasSpokenRef = useRef(false);
 
-  /*const handleSpeakClick = () => {
-    if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      onStop();
-      setIsSpeaking(false);
-    } else {
-      onSpeak(msg.conteudo);
-      setIsSpeaking(true);
-    }
-  };*/
+  const azureTTS = useAzureTTS();
+  const webTTS = useWebSpeechTTS();
+
+  const isSpeaking = ttsProvider === "azure" ? azureTTS.isSpeaking : webTTS.isSpeaking;
+  const speak = ttsProvider === "azure" ? azureTTS.speak : webTTS.speak;
+  const stop = ttsProvider === "azure" ? azureTTS.stop : webTTS.stop;
+
+  useEffect(() => {
+    if (addStopFn) addStopFn(stop);
+  }, [ttsProvider]);
 
   useEffect(() => {
     if (isBot && isVoiceInput && !hasSpokenRef.current) {
       hasSpokenRef.current = true;
-      const stopFn = speak(msg.conteudo);
-      addStopFn(stopFn);
+
+      setTimeout(() => {
+        const result = speak(msg.conteudo);
+        if (result instanceof Promise) {
+          result.then((stopFn) => addStopFn(stopFn));
+        } else {
+          addStopFn(result);
+        }
+      }, 0);
     } else if (!isVoiceInput) {
       hasSpokenRef.current = false;
     }
-  }, [isVoiceInput, msg.id]);
+  }, [isVoiceInput, msg.id, ttsProvider]);
 
   const handleToggleSpeak = () => {
     if (isSpeaking) {

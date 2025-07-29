@@ -21,6 +21,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const menuRef = useRef(null);
   const { sessionId } = useParams();
+  const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
 
 
   const fetchSessions = async () => {
@@ -87,6 +88,14 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
 
    const handleAlternarModo = () => {
     setModo((prev) => (prev === "exploratório" ? "instrucional" : "exploratório"));
+  };
+
+   const handleAlternarTTS = () => {
+    setTtsProvider((prev) => {
+      const next = prev === "azure" ? "web" : "azure";
+      localStorage.setItem("ttsProvider", next);
+      return next;
+    });
   };
 
   const filteredSessions = sessions.filter((session) =>
@@ -191,12 +200,17 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
 
         <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
           {isAdmin && (
-                <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
+              <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
-         <li onClick={handleAlternarModo}><FaNoteSticky /> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}</li>
-          <li onClick={handleTrocaChatClick}><FaComments /> Trocar chat</li>
-          <li onClick={handleEditarPerfilClick}><FaUserEdit /> Editar Perfil</li>
-          <li onClick={handleLogout}><FaSignOutAlt /> Sair</li>
+          <li onClick={handleAlternarModo}>
+            <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
+          </li>
+          <li onClick={handleAlternarTTS}>
+            <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
+          </li>
+          <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
+          <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
+          <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
         </ul>
       </div>
     </div>

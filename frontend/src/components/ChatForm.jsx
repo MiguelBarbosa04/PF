@@ -9,11 +9,7 @@ import {
 } from "../services/api.js";
 import "../assets/css/ChatForm.css";
 import { FaArrowCircleRight, FaMicrophone } from "react-icons/fa";
-import useVoiceRecognition from "../hooks/useVoiceRecognition.js";
-import useSpeechSynthesis from "../hooks/useSpeechSynthesis.js";
 import {useAzureSpeechRecognition} from "../hooks/useAzureSpeechRecognition.js";
-import useAzureTTS from "../hooks/useAzureTTS.js";
-
 
 const ChatForm = ({ modo, setModo }) => {
   const { sessionId } = useParams();
@@ -25,20 +21,24 @@ const ChatForm = ({ modo, setModo }) => {
   const location = useLocation();
   const papelSelecionado = localStorage.getItem("papel");
   const chatContainerRef = useRef(null);
-  //const { isListening, toggleListening, isVoiceMessage } = useVoiceRecognition(setInput);
-  //const { speak, stop } = useSpeechSynthesis();
-  //const audioRefs = useRef([]);
-  //const { speak } = useAzureTTS();
   const stopFnsRef = useRef([]);
-
   const [isVoiceInput, setIsVoiceInput] = useState(false);
   const [lastSpokenMessageId, setLastSpokenMessageId] = useState(null);
+  const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
 
   const { startListening, stopListening, isListening } = useAzureSpeechRecognition({
     azureKey: import.meta.env.VITE_AZURE_SPEECH_KEY,
     azureRegion: import.meta.env.VITE_AZURE_SPEECH_REGION,
     onResult: (text) => {setInput(text); setIsVoiceInput(true);},
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const local = localStorage.getItem("ttsProvider");
+      if (local !== ttsProvider) setTtsProvider(local);
+    }, 500);
+    return () => clearInterval(interval);
+  }, [ttsProvider]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -140,7 +140,7 @@ const ChatForm = ({ modo, setModo }) => {
           <div className="chat-messages" ref={chatContainerRef}>
             {messages.map((msg) => (
               <ChatMessage key={msg.id} msg={msg} onRate={handleAvaliarMensagem} stopAll={stopAll} addStopFn={addStopFn}
-                    isVoiceInput={msg.remetente === "bot" && msg.id === lastSpokenMessageId}/>
+                    isVoiceInput={msg.remetente === "bot" && msg.id === lastSpokenMessageId} ttsProvider={ttsProvider}/>
             ))}
             {isBotTyping && (
               <div className="chat-message bot typing-indicator">
@@ -165,11 +165,16 @@ const ChatForm = ({ modo, setModo }) => {
             }}
           />
           <div className="chat-btns">
-            <button className="chat-voice-button" onClick={isListening ? stopListening : startListening}>
-              {isListening ? "A ouvir..." : <FaMicrophone />}
+            <button
+                className="chat-voice-button"
+                onClick={() => {
+                    isListening ? stopListening() : startListening();
+                }}
+            >
+              {isListening ? "A ouvir..." : <FaMicrophone/>}
             </button>
             <button className="chat-send-button" onClick={handleEnviarMensagem}>
-              <FaArrowCircleRight />
+              <FaArrowCircleRight/>
             </button>
           </div>
         </div>
