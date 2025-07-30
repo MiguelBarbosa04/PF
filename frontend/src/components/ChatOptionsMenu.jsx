@@ -36,8 +36,7 @@ const handleQuiz = async () => {
       session_id: session.id
     });
 
-    const quizId = response.data.id;
-    navigate(`/quizzes/session/quiz/${session_id}`);
+    navigate(`/quizzes/session/quiz/${response.data.session_id}`);
   } catch (error) {
     console.error("Erro ao gerar quiz:", error);
     alert("Erro ao criar quiz. Tenta novamente.");

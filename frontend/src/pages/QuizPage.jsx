@@ -5,7 +5,7 @@ import '../assets/css/QuizPage.css';
 import getTokenInfo from "../services/api.js";
 
 const QuizPage = () => {
-  const { session_id: sessionId } = useParams();
+  const { sessionId: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
@@ -24,7 +24,7 @@ const QuizPage = () => {
       setLoading(false);
     }
   })();
-}, [quizId]);
+}, [sessionId]);
 
 
   const handleSelectOption = (perguntaId, opcaoId) => {
@@ -36,12 +36,12 @@ const QuizPage = () => {
 
   const enviarRespostas = async () => {
     const payload = {
-      user_id: buscar_id,
+      user_id: user_id,
       respostas,
       respondido_em: new Date().toISOString()
     };
 
-    console.log("Payload a enviar:", payload);  // ✅ debug
+    console.log("Payload a enviar:", payload);
 
     try {
       const response = await axios.post(
