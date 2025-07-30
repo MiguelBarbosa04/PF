@@ -8,6 +8,7 @@ npm install react-dom react-router
 npm install react-icons
 npm install react-select
 npm install recharts
+npm install microsoft-cognitiveservices-speech-sdk
 
 cd..
 uvicorn backend.main:app --reload 
