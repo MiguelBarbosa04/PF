@@ -141,6 +141,7 @@ Só podes responder com base nos documentos fornecidos abaixo.
             except Exception:
                 resposta = "Não foi possível gerar resposta com Gemini."
 
+
     return resposta.strip() if resposta else "Não foi possível gerar resposta."
 
 
