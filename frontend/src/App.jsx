@@ -11,6 +11,7 @@ import Perfil from "./pages/Perfil.jsx";
 import EditarTema from "./pages/EditarTema.jsx";
 import Chat from "./pages/Chat.jsx";
 import Feedback from "./pages/Feedback.jsx";
+import QuizPage from "./pages/QuizPage.jsx";
 
 function App () {
 return (
@@ -27,6 +28,11 @@ return (
           <Route path='/chat' element={<PrivateRoute><Chat/></PrivateRoute>}/>
           <Route path='/chat/:sessionId' element={<PrivateRoute><Chat/></PrivateRoute>} />
           <Route path='/feedback/' element={<PrivateRoute><Feedback/></PrivateRoute>} />
+           <Route path='/quiz/:id' element={<PrivateRoute><QuizPage/></PrivateRoute>} />
+          <Route
+  path='/quizzes/session/quiz/:sessionId'
+  element={<PrivateRoute><QuizPage /></PrivateRoute>}
+/>
       </Routes>
          </>
   );}

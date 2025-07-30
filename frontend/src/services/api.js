@@ -287,3 +287,37 @@ export async function getLowRatedModels() {
   const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
   return response.json();
 }
+
+export default function getTokenInfo() {
+  try {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    return data?.id || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export const getQuizBySession = async (sessionId) => {
+  const response = await fetch(`http://localhost:8000/quizzes/session/quiz/${sessionId}`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar o quiz");
+  }
+  return await response.json();
+};
+
+export const corrigirRespostasQuiz = async (quizId, payload) => {
+  const response = await fetch(`http://localhost:8000/quizzes/${quizId}/respostas/corrigir`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao enviar respostas");
+  }
+
+  return await response.json();
+};
+

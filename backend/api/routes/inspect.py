@@ -1,12 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import shutil
-
-from backend.database.db import get_db
-from backend.database.models import Tema
-from backend.schemas.chroma import TemaSchema, TemaUpdateRequest
+from backend.schemas.chroma import  TemaUpdateRequest
 from backend.services.chroma_service import *
-from sqlalchemy.orm import Session
-from fastapi import Depends
 import os
 import gc
 
