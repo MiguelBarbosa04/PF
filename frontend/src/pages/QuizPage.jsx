@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import '../assets/css/QuizPage.css';
-import getTokenInfo from "../services/api.js";
-
+import {corrigirRespostasQuiz, getQuizBySession} from "../services/api.js";
+import getTokenInfo from "../components/TokenInfo.jsx";
 const QuizPage = () => {
   const { sessionId: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
@@ -11,20 +10,20 @@ const QuizPage = () => {
   const [respostas, setRespostas] = useState({});
   const { quizId } = useParams();
 
-  const user_id = getTokenInfo();
+  const user_id = getTokenInfo().id;
 
-  useEffect(() => {
-  (async () => {
-    try {
-      const response = await axios.get(`http://localhost:8000/quizzes/session/quiz/${sessionId}`);
-      setQuiz(response.data);
-    } catch (error) {
-      console.error("Erro ao buscar o quiz:", error);
-    } finally {
-      setLoading(false);
-    }
-  })();
-}, [sessionId]);
+useEffect(() => {
+    (async () => {
+      try {
+        const quizData = await getQuizBySession(sessionId);
+        setQuiz(quizData);
+      } catch (error) {
+        console.error("Erro ao buscar o quiz:", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [sessionId]);
 
 
   const handleSelectOption = (perguntaId, opcaoId) => {
@@ -55,17 +54,14 @@ const enviarRespostas = async () => {
     respondido_em: new Date().toISOString()
   };
 
-  try {
-    const response = await axios.post(
-      `http://localhost:8000/quizzes/${quiz.id}/respostas/corrigir`,
-      payload
-    );
-    alert("Respostas enviadas com sucesso!");
-    console.log("Resultado:", response.data);
-  } catch (error) {
-    console.error("Erro ao enviar respostas:", error);
-    alert("Erro ao enviar respostas, tenta novamente.");
-  }
+try {
+      const resultado = await corrigirRespostasQuiz(quiz.id, payload);
+      alert("Respostas enviadas com sucesso!");
+      console.log("Resultado:", resultado);
+    } catch (error) {
+      console.error("Erro ao enviar respostas:", error);
+      alert("Erro ao enviar respostas, tenta novamente.");
+    }
 };
 
   if (loading) return <p>A carregar quiz...</p>;
@@ -101,7 +97,6 @@ const enviarRespostas = async () => {
 
       <button
         onClick={enviarRespostas}
-        //disabled={Object.keys(respostas).length !== quiz.perguntas.length}
       >
         Enviar Respostas
       </button>

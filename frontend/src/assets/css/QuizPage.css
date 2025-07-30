@@ -37,3 +37,13 @@
   margin-bottom: 10px;
 }
 
+.opcao-correta {
+  color: green;
+  font-weight: bold;
+}
+
+.opcao-errada {
+  color: red;
+  font-weight: bold;
+}
+
