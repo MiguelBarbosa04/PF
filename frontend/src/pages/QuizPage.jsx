@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import '../assets/css/QuizPage.css';
-import {corrigirRespostasQuiz, getQuizBySession} from "../services/api.js";
+import { corrigirRespostasQuiz, getQuizBySession } from "../services/api.js";
 import getTokenInfo from "../components/TokenInfo.jsx";
+
 const QuizPage = () => {
-  const { sessionId: sessionId } = useParams();
+  const { sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
-  const { quizId } = useParams();
+  const [correcoes, setCorrecoes] = useState(null); // 🟢 Novo estado para guardar correções
 
   const user_id = getTokenInfo().id;
 
-useEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         const quizData = await getQuizBySession(sessionId);
@@ -25,44 +26,46 @@ useEffect(() => {
     })();
   }, [sessionId]);
 
-
   const handleSelectOption = (perguntaId, opcaoId) => {
-    setRespostas((prev) => ({
-      ...prev,
-      [perguntaId]: opcaoId
-    }));
+    if (!correcoes) { // impede mudar depois de corrigido
+      setRespostas((prev) => ({
+        ...prev,
+        [perguntaId]: opcaoId
+      }));
+    }
   };
 
-const enviarRespostas = async () => {
-  if (!quiz || !quiz.perguntas) {
-    alert("Quiz não carregado corretamente.");
-    return;
-  }
+  const enviarRespostas = async () => {
+    if (!quiz || !quiz.perguntas) {
+      alert("Quiz não carregado corretamente.");
+      return;
+    }
 
-  const todasRespondidas = quiz.perguntas.every((pergunta) =>
-    respostas[pergunta.id] !== undefined && respostas[pergunta.id] !== null
-  );
+    const todasRespondidas = quiz.perguntas.every((pergunta) =>
+      respostas[pergunta.id] !== undefined && respostas[pergunta.id] !== null
+    );
 
-  if (!todasRespondidas) {
-    alert("Por favor, responde a todas as perguntas antes de submeter.");
-    return;
-  }
+    if (!todasRespondidas) {
+      alert("Por favor, responde a todas as perguntas antes de submeter.");
+      return;
+    }
 
-  const payload = {
-    user_id,
-    respostas,
-    respondido_em: new Date().toISOString()
-  };
+    const payload = {
+      user_id,
+      respostas,
+      respondido_em: new Date().toISOString()
+    };
 
-try {
+    try {
       const resultado = await corrigirRespostasQuiz(quiz.id, payload);
+      setCorrecoes(resultado.correcoes); // 🟢 guarda correções recebidas
       alert("Respostas enviadas com sucesso!");
       console.log("Resultado:", resultado);
     } catch (error) {
       console.error("Erro ao enviar respostas:", error);
       alert("Erro ao enviar respostas, tenta novamente.");
     }
-};
+  };
 
   if (loading) return <p>A carregar quiz...</p>;
   if (!quiz) return <p>Nenhum quiz criado.</p>;
@@ -75,29 +78,41 @@ try {
       {quiz.perguntas.map((pergunta, index) => (
         <div key={pergunta.id} className="pergunta">
           <h4>{index + 1}. {pergunta.enunciado}</h4>
-<ul className="opcoes">
-  {pergunta.opcoes.map((opcao) => (
-    <li key={opcao.id}>
-      <label>
-        <span>{opcao.texto}</span>
-        <input
-          type="radio"
-          name={`pergunta-${pergunta.id}`}
-          value={opcao.id}
-          checked={respostas[pergunta.id] === opcao.id}
-          onChange={() => handleSelectOption(pergunta.id, opcao.id)}
-        />
-      </label>
-    </li>
-  ))}
-</ul>
+          <ul className="opcoes">
+            {pergunta.opcoes.map((opcao) => {
+              const selecionada = respostas[pergunta.id] === opcao.id;
+              const correta = correcoes && opcao.id === correcoes[pergunta.id];
+              const errada = correcoes && selecionada && !correta;
 
+              return (
+                <li key={opcao.id}>
+                  <label>
+                    <span
+                      className={
+                        correta ? "opcao-correta" :
+                        errada ? "opcao-errada" :
+                        ""
+                      }
+                    >
+                      {opcao.texto}
+                    </span>
+                    <input
+                      type="radio"
+                      name={`pergunta-${pergunta.id}`}
+                      value={opcao.id}
+                      checked={selecionada}
+                      onChange={() => handleSelectOption(pergunta.id, opcao.id)}
+                      disabled={!!correcoes}
+                    />
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       ))}
 
-      <button
-        onClick={enviarRespostas}
-      >
+      <button onClick={enviarRespostas} disabled={!!correcoes}>
         Enviar Respostas
       </button>
     </div>
