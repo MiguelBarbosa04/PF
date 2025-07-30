@@ -1,7 +1,7 @@
 .quiz-container {
   max-width: 800px;
   width: 1000px;
-  margin: 40px auto;
+  margin: 8px auto;
   padding: 30px;
   background-color: #fdfdfd;
   border-radius: 12px;
@@ -37,14 +37,90 @@
   margin-bottom: 10px;
 }
 
-.opcao-correta {
-  color: green;
+.opcoes {
+  list-style: none;
+  padding-left: 0;
+}
+
+.opcoes li {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.opcoes li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.opcao-cartao {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  margin: 6px 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.opcao-cartao input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  margin: 0;
+  z-index: 2;
+}
+
+
+.opcao-cartao::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  background-color: white;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.opcao-cartao input[type="radio"]:checked + span::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-color: #007bff;
+  border-radius: 50%;
+}
+
+
+.opcao-cartao.correta {
+  background-color: #28a745;
+  color: white;
+  border: 2px solid #1e7e34;
   font-weight: bold;
 }
 
-.opcao-errada {
-  color: red;
+
+.opcao-cartao.errada {
+  background-color: #dc3545;
+  color: white;
+  border: 2px solid #b21f2d;
   font-weight: bold;
 }
-
-

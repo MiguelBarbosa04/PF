@@ -86,26 +86,24 @@ const QuizPage = () => {
 
               return (
                 <li key={opcao.id}>
-                  <label>
-                    <span
-                      className={
-                        correta ? "opcao-correta" :
-                        errada ? "opcao-errada" :
-                        ""
-                      }
-                    >
-                      {opcao.texto}
-                    </span>
-                    <input
-                      type="radio"
-                      name={`pergunta-${pergunta.id}`}
-                      value={opcao.id}
-                      checked={selecionada}
-                      onChange={() => handleSelectOption(pergunta.id, opcao.id)}
-                      disabled={!!correcoes}
-                    />
-                  </label>
-                </li>
+  <label
+    className={
+      "opcao-cartao " +
+      (correta ? "correta" : errada ? "errada" : "")
+    }
+  >
+  
+    <input
+      type="radio"
+      name={`pergunta-${pergunta.id}`}
+      value={opcao.id}
+      checked={selecionada}
+      onChange={() => handleSelectOption(pergunta.id, opcao.id)}
+      disabled={!!correcoes}
+    />
+     <span>{opcao.texto}</span>
+  </label>
+</li>
               );
             })}
           </ul>
