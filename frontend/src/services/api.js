@@ -278,14 +278,16 @@ export async function updateLLM(modelo) {
   return await response.json();
 }
 
-export async function getLowRatedMessages() {
-  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas`);
-  return response.json();
+export async function getRatedModels(rating = 2, limite = 10) {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-por-modelo?rating=${rating}&limite=${limite}`);
+  if (!response.ok) throw new Error("Erro ao buscar avaliações por modelo");
+  return await response.json();
 }
 
-export async function getLowRatedModels() {
-  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
-  return response.json();
+export async function getRatedMessages(rating = 3) {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes?rating=${rating}`);
+  if (!response.ok) throw new Error("Erro ao buscar mensagens por avaliação");
+  return await response.json();
 }
 
 export default function getTokenInfo() {
