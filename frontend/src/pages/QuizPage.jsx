@@ -34,27 +34,39 @@ const QuizPage = () => {
     }));
   };
 
-  const enviarRespostas = async () => {
-    const payload = {
-      user_id: user_id,
-      respostas,
-      respondido_em: new Date().toISOString()
-    };
+const enviarRespostas = async () => {
+  if (!quiz || !quiz.perguntas) {
+    alert("Quiz não carregado corretamente.");
+    return;
+  }
 
-    console.log("Payload a enviar:", payload);
+  const todasRespondidas = quiz.perguntas.every((pergunta) =>
+    respostas[pergunta.id] !== undefined && respostas[pergunta.id] !== null
+  );
 
-    try {
-      const response = await axios.post(
-        `http://localhost:8000/quizzes/${quiz.id}/respostas/corrigir`,
-        payload
-      );
-      alert("Respostas enviadas com sucesso!");
-      console.log("Resultado:", response.data);
-    } catch (error) {
-      console.error("Erro ao enviar respostas:", error);
-      alert("Erro ao enviar respostas, tenta novamente.");
-    }
+  if (!todasRespondidas) {
+    alert("Por favor, responde a todas as perguntas antes de submeter.");
+    return;
+  }
+
+  const payload = {
+    user_id,
+    respostas,
+    respondido_em: new Date().toISOString()
   };
+
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/quizzes/${quiz.id}/respostas/corrigir`,
+      payload
+    );
+    alert("Respostas enviadas com sucesso!");
+    console.log("Resultado:", response.data);
+  } catch (error) {
+    console.error("Erro ao enviar respostas:", error);
+    alert("Erro ao enviar respostas, tenta novamente.");
+  }
+};
 
   if (loading) return <p>A carregar quiz...</p>;
   if (!quiz) return <p>Nenhum quiz criado.</p>;
@@ -89,7 +101,7 @@ const QuizPage = () => {
 
       <button
         onClick={enviarRespostas}
-        disabled={Object.keys(respostas).length !== quiz.perguntas.length}
+        //disabled={Object.keys(respostas).length !== quiz.perguntas.length}
       >
         Enviar Respostas
       </button>
