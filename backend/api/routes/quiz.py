@@ -8,7 +8,7 @@ import backend.repositories.quiz as quiz_repo
 from backend.repositories.global_settings import obter_modelo_mais_recente
 from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
 from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta
-
+from sqlalchemy import desc
 router = APIRouter(prefix="/quizzes", tags=["Quizzes"])
 
 @router.post("/", response_model=QuizRead)
@@ -39,7 +39,7 @@ async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = D
     if not tema:
         raise HTTPException(status_code=400, detail="Sessão não tem tema definido.")
 
-    modelo = obter_modelo_mais_recente(db)  # retorna "gemini" ou "mistral" / "ollama"
+    modelo = obter_modelo_mais_recente(db)  # retorna "gemini" ou "mistral"
 
     quiz_data = await gerar_quiz_com_rag(tema, modelo=modelo)
 
@@ -49,6 +49,18 @@ async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = D
 @router.get("/session/{session_id}", response_model=QuizRead)
 def get_quiz_by_session(session_id: int, db: Session = Depends(get_db)):
     quiz = db.query(Quiz).filter(Quiz.session_id == session_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz não encontrado")
+    return quiz
+
+@router.get("/session/quiz/{session_id}", response_model=QuizRead)
+def get_latest_quiz_by_session(session_id: int, db: Session = Depends(get_db)):
+    quiz = (
+        db.query(Quiz)
+        .filter(Quiz.session_id == session_id)
+        .order_by(desc(Quiz.data))  # ordena do mais recente para o mais antigo
+        .first()
+    )
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
     return quiz

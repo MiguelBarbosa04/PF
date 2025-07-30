@@ -29,6 +29,10 @@ return (
           <Route path='/chat/:sessionId' element={<PrivateRoute><Chat/></PrivateRoute>} />
           <Route path='/feedback/' element={<PrivateRoute><Feedback/></PrivateRoute>} />
            <Route path='/quiz/:id' element={<PrivateRoute><QuizPage/></PrivateRoute>} />
+          <Route
+  path='/quizzes/session/quiz/:sessionId'
+  element={<PrivateRoute><QuizPage /></PrivateRoute>}
+/>
       </Routes>
          </>
   );}

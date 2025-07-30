@@ -5,27 +5,27 @@ import '../assets/css/QuizPage.css';
 import getTokenInfo from "../services/api.js";
 
 const QuizPage = () => {
-  const { id: sessionId } = useParams();
+  const { session_id: sessionId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
+  const { quizId } = useParams();
 
-  const buscar_id = getTokenInfo();
+  const user_id = getTokenInfo();
 
   useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/quizzes/session/${sessionId}`);
-        setQuiz(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar o quiz:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  (async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/quizzes/session/quiz/${sessionId}`);
+      setQuiz(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar o quiz:", error);
+    } finally {
+      setLoading(false);
+    }
+  })();
+}, [quizId]);
 
-    fetchQuiz();
-  }, [sessionId]);
 
   const handleSelectOption = (perguntaId, opcaoId) => {
     setRespostas((prev) => ({
@@ -67,22 +67,23 @@ const QuizPage = () => {
       {quiz.perguntas.map((pergunta, index) => (
         <div key={pergunta.id} className="pergunta">
           <h4>{index + 1}. {pergunta.enunciado}</h4>
-          <ul className="opcoes">
-            {pergunta.opcoes.map((opcao) => (
-              <li key={opcao.id}>
-                <label>
-                  <input
-                    type="radio"
-                    name={`pergunta-${pergunta.id}`}
-                    value={opcao.id}
-                    checked={respostas[pergunta.id] === opcao.id}
-                    onChange={() => handleSelectOption(pergunta.id, opcao.id)}
-                  />
-                  {opcao.texto}
-                </label>
-              </li>
-            ))}
-          </ul>
+<ul className="opcoes">
+  {pergunta.opcoes.map((opcao) => (
+    <li key={opcao.id}>
+      <label>
+        <span>{opcao.texto}</span>
+        <input
+          type="radio"
+          name={`pergunta-${pergunta.id}`}
+          value={opcao.id}
+          checked={respostas[pergunta.id] === opcao.id}
+          onChange={() => handleSelectOption(pergunta.id, opcao.id)}
+        />
+      </label>
+    </li>
+  ))}
+</ul>
+
         </div>
       ))}
 

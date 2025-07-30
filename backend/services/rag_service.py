@@ -1,7 +1,7 @@
 import os
 import httpx
 import json
-import requests
+import re
 
 from sqlalchemy.orm import Session as DBSession
 from backend.database.models import Users
@@ -16,6 +16,9 @@ GEMINI_URL = os.getenv('GEMINI_URL')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OLLAMA_URL = os.getenv('OLLAMA_URL')
 
+def limpar_json_markdown(texto: str) -> str:
+    """Remove blocos de markdown tipo ```json ... ```"""
+    return re.sub(r"^```json\s*|\s*```$", "", texto.strip(), flags=re.IGNORECASE)
 
 async def generate_rag_response(
     user_query: str,
@@ -159,6 +162,7 @@ async def gerar_quiz_gemini(tema: str) -> dict:
             }}
         ]
     }}
+    Responde apenas com JSON puro. Sem introduções, comentários ou explicações adicionais.
     """
 
     headers = {
@@ -179,11 +183,19 @@ async def gerar_quiz_gemini(tema: str) -> dict:
         data = response.json()
 
         try:
-            resposta = data["candidates"][0]["content"]["parts"][0]["text"]
-            return json.loads(resposta)
-        except Exception:
-            raise ValueError("Não foi possível gerar quiz com Gemini.")
+            resposta_raw = data["candidates"][0]["content"]["parts"][0]["text"]
+            print("🧪 RESPOSTA RAW DO GEMINI:\n", resposta_raw)
 
+            if not resposta_raw.strip():
+                raise ValueError("Resposta vazia recebida do Gemini.")
+
+            resposta_limpa = limpar_json_markdown(resposta_raw)
+            return json.loads(resposta_limpa)
+
+        except (KeyError, json.JSONDecodeError) as e:
+            print("❌ Erro ao processar resposta do Gemini:", e)
+            print("🔴 Conteúdo bruto:\n", data)
+            raise ValueError("Não foi possível gerar quiz com Gemini.")
 
 async def gerar_quiz_ollama(tema: str) -> dict:
     prompt = f"""
@@ -233,6 +245,7 @@ async def gerar_quiz_ollama(tema: str) -> dict:
 
     import re
     json_match = re.search(r"\{.*\}", full_response, re.DOTALL)
+
     if json_match:
         json_text = json_match.group(0)
         return json.loads(json_text)
