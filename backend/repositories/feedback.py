@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session
 from backend.database.models import Messages
 from sqlalchemy import func
 
-def get_low_rated_bot_messages_with_questions(db: Session, max_rating: int = 3):
+def get_rated_bot_messages_with_questions(db: Session, rating: int = 3):
     # Buscar todas as mensagens do bot com avaliação baixa
     low_rated_messages = (
         db.query(Messages)
-        .filter(Messages.remetente == "bot", Messages.avaliacao <= max_rating)
+        .filter(Messages.remetente == "bot", Messages.avaliacao == rating)
         .order_by(Messages.criado_em.desc())
         .all()
     )
@@ -31,13 +31,13 @@ def get_low_rated_bot_messages_with_questions(db: Session, max_rating: int = 3):
 
     return resultados
 
-def get_low_rated_models(db: Session, limite: int = 10):
+def get_rated_models(db: Session, rating: int = 2, limite: int = 10):
     resultados = (
         db.query(
             Messages.modelo,
             func.count(Messages.id).label("total_baixas")
         )
-        .filter(Messages.remetente == "bot", Messages.avaliacao <= 2)
+        .filter(Messages.remetente == "bot", Messages.avaliacao == rating)
         .group_by(Messages.modelo)
         .order_by(func.count(Messages.id).desc())
         .limit(limite)
