@@ -79,9 +79,10 @@ const QuizPage = () => {
         <div key={pergunta.id} className="pergunta">
           <h4>{index + 1}. {pergunta.enunciado}</h4>
           <ul className="opcoes">
+
             {pergunta.opcoes.map((opcao) => {
               const selecionada = respostas[pergunta.id] === opcao.id;
-              const correta = correcoes && opcao.id === correcoes[pergunta.id];
+              const correta = correcoes && correcoes[pergunta.id] === opcao.id;
               const errada = correcoes && selecionada && !correta;
 
               return (
@@ -89,10 +90,14 @@ const QuizPage = () => {
   <label
     className={
       "opcao-cartao " +
-      (correta ? "correta" : errada ? "errada" : "")
+      (
+        correcoes
+          ? (opcao.correta ? "correta" : (selecionada ? "errada" : ""))
+          : ""
+      )
     }
   >
-  
+
     <input
       type="radio"
       name={`pergunta-${pergunta.id}`}
@@ -110,9 +115,15 @@ const QuizPage = () => {
         </div>
       ))}
 
-      <button onClick={enviarRespostas} disabled={!!correcoes}>
-        Enviar Respostas
-      </button>
+      <button
+  onClick={enviarRespostas}
+  disabled={!!correcoes}
+  className={correcoes ? "btn-disabled" : "btn-submit"}
+>
+  {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
+</button>
+
+
     </div>
   );
 };

@@ -1,14 +1,21 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+
 .quiz-container {
-  max-width: 800px;
-  width: 1000px;
+  width: 100%;
+ max-width: 800px;
   margin: 8px auto;
   padding: 30px;
   background-color: #fdfdfd;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-height: 100vh;
-  overflow-y: auto;
 }
 
 .quiz-title {
@@ -96,7 +103,6 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-
 .opcao-cartao input[type="radio"]:checked + span::before {
   content: "";
   position: absolute;
@@ -108,7 +114,6 @@
   background-color: #007bff;
   border-radius: 50%;
 }
-
 
 .opcao-cartao.correta {
   background-color: #28a745;
@@ -123,4 +128,27 @@
   color: white;
   border: 2px solid #b21f2d;
   font-weight: bold;
+}
+
+.btn-submit {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #0056b3;
+}
+
+.btn-disabled {
+  padding: 10px 20px;
+  background-color: #ccc;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
 }
