@@ -9,7 +9,7 @@ const QuizPage = () => {
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
-  const [correcoes, setCorrecoes] = useState(null); // 🟢 Novo estado para guardar correções
+  const [correcoes, setCorrecoes] = useState(null);
 
   const user_id = getTokenInfo().id;
 
@@ -27,7 +27,7 @@ const QuizPage = () => {
   }, [sessionId]);
 
   const handleSelectOption = (perguntaId, opcaoId) => {
-    if (!correcoes) { // impede mudar depois de corrigido
+    if (!correcoes) {
       setRespostas((prev) => ({
         ...prev,
         [perguntaId]: opcaoId
@@ -58,7 +58,15 @@ const QuizPage = () => {
 
     try {
       const resultado = await corrigirRespostasQuiz(quiz.id, payload);
-      setCorrecoes(resultado.correcoes); // 🟢 guarda correções recebidas
+
+      // Transformar lista de resultados num objeto indexado por pergunta_id
+      const correcoesMap = {};
+      resultado.resultados.forEach((item) => {
+        correcoesMap[item.pergunta_id] = item;
+      });
+
+      setCorrecoes(correcoesMap);
+
       alert("Respostas enviadas com sucesso!");
       console.log("Resultado:", resultado);
     } catch (error) {
@@ -79,36 +87,31 @@ const QuizPage = () => {
         <div key={pergunta.id} className="pergunta">
           <h4>{index + 1}. {pergunta.enunciado}</h4>
           <ul className="opcoes">
-
             {pergunta.opcoes.map((opcao) => {
               const selecionada = respostas[pergunta.id] === opcao.id;
-              const correta = correcoes && correcoes[pergunta.id] === opcao.id;
-              const errada = correcoes && selecionada && !correta;
+              const correcao = correcoes?.[pergunta.id];
+              const correta = correcao && correcao.resposta_correta === opcao.id;
+              const errada = correcao && correcao.resposta_user === opcao.id && !correcao.correta;
 
               return (
                 <li key={opcao.id}>
-  <label
-    className={
-      "opcao-cartao " +
-      (
-        correcoes
-          ? (opcao.correta ? "correta" : (selecionada ? "errada" : ""))
-          : ""
-      )
-    }
-  >
-
-    <input
-      type="radio"
-      name={`pergunta-${pergunta.id}`}
-      value={opcao.id}
-      checked={selecionada}
-      onChange={() => handleSelectOption(pergunta.id, opcao.id)}
-      disabled={!!correcoes}
-    />
-     <span>{opcao.texto}</span>
-  </label>
-</li>
+                  <label
+                    className={
+                      "opcao-cartao " +
+                      (correta ? "correta" : (errada ? "errada" : ""))
+                    }
+                  >
+                    <input
+                      type="radio"
+                      name={`pergunta-${pergunta.id}`}
+                      value={opcao.id}
+                      checked={selecionada}
+                      onChange={() => handleSelectOption(pergunta.id, opcao.id)}
+                      disabled={!!correcoes}
+                    />
+                    <span>{opcao.texto}</span>
+                  </label>
+                </li>
               );
             })}
           </ul>
@@ -116,14 +119,12 @@ const QuizPage = () => {
       ))}
 
       <button
-  onClick={enviarRespostas}
-  disabled={!!correcoes}
-  className={correcoes ? "btn-disabled" : "btn-submit"}
->
-  {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
-</button>
-
-
+        onClick={enviarRespostas}
+        disabled={!!correcoes}
+        className={correcoes ? "btn-disabled" : "btn-submit"}
+      >
+        {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
+      </button>
     </div>
   );
 };
