@@ -19,13 +19,6 @@ const FeedbackPage = () => {
   const [ratingFiltro, setRatingFiltro] = useState(3);
   const navigate = useNavigate();
 
-  function abrirPainelMensagens(modelo) {
-    setModeloSelecionado(modelo);
-  }
-  function fecharPainel() {
-    setModeloSelecionado(null);
-  }
-
   useEffect(() => {
     async function fetchData() {
       try {
