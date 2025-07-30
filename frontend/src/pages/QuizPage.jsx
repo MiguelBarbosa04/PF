@@ -4,13 +4,13 @@ import '../assets/css/QuizPage.css';
 import { corrigirRespostasQuiz, getQuizBySession } from "../services/api.js";
 import getTokenInfo from "../components/TokenInfo.jsx";
 
-const QuizPage = () => {
-  const { sessionId } = useParams();
+const QuizPage = ({sessionId: propSessionId}) => {
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
   const [correcoes, setCorrecoes] = useState(null);
-
+  const routeParams = useParams();
+  const sessionId = propSessionId || routeParams.sessionId;
   const user_id = getTokenInfo().id;
 
   useEffect(() => {
