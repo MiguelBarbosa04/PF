@@ -278,11 +278,6 @@ export async function updateLLM(modelo) {
   return await response.json();
 }
 
-/*export async function getLowRatedMessages() {
-  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas`);
-  return response.json();
-}*/
-
 export async function getRatedModels(rating = 2, limite = 10) {
   const response = await fetch(`${API_URL}/feedback/avaliacoes-por-modelo?rating=${rating}&limite=${limite}`);
   if (!response.ok) throw new Error("Erro ao buscar avaliações por modelo");
@@ -294,3 +289,37 @@ export async function getRatedMessages(rating = 3) {
   if (!response.ok) throw new Error("Erro ao buscar mensagens por avaliação");
   return await response.json();
 }
+
+export default function getTokenInfo() {
+  try {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    return data?.id || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export const getQuizBySession = async (sessionId) => {
+  const response = await fetch(`http://localhost:8000/quizzes/session/quiz/${sessionId}`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar o quiz");
+  }
+  return await response.json();
+};
+
+export const corrigirRespostasQuiz = async (quizId, payload) => {
+  const response = await fetch(`http://localhost:8000/quizzes/${quizId}/respostas/corrigir`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao enviar respostas");
+  }
+
+  return await response.json();
+};
+

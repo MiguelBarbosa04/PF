@@ -1,8 +1,9 @@
 import React, { forwardRef } from "react";
 import "../assets/css/ChatOptionsMenu.css";
 import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { updateSession } from "../services/api.js";
+import axios from "axios";
 
 const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete }, ref) => {
   const navigate = useNavigate();
@@ -29,9 +30,19 @@ const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDel
     }
   };
 
-  const handleQuiz = () => {
-    navigate(`/quiz/${session.id}`);
-  };
+const handleQuiz = async () => {
+  try {
+    const response = await axios.post("http://localhost:8000/quizzes/gerar_quiz", {
+      session_id: session.id
+    });
+
+    navigate(`/quizzes/session/quiz/${response.data.session_id}`);
+  } catch (error) {
+    console.error("Erro ao gerar quiz:", error);
+    alert("Erro ao criar quiz. Tenta novamente.");
+  }
+};
+
 
   return (
     <div className="chat-options-menu" ref={ref}>

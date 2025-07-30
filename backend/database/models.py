@@ -1,5 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, TIMESTAMP
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import Boolean, Text
 from backend.database.db import Base
 
 class Experiencia(Base):
@@ -31,7 +32,6 @@ class Users(Base):
     ling_preferida = Column(Integer, ForeignKey("linguagem.id"))
     password = Column(String(20), nullable=False)
 
-    # Relacionamentos (usando o nome correto da classe e __tablename__)
     experiencia_rel = relationship("Experiencia", backref="users")
     funcao_rel = relationship("Funcao", backref="users")
     linguagem_rel = relationship("Linguagem", backref="users")
@@ -64,12 +64,6 @@ class Messages(Base):
     session = relationship("Session", back_populates="messages")
 
 
-class Tema(Base):
-    __tablename__ = "temas"
-
-    id = Column(Integer, primary_key=True, index=True)
-    Nome = Column(String, nullable=False)
-
 class GlobalSettings(Base):
     __tablename__ = "global_settings"
 
@@ -77,3 +71,48 @@ class GlobalSettings(Base):
     modelo = Column(String(20), nullable=False)
     atualizado_em = Column(TIMESTAMP, nullable=False)
 
+
+
+class Quiz(Base):
+    __tablename__ = "quizzes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    titulo = Column(String(100), nullable=False)
+    descricao = Column(Text)
+    session_id = Column(Integer, ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False)
+    data = Column(TIMESTAMP, nullable=False)
+
+    perguntas = relationship("Pergunta", back_populates="quiz", cascade="all, delete")
+
+
+class Pergunta(Base):
+    __tablename__ = "quiz_perguntas"
+
+    id = Column(Integer, primary_key=True, index=True)
+    quiz_id = Column(Integer, ForeignKey("quizzes.id", ondelete="CASCADE"), nullable=False)
+    enunciado = Column(Text, nullable=False)
+
+    quiz = relationship("Quiz", back_populates="perguntas")
+    opcoes = relationship("Opcao", back_populates="pergunta", cascade="all, delete")
+
+
+class Opcao(Base):
+    __tablename__ = "quiz_opcoes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    pergunta_id = Column(Integer, ForeignKey("quiz_perguntas.id", ondelete="CASCADE"), nullable=False)
+    texto = Column(String(200), nullable=False)
+    correta = Column(Boolean, nullable=False)
+
+    pergunta = relationship("Pergunta", back_populates="opcoes")
+
+
+class RespostaUser(Base):
+    __tablename__ = "quiz_respostas_user"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    pergunta_id = Column(Integer, ForeignKey("quiz_perguntas.id", ondelete="CASCADE"), nullable=False)
+    opcao_id = Column(Integer, ForeignKey("quiz_opcoes.id", ondelete="CASCADE"), nullable=True)  # apenas múltipla escolha
+    correta = Column(Boolean, nullable=True)
+    respondido_em = Column(TIMESTAMP, nullable=False)

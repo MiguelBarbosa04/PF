@@ -13,6 +13,8 @@ const generateInitials = (nome) => {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 };
 
+
+
 const TokenInfo = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
@@ -55,6 +57,9 @@ const TokenInfo = () => {
   }, [navigate]);
 
   return userData;
+
+
 };
+
 
 export default TokenInfo;
