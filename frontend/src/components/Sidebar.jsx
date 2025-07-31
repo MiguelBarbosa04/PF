@@ -4,7 +4,7 @@ import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
   FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaComment
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
@@ -86,6 +86,10 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
     navigate("/perfil");
   };
 
+  const handleFeedbackClick = () => {
+    navigate("/feedback");
+  };
+
    const handleAlternarModo = () => {
     setModo((prev) => (prev === "exploratório" ? "instrucional" : "exploratório"));
   };
@@ -123,7 +127,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
             </span>
           )}
         </div>
-        <button className="new-chat-btn" onClick={() => navigate("/chat")}>
+        <button className="new-chat-btn" onClick={() => navigate("/tema")}>
           Novo Chat <FaPlus />
         </button>
       </div>
@@ -133,7 +137,8 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
           filteredSessions.map((session) => (
             <div key={session.id} className="chat-item-wrapper">
               <div
-                className="chat-item"
+                className={`chat-item 
+                ${String(session.id) === String(sessionId) ? "chat-item-selected" : ""}`}
                 onClick={() => navigate(`/chat/${session.id}`)}
               >
                 <span className="chat-tema">
@@ -146,7 +151,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
                     toggleSessionMenu(session.id);
                   }}
                 >
-                  <FaEllipsisH />
+                  <FaEllipsisH className={"fa-options"}/>
                 </div>
               </div>
 
@@ -208,6 +213,9 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
+          {isAdmin && (
+            <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
+          )}
           <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
           <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
