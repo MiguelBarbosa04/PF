@@ -155,3 +155,10 @@ def get_respostas_do_user_por_quiz(quiz_id: int, user_id: int, db: Session = Dep
         })
 
     return resultado
+
+@router.get("/{quiz_id}", response_model=QuizRead)
+def get_quiz_by_id(quiz_id: int, db: Session = Depends(get_db)):
+    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz não encontrado")
+    return quiz

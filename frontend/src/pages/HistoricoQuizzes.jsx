@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import QuizRepeatModal from "../components/QuizRepeatModal";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
-import {useNavigate} from "react-router";
+
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quizSelecionado, setQuizSelecionado] = useState(null);
+  const [quizParaRepetir, setQuizParaRepetir] = useState(null); // NOVO
   const url = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (!userId) {
       console.warn("userId está undefined. Não foi feita a fetch.");
@@ -31,9 +33,10 @@ function HistoricoQuizzes() {
       .finally(() => setLoading(false));
   }, [userId]);
 
-   return (
+  return (
     <div className="historico-container">
       <h2>Histórico de Quizzes</h2>
+
       {loading ? (
         <p>A carregar...</p>
       ) : quizSelecionado ? (
@@ -62,7 +65,8 @@ function HistoricoQuizzes() {
                 </button>
                 <button
                   className="botao-repetir"
-                  onClick={() => navigate(`/quiz/${quiz.id}/repeat`)}
+                  onClick={() => {console.log("Repetir quiz com id:", quiz.id);
+                    setQuizParaRepetir(quiz.id)} }// MODIFICADO
                 >
                   Repetir
                 </button>
@@ -71,8 +75,14 @@ function HistoricoQuizzes() {
           ))}
         </ul>
       )}
+
+      {quizParaRepetir && (
+        <QuizRepeatModal
+          quizId={quizParaRepetir}
+          onClose={() => setQuizParaRepetir(null)}
+        />
+      )}
     </div>
   );
 }
-
 export default HistoricoQuizzes;
