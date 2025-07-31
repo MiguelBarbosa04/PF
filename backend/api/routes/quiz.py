@@ -132,7 +132,7 @@ def get_respostas_do_user_por_quiz(quiz_id: int, user_id: int, db: Session = Dep
 
     resultado = []
 
-    for pergunta in perguntas:
+    for i, pergunta in enumerate(perguntas, start=1):  # Começa em 1
         resposta = (
             db.query(RespostaUser)
             .filter(RespostaUser.pergunta_id == pergunta.id, RespostaUser.user_id == user_id)
@@ -140,9 +140,9 @@ def get_respostas_do_user_por_quiz(quiz_id: int, user_id: int, db: Session = Dep
         )
 
         opcao_respondida_id = resposta.opcao_id if resposta else None
-        correta_id = next((op.id for op in pergunta.opcoes if op.correta), None)
 
         resultado.append({
+            "numero": i,  # Adiciona o número da pergunta
             "pergunta": pergunta.enunciado,
             "opcoes": [
                 {

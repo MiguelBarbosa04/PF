@@ -22,9 +22,11 @@ function QuizDetalhes({ quizId, userId, onVoltar }) {
     <div className="quiz-detalhes">
       <button className="voltar-btn" onClick={onVoltar}>← Voltar</button>
       <h3>Detalhes do Quiz</h3>
+
       {respostas.map((item, index) => (
         <div key={index} className="pergunta-container">
-          <h4>{item.pergunta}</h4>
+          <h4>{index + 1}. {item.pergunta}</h4>
+
           <ul className="opcoes-lista">
             {item.opcoes.map((opcao) => {
               const correta = opcao.correta;
