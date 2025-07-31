@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
-import {FaCog, FaComments, FaSignOutAlt} from "react-icons/fa";
+import {FaCog, FaComment, FaSignOutAlt} from "react-icons/fa";
 import { logout } from "../services/api.js";
 import { useNavigate } from "react-router";
 import TokenInfo from "./TokenInfo.jsx";
@@ -74,7 +74,7 @@ return (
             </button>
             {isAdmin && (
               <button className="action-button" onClick={handleFeedbackClick}>
-                <FaComments className="action-icon"/>
+                <FaComment className="action-icon"/>
                 Feedback
               </button>
             )}

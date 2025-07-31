@@ -43,8 +43,19 @@
   cursor: pointer;
 }
 
+.chat-item-selected {
+  background-color:  var(--color-bg-sidebar);
+  border-left: 4px solid var(--color-primary);
+  font-weight: bold;
+  padding-left: 5px;
+}
+
 .chat-options {
   color: var(--color-options);
+}
+
+.chat-item-selected div {
+  color: black;
 }
 
 .sidebar-user {
