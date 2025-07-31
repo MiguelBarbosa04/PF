@@ -230,15 +230,15 @@ export const uploadPDF = async (file) => {
 };
 
 export const getTemas = async () => {
-  const response = await fetch("http://localhost:8000/inspect-colecao/temas");
+  const response = await fetch(`${API_URL}/inspect-colecao/temas`);
   if (!response.ok) {
     throw new Error("Erro ao buscar os temas");
   }
   return response.json();
 };
 
-export async function updateTema(id, data) {
-  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+export async function updateTema(nomeAntigo, data) {
+  const res = await fetch(`${API_URL}/inspect-colecao/temas/${nomeAntigo}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -247,8 +247,8 @@ export async function updateTema(id, data) {
   return res.json();
 }
 
-export async function deleteTema(id) {
-  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+export async function deleteTema(nome) {
+  const res = await fetch(`${API_URL}/inspect-colecao/temas/apagar-por-nome/${nome}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Erro ao apagar tema");
@@ -300,7 +300,7 @@ export default function getTokenInfo() {
 }
 
 export const getQuizBySession = async (sessionId) => {
-  const response = await fetch(`http://localhost:8000/quizzes/session/quiz/${sessionId}`);
+  const response = await fetch(`${API_URL}/quizzes/session/quiz/${sessionId}`);
   if (!response.ok) {
     throw new Error("Erro ao buscar o quiz");
   }
@@ -308,7 +308,7 @@ export const getQuizBySession = async (sessionId) => {
 };
 
 export const corrigirRespostasQuiz = async (quizId, payload) => {
-  const response = await fetch(`http://localhost:8000/quizzes/${quizId}/respostas/corrigir`,{
+  const response = await fetch(`${API_URL}/quizzes/${quizId}/respostas/corrigir`,{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
