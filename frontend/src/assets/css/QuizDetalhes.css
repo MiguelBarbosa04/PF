@@ -1,19 +1,23 @@
-
 .quiz-detalhes {
-  padding: 20px;
+  padding: 525px 20px 20px 20px;
   background-color: #fefefe;
   border: 1px solid #ddd;
   border-radius: 8px;
+}
+
+.btn-container {
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 .voltar-btn {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 8px;
+  font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 .pergunta-container {

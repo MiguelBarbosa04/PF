@@ -20,7 +20,9 @@ function QuizDetalhes({ quizId, userId, onVoltar }) {
 
   return (
     <div className="quiz-detalhes">
-      <button className="voltar-btn" onClick={onVoltar}>← Voltar</button>
+     <div className="btn-container">
+  <button className="voltar-btn" onClick={onVoltar}>Voltar</button>
+</div>
       <h3>Detalhes do Quiz</h3>
 
       {respostas.map((item, index) => (
