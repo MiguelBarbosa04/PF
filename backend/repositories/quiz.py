@@ -39,10 +39,10 @@ def registar_resposta(db: Session, resposta: RespostaUserCreate):
 def listar_quizzes_por_user(db: Session, user_id: int):
     return (
         db.query(Quiz)
-        .join(Pergunta)
-        .join(RespostaUser)
+        .join(Pergunta, Quiz.id == Pergunta.quiz_id)
+        .join(RespostaUser, Pergunta.id == RespostaUser.pergunta_id)
         .filter(RespostaUser.user_id == user_id)
-        .distinct()
+        .distinct(Quiz.id)
         .all()
     )
 

@@ -4,12 +4,13 @@ import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
   FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
 import {FaNoteSticky} from "react-icons/fa6";
+
 
 const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const navigate = useNavigate();
@@ -22,6 +23,10 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const menuRef = useRef(null);
   const { sessionId } = useParams();
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
+
+    const handleIrParaHistorico = () => {
+     navigate(`/historico-quizzes/${userData.id}`);
+  };
 
 
   const fetchSessions = async () => {
@@ -209,6 +214,10 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
+                    <li onClick={handleIrParaHistorico}>
+            <FaQuestionCircle /> Histórico de Quizzes
+          </li>
+
           <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
           <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
