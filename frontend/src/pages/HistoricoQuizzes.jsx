@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import dayjs from 'dayjs';
-import '../assets/css/HistoricoQuizzes.css';
+import dayjs from "dayjs";
+import QuizDetalhes from "../components/QuizDetalhes";
+import "../assets/css/HistoricoQuizzes.css";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quizSelecionado, setQuizSelecionado] = useState(null);
   const url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      console.warn("userId está undefined. Não foi feita a fetch.");
+      return;
+    }
 
-    fetch(`${url}/quizzes/historico/${userId}`)
+    const endpoint = `${url}/quizzes/historico/${userId}`;
+    fetch(endpoint)
       .then((res) => {
-        if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+        if (!res.ok) {
+          throw new Error(`Erro HTTP: ${res.status}`);
+        }
         return res.json();
       })
-      .then(setQuizzes)
+      .then((data) => setQuizzes(data))
       .catch((err) => console.error("Erro ao carregar histórico:", err))
       .finally(() => setLoading(false));
   }, [userId]);
@@ -27,15 +35,25 @@ function HistoricoQuizzes() {
       <h2>Histórico de Quizzes</h2>
       {loading ? (
         <p>A carregar...</p>
+      ) : quizSelecionado ? (
+        <QuizDetalhes
+          quizId={quizSelecionado.id}
+          userId={userId}
+          onVoltar={() => setQuizSelecionado(null)}
+        />
       ) : quizzes.length === 0 ? (
         <p>Não foram encontrados quizzes.</p>
       ) : (
-        <ul className="quiz-list">
+        <ul className="quiz-lista">
           {quizzes.map((quiz) => (
-            <li className="quiz-item" key={quiz.id}>
-              <strong>Título:</strong> {quiz.titulo} <br />
-              <strong>Data:</strong>{" "}
-              <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
+            <li
+              key={quiz.id}
+              className="quiz-item"
+              onClick={() => setQuizSelecionado(quiz)}
+            >
+              <strong>{quiz.titulo}</strong>
+              <br />
+              <em>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</em>
             </li>
           ))}
         </ul>
