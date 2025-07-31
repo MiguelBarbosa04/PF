@@ -3,6 +3,7 @@ import ChatForm from '../components/ChatForm.jsx';
 import Modal from 'react-modal';
 import QuizPage from './QuizPage.jsx';
 import axios from 'axios';
+import {FaRegTimesCircle} from "react-icons/fa";
 
 Modal.setAppElement('#root'); // garante acessibilidade
 
@@ -43,7 +44,20 @@ const Chat = () => {
           }
         }}
       >
-        <button onClick={() => setModalAberto(false)}>Fechar</button>
+
+        <button style={{
+    position: "absolute",
+    width: "5rem",
+    background : "none",
+    top: "10px",
+    right: "10px",
+    color: "white",
+    border: "none",
+    padding: "4px 8px",
+    fontSize: "12px",
+    borderRadius: "4px",
+    cursor: "pointer"
+  }} onClick={() => setModalAberto(false)}> <FaRegTimesCircle style={{fontSize: "2rem", color : "black"}}/></button>
         {quizSessionId && <QuizPage sessionId={quizSessionId} />}
       </Modal>
     </div>
