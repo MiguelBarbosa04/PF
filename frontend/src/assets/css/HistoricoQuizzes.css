@@ -71,3 +71,53 @@
   line-height: 1.4;
   user-select: text;
 }
+.quiz-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--color-bg);
+  margin-bottom: 12px;
+  border-left: 6px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: background-color var(--transition-med);
+}
+
+.quiz-info {
+  flex-grow: 1;
+}
+
+.quiz-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.botao-ver,
+.botao-repetir {
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.botao-ver {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.botao-ver:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.botao-repetir {
+  background-color: var(--color-new-chat-btn);
+  color: white;
+}
+
+.botao-repetir:hover {
+  background-color: #0056b3;
+}

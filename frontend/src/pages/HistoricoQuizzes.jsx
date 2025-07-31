@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
+import {useNavigate} from "react-router";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -10,7 +11,7 @@ function HistoricoQuizzes() {
   const [loading, setLoading] = useState(true);
   const [quizSelecionado, setQuizSelecionado] = useState(null);
   const url = import.meta.env.VITE_API_URL;
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (!userId) {
       console.warn("userId está undefined. Não foi feita a fetch.");
@@ -30,7 +31,7 @@ function HistoricoQuizzes() {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  return (
+   return (
     <div className="historico-container">
       <h2>Histórico de Quizzes</h2>
       {loading ? (
@@ -44,16 +45,28 @@ function HistoricoQuizzes() {
       ) : quizzes.length === 0 ? (
         <p>Não foram encontrados quizzes.</p>
       ) : (
-        <ul className="quiz-lista">
+        <ul className="quiz-list">
           {quizzes.map((quiz) => (
-            <li
-              key={quiz.id}
-              className="quiz-item"
-              onClick={() => setQuizSelecionado(quiz)}
-            >
-              <strong>{quiz.titulo}</strong>
-              <br />
-              <em>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</em>
+            <li key={quiz.id} className="quiz-item">
+              <div className="quiz-info">
+                <strong>{quiz.titulo}</strong>
+                <br />
+                <em>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</em>
+              </div>
+              <div className="quiz-botoes">
+                <button
+                  className="botao-ver"
+                  onClick={() => setQuizSelecionado(quiz)}
+                >
+                  Ver
+                </button>
+                <button
+                  className="botao-repetir"
+                  onClick={() => navigate(`/quiz/${quiz.id}/repeat`)}
+                >
+                  Repetir
+                </button>
+              </div>
             </li>
           ))}
         </ul>
