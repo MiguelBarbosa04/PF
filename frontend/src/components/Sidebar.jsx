@@ -11,7 +11,7 @@ import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
 import {FaNoteSticky} from "react-icons/fa6";
 
-const Sidebar = ({modo, setModo, refreshTrigger}) => {
+const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const navigate = useNavigate();
   const userData = TokenInfo();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -155,6 +155,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
                   ref={menuRef}
                   session={session}
                   userData={userData}
+                  onQuizRequested={onQuizRequested}
                   onSessionUpdated={(id, novoTema) => {
                     setSessions((prev) =>
                       prev.map((s) =>

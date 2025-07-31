@@ -135,17 +135,9 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
 
   return (
     <div className="chat-wrapper">
-      <Sidebar modo={modo} setModo={setModo} key={sessionId || "default"} refreshTrigger={refreshSidebar} />
+      <Sidebar modo={modo} setModo={setModo} key={sessionId || "default"}
+               refreshTrigger={refreshSidebar} onQuizRequested={onQuizRequested} />
       <div className="chat-main">
-        {/* ✅ Botão de Quiz no topo da área principal */}
-        {papelSelecionado === "Tutor" && sessionId && (
-          <div style={{ textAlign: "right", padding: "10px 20px 0 0" }}>
-            <button onClick={() => onQuizRequested(sessionId)} className="quiz-button">
-              🧠 Gerar Quiz
-            </button>
-          </div>
-        )}
-
         {messages.length === 0 ? (
           <h2 className="chat-welcome">No que posso ajudar?</h2>
         ) : (
