@@ -3,7 +3,7 @@ import { corrigirRespostasQuiz, getQuizById } from "../services/api";
 import getTokenInfo from "./TokenInfo";
 import "../assets/css/Modal.css";
 
-const QuizRepeatModal = ({ quizId, onClose }) => {
+const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
@@ -54,22 +54,47 @@ const QuizRepeatModal = ({ quizId, onClose }) => {
         correcoesMap[item.pergunta_id] = item;
       });
       setCorrecoes(correcoesMap);
+
+      // Avisar o componente pai que o quiz foi repetido com sucesso
+      if (onRepetido) onRepetido();
+
     } catch (error) {
       alert("Erro ao enviar respostas.");
     }
   };
 
-  if (loading) return <div className="modal-overlay"><div className="modal-content"><p>A carregar...</p></div></div>;
-  if (!quiz) return <div className="modal-overlay"><div className="modal-content"><p>Quiz não encontrado.</p></div></div>;
+  if (loading)
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <p>A carregar...</p>
+        </div>
+      </div>
+    );
+
+  if (!quiz)
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <p>Quiz não encontrado.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>Fechar</button>
+        <button className="modal-close" onClick={onClose}>
+          Fechar
+        </button>
+
         <h2 className="quiz-title">{quiz.titulo}</h2>
+
         {quiz.perguntas.map((pergunta, idx) => (
           <div key={pergunta.id} className="pergunta">
-            <h4>{idx + 1}. {pergunta.enunciado}</h4>
+            <h4>
+              {idx + 1}. {pergunta.enunciado}
+            </h4>
             <ul className="opcoes">
               {pergunta.opcoes.map((opcao) => {
                 const selecionada = respostas[pergunta.id] === opcao.id;
@@ -79,7 +104,11 @@ const QuizRepeatModal = ({ quizId, onClose }) => {
 
                 return (
                   <li key={opcao.id}>
-                    <label className={`opcao-cartao ${correta ? "correta" : ""} ${errada ? "errada" : ""}`}>
+                    <label
+                      className={`opcao-cartao ${
+                        correta ? "correta" : ""
+                      } ${errada ? "errada" : ""}`}
+                    >
                       <input
                         type="radio"
                         name={`pergunta-${pergunta.id}`}

@@ -1,26 +1,25 @@
 import QuizRepeatModal from "../components/QuizRepeatModal";
-import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
 import EstatisticasChart from "../components/EstatisticasChart";
-
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quizSelecionado, setQuizSelecionado] = useState(null);
-  const [quizParaRepetir, setQuizParaRepetir] = useState(null); // NOVO
+  const [quizParaRepetir, setQuizParaRepetir] = useState(null);
   const url = import.meta.env.VITE_API_URL;
 
-  useEffect(() => {
+  const carregarQuizzes = () => {
     if (!userId) {
       console.warn("userId está undefined. Não foi feita a fetch.");
       return;
     }
-
+    setLoading(true);
     const endpoint = `${url}/quizzes/historico/${userId}`;
     fetch(endpoint)
       .then((res) => {
@@ -32,13 +31,17 @@ function HistoricoQuizzes() {
       .then((data) => setQuizzes(data))
       .catch((err) => console.error("Erro ao carregar histórico:", err))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    carregarQuizzes();
   }, [userId]);
 
   return (
     <div className="historico-container">
       <h2>Histórico de Quizzes</h2>
 
-  {userId && <EstatisticasChart userId={userId} />}
+      {userId && <EstatisticasChart userId={userId} />}
 
       {loading ? (
         <p>A carregar...</p>
@@ -68,8 +71,10 @@ function HistoricoQuizzes() {
                 </button>
                 <button
                   className="botao-repetir"
-                  onClick={() => {console.log("Repetir quiz com id:", quiz.id);
-                    setQuizParaRepetir(quiz.id)} }// MODIFICADO
+                  onClick={() => {
+                    console.log("Repetir quiz com id:", quiz.id);
+                    setQuizParaRepetir(quiz.id);
+                  }}
                 >
                   Repetir
                 </button>
@@ -83,9 +88,14 @@ function HistoricoQuizzes() {
         <QuizRepeatModal
           quizId={quizParaRepetir}
           onClose={() => setQuizParaRepetir(null)}
+          onRepetido={() => {
+            setQuizParaRepetir(null);
+            carregarQuizzes(); // Atualiza o histórico quando fechar modal após repetir
+          }}
         />
       )}
     </div>
   );
 }
+
 export default HistoricoQuizzes;
