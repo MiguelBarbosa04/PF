@@ -20,6 +20,29 @@ def limpar_json_markdown(texto: str) -> str:
     """Remove blocos de markdown tipo ```json ... ```"""
     return re.sub(r"^```json\s*|\s*```$", "", texto.strip(), flags=re.IGNORECASE)
 
+def query_prioritaria_por_source(collection, user_query: str, n_results: int = 4, limiar_distancia: float = 0.1):
+    # Query aos pares 5 estrelas
+    resultados_5estrelas = collection.query(
+        query_texts=[user_query],
+        n_results=n_results,
+        where={"source": "feedback_5_estrelas"},
+        include=["documents", "distances"]
+    )
+    docs_5 = resultados_5estrelas.get("documents", [[]])[0]
+    dist_5 = resultados_5estrelas.get("distances", [[]])[0]
+
+    # Se existir algum próximo o suficiente, retorna esses
+    if dist_5 and len(dist_5) > 0 and min(dist_5) < limiar_distancia:
+        return resultados_5estrelas
+
+    # Senão, retorna os documentos gerais
+    resultados_gerais = collection.query(
+        query_texts=[user_query],
+        n_results=n_results,
+        include=["documents", "distances"]
+    )
+    return resultados_gerais
+
 async def generate_rag_response(
     user_query: str,
     db: DBSession,
@@ -29,8 +52,12 @@ async def generate_rag_response(
     print("Modo recebido:", modo)
 
     # Obter documentos do ChromaDB
+    # collection = get_chroma_collection()
+    # results = collection.query(query_texts=[user_query], n_results=4)
+    # retrieved_docs = results.get("documents", [[]])[0] if results else []
+
     collection = get_chroma_collection()
-    results = collection.query(query_texts=[user_query], n_results=4)
+    results = query_prioritaria_por_source(collection, user_query, n_results=4, limiar_distancia=0.1)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     if not retrieved_docs:
@@ -78,6 +105,7 @@ async def generate_rag_response(
     regras = (
         "ATENÇÃO: Não deves usar conhecimento externo. "
         "Não inventes informações. "
+        "ATENÇÃO: Quando responderes, não repitas os prefixos \"PERGUNTA:\" ou \"RESPOSTA:\". Dá só a resposta limpa."
         "Se a resposta não estiver claramente nos documentos abaixo, responde apenas com: "
         "\"Essa informação não está disponível nos documentos fornecidos.\""
     )
