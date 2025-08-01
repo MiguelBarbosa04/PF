@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
 import re
-from backend.repositories.global_settings import get_global_settings
-from backend.schemas.sessions import SessionCreate
-from backend.repositories.sessions import create_session
-from backend.schemas.messages import ChatRequest
+from backend.repositories.global_settings_repository import get_global_settings
+from backend.schemas.sessions_schema import SessionCreate
+from backend.repositories.sessions_repository import create_session
+from backend.schemas.messages_schema import ChatRequest
 from backend.database.models import Messages, Users
 from backend.services.rag_service import generate_rag_response
 from dotenv import load_dotenv

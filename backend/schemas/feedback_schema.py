@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from backend.schemas.messages import MessageRead
+from backend.schemas.messages_schema import MessageRead
 from typing import Optional
 
 class FeedbackMessage(BaseModel):

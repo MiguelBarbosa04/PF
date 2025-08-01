@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from backend.database.db import get_db
-from backend.repositories import feedback
-from backend.schemas.feedback import FeedbackMessage
+from backend.repositories import feedback_repository
+from backend.schemas.feedback_schema import FeedbackMessage
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 

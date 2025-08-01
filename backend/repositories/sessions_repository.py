@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.database.models import Session as Sessions, Messages
-from backend.schemas.sessions import SessionCreate, SessionUpdate
+from backend.schemas.sessions_schema import SessionCreate, SessionUpdate
 from sqlalchemy import desc, func
 
 def create_session(db: Session, session_data: SessionCreate):

@@ -5,7 +5,7 @@ import re
 
 from sqlalchemy.orm import Session as DBSession
 from backend.database.models import Users
-from backend.repositories.global_settings import get_global_settings
+from backend.repositories.global_settings_repository import get_global_settings
 from backend.services.llm_service import get_chroma_collection
 from dotenv import load_dotenv
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from backend.services.rag_service import generate_rag_response
 from fastapi import Depends
-from backend.api.routes.users import get_current_user, get_db
+from backend.api.routes.users_route import get_current_user, get_db
 from sqlalchemy.orm import Session
 from backend.database.models import Users
 

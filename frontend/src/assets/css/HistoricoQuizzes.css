@@ -121,3 +121,8 @@
 .botao-repetir:hover {
   background-color: #0056b3;
 }
+
+.historico-container h3 {
+  margin-bottom: 10px;
+  color: #444;
+}
