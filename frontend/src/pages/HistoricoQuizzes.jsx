@@ -14,24 +14,31 @@ function HistoricoQuizzes() {
   const [quizParaRepetir, setQuizParaRepetir] = useState(null);
   const url = import.meta.env.VITE_API_URL;
 
-  const carregarQuizzes = () => {
-    if (!userId) {
-      console.warn("userId está undefined. Não foi feita a fetch.");
-      return;
-    }
-    setLoading(true);
-    const endpoint = `${url}/quizzes/historico/${userId}`;
-    fetch(endpoint)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Erro HTTP: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => setQuizzes(data))
-      .catch((err) => console.error("Erro ao carregar histórico:", err))
-      .finally(() => setLoading(false));
-  };
+const carregarQuizzes = () => {
+  if (!userId) {
+    console.warn("userId está undefined. Não foi feita a fetch.");
+    return;
+  }
+  setLoading(true);
+  const endpoint = `${url}/quizzes/historico/${userId}`;
+  fetch(endpoint)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Erro HTTP: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      // Ordena do mais recente para o mais antigo pela propriedade 'data'
+      const dataOrdenada = data.sort(
+        (a, b) => new Date(b.data) - new Date(a.data)
+      );
+      setQuizzes(dataOrdenada);
+    })
+    .catch((err) => console.error("Erro ao carregar histórico:", err))
+    .finally(() => setLoading(false));
+};
+
 
   useEffect(() => {
     carregarQuizzes();
