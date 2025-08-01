@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from backend.database.models import Quiz, Pergunta, Opcao, RespostaUser
 from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate
@@ -45,6 +45,31 @@ def listar_quizzes_por_user(db: Session, user_id: int):
         .distinct(Quiz.id)
         .all()
     )
+
+def listar_quizzes_por_user_historico(db: Session, user_id: int):
+    subquery = (
+        db.query(
+            Quiz.id.label("quiz_id"),
+            Quiz.titulo,
+            Quiz.descricao,
+            Quiz.session_id,
+            func.max(RespostaUser.respondido_em).label("data_resposta")
+        )
+        .join(Pergunta, Quiz.id == Pergunta.quiz_id)
+        .join(RespostaUser, Pergunta.id == RespostaUser.pergunta_id)
+        .filter(RespostaUser.user_id == user_id)
+        .group_by(Quiz.id)
+        .subquery()
+    )
+
+    return db.query(
+        Quiz.id,
+        Quiz.titulo,
+        Quiz.descricao,
+        Quiz.session_id,
+        subquery.c.data_resposta.label("data")
+    ).join(subquery, Quiz.id == subquery.c.quiz_id).all()
+
 
 def listar_respostas_do_user(db: Session, user_id: int):
     return (
@@ -99,3 +124,4 @@ def obter_respostas_quiz(db: Session, quiz_id: int, user_id: int):
         })
 
     return resultado
+
