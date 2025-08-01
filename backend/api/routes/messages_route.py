@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from backend.auth.auth import get_current_user
-from backend.schemas.users import UserRead
+from backend.schemas.users_schema import UserRead
 from backend.services.chat_service import generate_chat_response
 from backend.database.db import get_db
-from backend.schemas.messages import ChatRequest
-from backend.schemas.messages import MessageRead, MessageUpdateRating
-from backend.repositories.messages import get_messages_by_session
-from backend.repositories import messages as repo
-from backend.schemas.messages import ChatFullResponse
+from backend.schemas.messages_schema import ChatRequest
+from backend.schemas.messages_schema import MessageRead, MessageUpdateRating
+from backend.repositories.messages_repository import get_messages_by_session
+from backend.repositories import messages_repository as repo
+from backend.schemas.messages_schema import ChatFullResponse
 
 router = APIRouter(prefix="/messages", tags=["Messages"])
 

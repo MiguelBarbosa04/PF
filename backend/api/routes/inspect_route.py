@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import shutil
-from backend.schemas.chroma import  TemaUpdateRequest
+from backend.schemas.chroma_schema import  TemaUpdateRequest
 from backend.services.chroma_service import *
 import os
 import gc

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from backend.database.models import GlobalSettings
-from backend.schemas.global_settings import GlobalSettingsCreate
+from backend.schemas.global_settings_schema import GlobalSettingsCreate
 from datetime import datetime
 
 def get_global_settings(db: Session) -> GlobalSettings | None:

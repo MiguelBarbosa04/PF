@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.schemas.global_settings import GlobalSettingsBase, GlobalSettingsCreate
-from backend.repositories.global_settings import get_global_settings, create_or_update_global_settings
+from backend.schemas.global_settings_schema import GlobalSettingsBase, GlobalSettingsCreate
+from backend.repositories.global_settings_repository import get_global_settings, create_or_update_global_settings
 from backend.database.db import get_db
 
 router = APIRouter(prefix="/global-settings", tags=["Global Settings"])

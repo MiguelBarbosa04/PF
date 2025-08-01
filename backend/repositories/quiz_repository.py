@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from backend.database.models import Quiz, Pergunta, Opcao, RespostaUser
-from backend.schemas.quiz import QuizCreate, RespostaUserCreate
+from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate
 
 def criar_quiz(db: Session, quiz_data: QuizCreate):
     quiz = Quiz(titulo=quiz_data.titulo, descricao=quiz_data.descricao, session_id=quiz_data.session_id, data=datetime.utcnow())
