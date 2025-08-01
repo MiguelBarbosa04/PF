@@ -228,9 +228,12 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
-                    <li onClick={handleIrParaHistorico}>
-            <FaQuestionCircle /> Histórico de Quizzes
-          </li>
+                    {localStorage.getItem("papel") === "Tutor" && (
+      <li onClick={handleIrParaHistorico}>
+        <FaQuestionCircle /> Histórico de Quizzes
+      </li>
+    )}
+
           {isAdmin && (
             <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
           )}
