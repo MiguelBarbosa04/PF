@@ -47,9 +47,11 @@ async def generate_rag_response(
     user_query: str,
     db: DBSession,
     current_user: Users,
-    modo: str = "exploratório"
+    modo: str = "exploratório",
+    papel: str = "Agente"
 ) -> str:
     print("Modo recebido:", modo)
+    print("PAPEL: ", papel)
 
     # Obter documentos do ChromaDB
     # collection = get_chroma_collection()
@@ -90,16 +92,18 @@ async def generate_rag_response(
         )
 
     # Estilo com base no modo
-    if modo == "instrucional":
-        estilo_modo = (
-            "A tua missão é ensinar o utilizador sobre o tema com base apenas nos documentos fornecidos. "
-            "Ensina passo a passo como se estivesses a dar uma aula. "
-            "Estrutura a resposta com listas, tópicos e exemplos simples."
-        )
-    else:
-        estilo_modo = (
-            "A tua missão é responder de forma direta, útil e objetiva, com base unicamente nos documentos fornecidos."
-        )
+    estilo_modo = "A tua missão é responder com base unicamente nos documentos fornecidos."
+    if papel == "Tutor":
+        if modo == "instrucional":
+            estilo_modo = (
+                "A tua missão é ensinar o utilizador sobre o tema com base apenas nos documentos fornecidos. "
+                "Ensina passo a passo como se estivesses a dar uma aula. "
+                "Estrutura a resposta com listas, tópicos e exemplos simples."
+            )
+        else:
+            estilo_modo = (
+                "A tua missão é responder de forma direta, útil e objetiva, com base unicamente nos documentos fornecidos."
+            )
 
     # Regras de restrição (com reforço claro)
     regras = (

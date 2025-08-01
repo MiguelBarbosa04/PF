@@ -65,7 +65,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
       criado_em: new Date().toISOString(),
       avaliacao: null,
       modo,
-      papel: !sessionId ? papelSelecionado : undefined,
+      papel: papelSelecionado,
     };
 
     setMessages((prev) => [...prev, novaMensagemUser]);

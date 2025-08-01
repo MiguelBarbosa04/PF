@@ -130,7 +130,7 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
     # Se for o utilizador, gerar resposta com RAG
     if request.remetente == "user":
         current_user = db.query(Users).filter(Users.id == user_id).first()
-        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo)
+        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo, papel=request.papel)
 
         # Obter o modelo usado para gravar na BD
         settings = get_global_settings(db)
