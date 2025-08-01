@@ -222,9 +222,11 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           {isAdmin && (
               <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
-          <li onClick={handleAlternarModo}>
-            <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
-          </li>
+            {localStorage.getItem("papel") === "Tutor" && (
+            <li onClick={handleAlternarModo}>
+              <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
+            </li>
+          )}
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>

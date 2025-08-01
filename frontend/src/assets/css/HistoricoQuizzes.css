@@ -1,128 +1,121 @@
+@import url('./variables.css');
+
+.historico-wrapper {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: var(--color-bg);
+  font-family: var(--font-base);
+  color: var(--color-text-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .historico-container {
-  padding: 24px 20px;
+  width: 100%;
   max-width: 720px;
-  margin: 0 auto;
-  font-family: var(--font-base);
-  background-color: var(--color-card-white);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-light);
+  padding: 32px;
 }
 
 .historico-container h2 {
   text-align: center;
   color: var(--color-text-heading);
-  margin-bottom: 28px;
-  font-weight: 700;
-  font-size: 1.8rem;
-  letter-spacing: 0.03em;
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+.estatisticas-info {
+  background-color: var(--color-white);
+  padding: 16px 24px;
+
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.estatisticas-info p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: var(--color-text-body);
 }
 
 .quiz-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .quiz-item {
-  background-color: var(--color-bg);
-  padding: 18px 20px;
-  margin-bottom: 14px;
-  border-left: 6px solid var(--color-primary);
+  background-color: var(--color-white);
+  border-left: 5px solid var(--color-primary);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  transition: background-color var(--transition-med), border-color var(--transition-med);
-  cursor: pointer;
+  padding: 20px;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color var(--transition-fast);
 }
 
 .quiz-item:hover {
   background-color: var(--color-hover-light);
-  border-color: var(--color-primary-hover);
-}
-
-.quiz-item strong {
-  color: var(--color-text-body);
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.quiz-item time {
-  display: block;
-  margin-top: 6px;
-  color: var(--color-options);
-  font-size: 0.9rem;
-  font-style: normal;
-}
-
-.resposta-lista {
-  margin-top: 16px;
-  padding-left: 20px;
-}
-
-.resposta-item {
-  background-color: var(--color-card-white);
-  border-left: 4px solid var(--color-primary);
-  margin-top: 10px;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  color: var(--color-text-body);
-  box-shadow: var(--shadow-medium);
-  line-height: 1.4;
-  user-select: text;
-}
-.quiz-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background-color: var(--color-bg);
-  margin-bottom: 12px;
-  border-left: 6px solid var(--color-primary);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  transition: background-color var(--transition-med);
 }
 
 .quiz-info {
   flex-grow: 1;
 }
 
-.quiz-botoes {
-  display: flex;
-  gap: 8px;
+.quiz-info strong {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
 }
 
-.botao-ver,
-.botao-repetir {
-  padding: 6px 10px;
+.quiz-info time {
   font-size: 0.9rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
+  color: var(--color-options);
+  margin-top: 4px;
+  display: block;
+}
+
+.quiz-botoes {
+  display: flex;
+  gap: 10px;
 }
 
 .botao-ver {
   background-color: var(--color-primary);
   color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color var(--transition-fast);
 }
 
 .botao-ver:hover {
   background-color: var(--color-primary-hover);
 }
 
-.botao-repetir {
-  background-color: var(--color-new-chat-btn);
-  color: white;
+.resposta-lista {
+  margin-top: 12px;
+  padding-left: 24px;
 }
 
-.botao-repetir:hover {
-  background-color: #0056b3;
-}
-
-.historico-container h3 {
+.resposta-item {
+  background-color: var(--color-white);
+  padding: 14px;
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-light);
+  font-size: 1rem;
+  color: var(--color-text-body);
   margin-bottom: 10px;
-  color: #444;
+  line-height: 1.5;
 }

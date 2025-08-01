@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
-import EstatisticasChart from "../components/EstatisticasChart";
+import Estatisticas from "../components/Estatisticas.jsx";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -45,10 +45,14 @@ const carregarQuizzes = () => {
   }, [userId]);
 
   return (
+      <div className="historico-wrapper">
     <div className="historico-container">
       <h2>Histórico de Quizzes</h2>
 
-      {userId && <EstatisticasChart userId={userId} />}
+    {userId && (
+  <Estatisticas userId={userId} />
+  )}
+
 
       {loading ? (
         <p>A carregar...</p>
@@ -102,6 +106,7 @@ const carregarQuizzes = () => {
         />
       )}
     </div>
+      </div>
   );
 }
 
