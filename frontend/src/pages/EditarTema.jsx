@@ -36,10 +36,10 @@ const handleEdit = (id, Nome) => {
 };
 
 const handleSave = async (id) => {
+  const temaAntigo = temas.find(t=>t.id === id);
   try {
     // Atualiza tema no backend (inclui Chroma)
-    await updateTema(id, { Nome: editedNome });
-
+    await updateTema(temaAntigo.Nome, { nome_novo: editedNome });
     // Atualiza estado local React para refletir mudança
     setTemas(temas.map(tema =>
       tema.id === id ? { ...tema, Nome: editedNome } : tema
@@ -48,6 +48,8 @@ const handleSave = async (id) => {
     setEditId(null);
     setEditedNome('');
   } catch (error) {
+    console.log("Nome antigo:", temaAntigo.Nome);
+console.log("Novo nome:", editedNome);
     console.error("Erro ao atualizar tema:", error);
   }
 };
@@ -57,15 +59,15 @@ const handleCancel = () => {
   setEditedNome('');
 };
 
-const handleDelete = async (id) => {
+const handleDelete = async (nome) => {
   if (!window.confirm("Tem certeza que quer apagar este tema?")) return;
 
   try {
     // Apaga tema no backend (inclui Chroma)
-    await deleteTema(id);
+    await deleteTema(nome);
 
     // Atualiza estado local React removendo o tema
-    setTemas(temas.filter(tema => tema.id !== id));
+    setTemas(temas.filter(tema => tema.Nome !== nome));
   } catch (error) {
     console.error("Erro ao apagar tema:", error);
   }
@@ -122,7 +124,7 @@ const handleDelete = async (id) => {
                   ) : (
                     <>
                       <FaRegEdit onClick={() => handleEdit(tema.id, tema.Nome)} className="card-icon-edit" />
-                      <FaTrashAlt onClick={() => handleDelete(tema.id)} className="card-icon-trash" />
+                      <FaTrashAlt onClick={() => handleDelete(tema.Nome)} className="card-icon-trash" />
                     </>
                   )}
                 </td>
