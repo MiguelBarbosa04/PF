@@ -3,7 +3,17 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle, FaComment
+  FaSearch,
+  FaPlus,
+  FaAngleDown,
+  FaAngleUp,
+  FaEllipsisH,
+  FaTimes,
+  FaQuestionCircle,
+  FaComment,
+  FaComments,
+  FaUserEdit,
+  FaSignOutAlt, FaFileAlt
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
