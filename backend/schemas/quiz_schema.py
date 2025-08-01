@@ -75,3 +75,12 @@ class RespostaEnvio(BaseModel):
     respostas: Dict[int, int]  # { pergunta_id: opcao_id }
     respondido_em: datetime
 
+class QuizHistoricoRead(BaseModel):
+    id: int
+    titulo: str
+    descricao: str
+    session_id: int
+    data: datetime  # <- virá de RespostaUser.respondido_em
+
+    class Config:
+        orm_mode = True

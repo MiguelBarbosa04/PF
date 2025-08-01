@@ -231,6 +231,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
+
           {localStorage.getItem("papel") === "Tutor" && (
             <li onClick={handleIrParaHistorico}>
               <FaQuestionCircle /> Histórico de Quizzes

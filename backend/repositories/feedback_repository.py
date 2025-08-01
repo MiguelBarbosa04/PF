@@ -43,6 +43,8 @@ def get_rated_models(db: Session, rating: int = 2, limite: int = 10):
         .limit(limite)
         .all()
     )
+
+
     return resultados
 
 def get_good_rated_messages(db: Session, rating: int = 5):

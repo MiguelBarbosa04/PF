@@ -9,3 +9,4 @@ class FeedbackMessage(BaseModel):
 class QAExport(BaseModel):
     pergunta: str
     resposta: str
+

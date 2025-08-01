@@ -1,25 +1,41 @@
 import QuizRepeatModal from "../components/QuizRepeatModal";
-import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
-
+import Estatisticas from "../components/Estatisticas.jsx";
+import {useNavigate} from "react-router";
+import "../assets/css/IconMenuWrapper.css";
+import IconMenu from "../components/IconMenu.jsx";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quizSelecionado, setQuizSelecionado] = useState(null);
-  const [quizParaRepetir, setQuizParaRepetir] = useState(null); // NOVO
+  const [quizParaRepetir, setQuizParaRepetir] = useState(null);
+  const [paginaAtual, setPaginaAtual] = useState(0);
+  const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
-  useEffect(() => {
+const handleBack = () => {
+    navigate(-1);
+  };
+  const quizzesPaginaAtual = quizzes.slice(
+    paginaAtual * quizzesPorPagina,
+    (paginaAtual + 1) * quizzesPorPagina
+  );
+
+  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
+
+  const carregarQuizzes = () => {
     if (!userId) {
       console.warn("userId está undefined. Não foi feita a fetch.");
       return;
     }
-
+    setLoading(true);
     const endpoint = `${url}/quizzes/historico/${userId}`;
     fetch(endpoint)
       .then((res) => {
@@ -28,61 +44,117 @@ function HistoricoQuizzes() {
         }
         return res.json();
       })
-      .then((data) => setQuizzes(data))
+      .then((data) => {
+        const dataOrdenada = data.sort(
+          (a, b) => new Date(b.data) - new Date(a.data)
+        );
+        setQuizzes(dataOrdenada);
+      })
       .catch((err) => console.error("Erro ao carregar histórico:", err))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    carregarQuizzes();
   }, [userId]);
 
   return (
-    <div className="historico-container">
-      <h2>Histórico de Quizzes</h2>
+    <div className="historico-wrapper">
+      <button className="back-button" onClick={handleBack}>
+        Voltar
+      </button>
+      <div className="user-profile-wrapper">
+        <IconMenu />
+      </div>
+      <div className="historico-container">
+        <h2>Histórico de Quizzes</h2>
 
-      {loading ? (
-        <p>A carregar...</p>
-      ) : quizSelecionado ? (
-        <QuizDetalhes
-          quizId={quizSelecionado.id}
-          userId={userId}
-          onVoltar={() => setQuizSelecionado(null)}
-        />
-      ) : quizzes.length === 0 ? (
-        <p>Não foram encontrados quizzes.</p>
-      ) : (
-        <ul className="quiz-list">
-          {quizzes.map((quiz) => (
-            <li key={quiz.id} className="quiz-item">
-              <div className="quiz-info">
-                <strong>{quiz.titulo}</strong>
-                <br />
-                <em>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</em>
-              </div>
-              <div className="quiz-botoes">
-                <button
-                  className="botao-ver"
-                  onClick={() => setQuizSelecionado(quiz)}
-                >
-                  Ver
-                </button>
-                <button
-                  className="botao-repetir"
-                  onClick={() => {console.log("Repetir quiz com id:", quiz.id);
-                    setQuizParaRepetir(quiz.id)} }// MODIFICADO
-                >
-                  Repetir
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+        {userId && (
+          <div className="estatisticas-bloco">
+            <Estatisticas userId={userId} />
+          </div>
+        )}
 
-      {quizParaRepetir && (
-        <QuizRepeatModal
-          quizId={quizParaRepetir}
-          onClose={() => setQuizParaRepetir(null)}
-        />
-      )}
+        {loading ? (
+          <p>A carregar...</p>
+        ) : quizSelecionado ? (
+          <QuizDetalhes
+            quizId={quizSelecionado.id}
+            userId={userId}
+            onVoltar={() => setQuizSelecionado(null)}
+          />
+        ) : quizzes.length === 0 ? (
+          <p>Não foram encontrados quizzes.</p>
+        ) : (
+          <>
+            <ul className="quiz-list">
+              {quizzesPaginaAtual.map((quiz) => (
+                <li key={quiz.id} className="quiz-item">
+                  <div className="quiz-info">
+                    <strong>{quiz.titulo}</strong>
+                    <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
+                  </div>
+                  <div className="quiz-botoes">
+                    <button
+                      className="botao-ver"
+                      onClick={() => setQuizSelecionado(quiz)}
+                    >
+                      Ver
+                    </button>
+                    <button
+                      className="botao-repetir"
+                      onClick={() => setQuizParaRepetir(quiz.id)}
+                    >
+                      Repetir
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {totalPaginas > 1 && (
+              <div className="paginacao-wrapper">
+                <div className="paginacao-bloco">
+                  <button
+                    className="seta"
+                    onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
+                    disabled={paginaAtual === 0}
+                  >
+                    ◀
+                  </button>
+                  <span className="pagina-atual">
+                    Página {paginaAtual + 1} de {totalPaginas}
+                  </span>
+                  <button
+                    className="seta"
+                    onClick={() =>
+                      setPaginaAtual((prev) =>
+                        Math.min(prev + 1, totalPaginas - 1)
+                      )
+                    }
+                    disabled={paginaAtual === totalPaginas - 1}
+                  >
+                    ▶
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {quizParaRepetir && (
+          <QuizRepeatModal
+            quizId={quizParaRepetir}
+            onClose={() => setQuizParaRepetir(null)}
+            onRepetido={() => {
+              setQuizParaRepetir(null);
+              carregarQuizzes();
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
+
 export default HistoricoQuizzes;

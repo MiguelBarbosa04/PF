@@ -6,6 +6,7 @@ import os
 import gc
 from backend.repositories import chroma_repository
 
+
 router = APIRouter(prefix="/inspect-colecao", tags=["Inspeção"])
 
 CHROMA_PATH = "chroma/"
@@ -181,6 +182,8 @@ def apagar_tema_por_nome(filename: str):
         print("Erro ao apagar documentos:", str(e))
         raise HTTPException(status_code=500, detail="Erro ao apagar documentos.")
 
+
 @router.get("/documentos")
 def listar_documentos(limit: int = 10):
     return chroma_repository.listar_documentos_chroma(limit)
+

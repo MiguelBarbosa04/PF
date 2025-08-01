@@ -276,7 +276,6 @@ async def gerar_quiz_ollama(tema: str) -> dict:
     if not full_response.strip():
         raise ValueError("Resposta do Ollama está vazia.")
 
-    import re
     json_match = re.search(r"\{.*\}", full_response, re.DOTALL)
 
     if json_match:
