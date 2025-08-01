@@ -323,3 +323,10 @@ export const corrigirRespostasQuiz = async (quizId, payload) => {
   return await response.json();
 };
 
+export const getQuizById = async (quizId) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/quizzes/${quizId}`);
+  if (!res.ok) throw new Error("Erro ao buscar quiz");
+  return res.json();
+};
+
+

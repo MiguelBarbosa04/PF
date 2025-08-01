@@ -9,7 +9,8 @@ npm install react-icons
 npm install react-select
 npm install recharts
 npm install microsoft-cognitiveservices-speech-sdk
-
+npm install react-modal
+npm install dayjs
 cd..
 uvicorn backend.main:app --reload 
 

@@ -4,11 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db
 from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest, RespostaEnvio
+from backend.repositories.quiz import obter_respostas_quiz
 import backend.repositories.quiz as quiz_repo
 from backend.repositories.global_settings import obter_modelo_mais_recente
 from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
-from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta
+from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta, Opcao
 from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
+
 router = APIRouter(prefix="/quizzes", tags=["Quizzes"])
 
 @router.post("/", response_model=QuizRead)
@@ -111,3 +114,51 @@ def corrigir_respostas(quiz_id: int, payload: RespostaEnvio, db: Session = Depen
         "resultados": resultados
     }
 
+@router.get("/respostas/{quiz_id}/{user_id}")
+def get_respostas_quiz(quiz_id: int, user_id: int, db: Session = Depends(get_db)):
+    respostas = obter_respostas_quiz(db, quiz_id, user_id)
+    if respostas is None:
+        raise HTTPException(status_code=404, detail="Respostas não encontradas")
+    return respostas
+
+@router.get("/quizzes/respostas/{quiz_id}/{user_id}")
+def get_respostas_do_user_por_quiz(quiz_id: int, user_id: int, db: Session = Depends(get_db)):
+    perguntas = (
+        db.query(Pergunta)
+        .options(joinedload(Pergunta.opcoes))
+        .filter(Pergunta.quiz_id == quiz_id)
+        .all()
+    )
+
+    resultado = []
+
+    for i, pergunta in enumerate(perguntas, start=1):  # Começa em 1
+        resposta = (
+            db.query(RespostaUser)
+            .filter(RespostaUser.pergunta_id == pergunta.id, RespostaUser.user_id == user_id)
+            .first()
+        )
+
+        opcao_respondida_id = resposta.opcao_id if resposta else None
+
+        resultado.append({
+            "numero": i,  # Adiciona o número da pergunta
+            "pergunta": pergunta.enunciado,
+            "opcoes": [
+                {
+                    "id": op.id,
+                    "texto": op.texto,
+                    "correta": op.correta,
+                    "foi_escolhida": op.id == opcao_respondida_id
+                } for op in pergunta.opcoes
+            ]
+        })
+
+    return resultado
+
+@router.get("/{quiz_id}", response_model=QuizRead)
+def get_quiz_by_id(quiz_id: int, db: Session = Depends(get_db)):
+    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz não encontrado")
+    return quiz

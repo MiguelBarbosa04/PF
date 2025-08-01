@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-  FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaComment
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle, FaComment
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
 import {FaNoteSticky} from "react-icons/fa6";
 
-const Sidebar = ({modo, setModo, refreshTrigger}) => {
+
+const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const navigate = useNavigate();
   const userData = TokenInfo();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -22,6 +22,10 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
   const menuRef = useRef(null);
   const { sessionId } = useParams();
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
+
+    const handleIrParaHistorico = () => {
+     navigate(`/historico-quizzes/${userData.id}`);
+  };
 
 
   const fetchSessions = async () => {
@@ -160,6 +164,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
                   ref={menuRef}
                   session={session}
                   userData={userData}
+                  onQuizRequested={onQuizRequested}
                   onSessionUpdated={(id, novoTema) => {
                     setSessions((prev) =>
                       prev.map((s) =>
@@ -213,9 +218,13 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
+                    <li onClick={handleIrParaHistorico}>
+            <FaQuestionCircle /> Histórico de Quizzes
+          </li>
           {isAdmin && (
             <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
           )}
+
           <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
           <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>

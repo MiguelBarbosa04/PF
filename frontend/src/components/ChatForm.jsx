@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
 import Sidebar from "../components/Sidebar";
 import ChatMessage from "./ChatMessage.jsx";
+import ChatOptionsMenu from "../components/ChatOptionsMenu.jsx"; // ✅ IMPORTA
 import {
   getMessagesBySession,
   rateMessage,
@@ -9,9 +10,9 @@ import {
 } from "../services/api.js";
 import "../assets/css/ChatForm.css";
 import { FaArrowCircleRight, FaMicrophone } from "react-icons/fa";
-import {useAzureSpeechRecognition} from "../hooks/useAzureSpeechRecognition.js";
+import { useAzureSpeechRecognition } from "../hooks/useAzureSpeechRecognition.js";
 
-const ChatForm = ({ modo, setModo }) => {
+const ChatForm = ({ modo, setModo, onQuizRequested }) => {
   const { sessionId } = useParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -29,7 +30,7 @@ const ChatForm = ({ modo, setModo }) => {
   const { startListening, stopListening, isListening } = useAzureSpeechRecognition({
     azureKey: import.meta.env.VITE_AZURE_SPEECH_KEY,
     azureRegion: import.meta.env.VITE_AZURE_SPEECH_REGION,
-    onResult: (text) => {setInput(text); setIsVoiceInput(true);},
+    onResult: (text) => { setInput(text); setIsVoiceInput(true); },
   });
 
   useEffect(() => {
@@ -111,9 +112,9 @@ const ChatForm = ({ modo, setModo }) => {
   };
 
   useEffect(() => {
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-      }
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   const addStopFn = (stopFn) => {
@@ -128,13 +129,14 @@ const ChatForm = ({ modo, setModo }) => {
   };
 
   useEffect(() => {
-    stopAll(); // para a fala da sessão anterior
-    setLastSpokenMessageId(null); // limpa o ID da mensagem falada
+    stopAll();
+    setLastSpokenMessageId(null);
   }, [sessionId]);
 
   return (
     <div className="chat-wrapper">
-      <Sidebar modo={modo} setModo={setModo} key={sessionId || "default"} refreshTrigger={refreshSidebar} />
+      <Sidebar modo={modo} setModo={setModo} key={sessionId || "default"}
+               refreshTrigger={refreshSidebar} onQuizRequested={onQuizRequested} />
       <div className="chat-main">
         {messages.length === 0 ? (
           <h2 className="chat-welcome">No que posso ajudar?</h2>
@@ -142,7 +144,7 @@ const ChatForm = ({ modo, setModo }) => {
           <div className="chat-messages" ref={chatContainerRef}>
             {messages.map((msg) => (
               <ChatMessage key={msg.id} msg={msg} onRate={handleAvaliarMensagem} stopAll={stopAll} addStopFn={addStopFn}
-                    isVoiceInput={msg.remetente === "bot" && msg.id === lastSpokenMessageId} ttsProvider={ttsProvider}/>
+                isVoiceInput={msg.remetente === "bot" && msg.id === lastSpokenMessageId} ttsProvider={ttsProvider} />
             ))}
             {isBotTyping && (
               <div className="chat-message bot typing-indicator">
@@ -151,6 +153,7 @@ const ChatForm = ({ modo, setModo }) => {
             )}
           </div>
         )}
+
         <div className="chat-input-area">
           <textarea
             className="chat-input"
@@ -168,15 +171,15 @@ const ChatForm = ({ modo, setModo }) => {
           />
           <div className="chat-btns">
             <button
-                className="chat-voice-button"
-                onClick={() => {
-                    isListening ? stopListening() : startListening();
-                }}
+              className="chat-voice-button"
+              onClick={() => {
+                isListening ? stopListening() : startListening();
+              }}
             >
-              {isListening ? "A ouvir..." : <FaMicrophone/>}
+              {isListening ? "A ouvir..." : <FaMicrophone />}
             </button>
             <button className="chat-send-button" onClick={handleEnviarMensagem}>
-              <FaArrowCircleRight/>
+              <FaArrowCircleRight />
             </button>
           </div>
         </div>

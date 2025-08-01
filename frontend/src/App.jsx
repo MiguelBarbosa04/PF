@@ -12,6 +12,8 @@ import EditarTema from "./pages/EditarTema.jsx";
 import Chat from "./pages/Chat.jsx";
 import Feedback from "./pages/Feedback.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
+import HistoricoQuizzes from "./pages/HistoricoQuizzes.jsx";
+import QuizRepeatPage from "./pages/QuizRepeatPage.jsx";
 
 function App () {
 return (
@@ -28,10 +30,10 @@ return (
           <Route path='/chat' element={<PrivateRoute><Chat/></PrivateRoute>}/>
           <Route path='/chat/:sessionId' element={<PrivateRoute><Chat/></PrivateRoute>} />
           <Route path='/feedback/' element={<PrivateRoute><Feedback/></PrivateRoute>} />
-           <Route path='/quiz/:id' element={<PrivateRoute><QuizPage/></PrivateRoute>} />
-          <Route
-  path='/quizzes/session/quiz/:sessionId'
-  element={<PrivateRoute><QuizPage /></PrivateRoute>}
+          <Route path='/quiz/:id' element={<PrivateRoute><QuizPage/></PrivateRoute>} />
+          <Route path='/historico-quizzes/:userId' element={<PrivateRoute><HistoricoQuizzes/></PrivateRoute>} />
+          <Route path='/quizzes/session/quiz/:sessionId' element={<PrivateRoute><QuizPage /></PrivateRoute>} />
+          <Route path="/quiz/:id/repeat" element={<PrivateRoute><QuizRepeatPage/></PrivateRoute>}
 />
       </Routes>
          </>

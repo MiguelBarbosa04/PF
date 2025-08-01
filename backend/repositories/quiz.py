@@ -39,10 +39,10 @@ def registar_resposta(db: Session, resposta: RespostaUserCreate):
 def listar_quizzes_por_user(db: Session, user_id: int):
     return (
         db.query(Quiz)
-        .join(Pergunta)
-        .join(RespostaUser)
+        .join(Pergunta, Quiz.id == Pergunta.quiz_id)
+        .join(RespostaUser, Pergunta.id == RespostaUser.pergunta_id)
         .filter(RespostaUser.user_id == user_id)
-        .distinct()
+        .distinct(Quiz.id)
         .all()
     )
 
@@ -52,3 +52,50 @@ def listar_respostas_do_user(db: Session, user_id: int):
         .filter(RespostaUser.user_id == user_id)
         .all()
     )
+
+def obter_respostas_quiz(db: Session, quiz_id: int, user_id: int):
+    perguntas = (
+        db.query(Pergunta)
+        .filter(Pergunta.quiz_id == quiz_id)
+        .all()
+    )
+
+    resultado = []
+
+    for pergunta in perguntas:
+        resposta_user = (
+            db.query(RespostaUser)
+            .filter(RespostaUser.user_id == user_id, RespostaUser.pergunta_id == pergunta.id)
+            .first()
+        )
+
+        if not resposta_user:
+            continue
+
+        opcao_user = (
+            db.query(Opcao)
+            .filter(Opcao.id == resposta_user.opcao_id)
+            .first()
+        )
+
+        opcoes = (
+            db.query(Opcao)
+            .filter(Opcao.pergunta_id == pergunta.id)
+            .all()
+        )
+
+        resultado.append({
+            "pergunta": pergunta.enunciado,
+            "resposta_user": opcao_user.texto if opcao_user else None,
+            "correta": resposta_user.correta,
+            "opcoes": [
+                {
+                    "id": o.id,
+                    "texto": o.texto,
+                    "correta": o.correta,
+                    "foi_escolhida": o.id == resposta_user.opcao_id
+                } for o in opcoes
+            ]
+        })
+
+    return resultado
