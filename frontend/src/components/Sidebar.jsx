@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-  FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle, FaComment
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
 import {FaNoteSticky} from "react-icons/fa6";
 
-const Sidebar = ({modo, setModo, refreshTrigger}) => {
+
+const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const navigate = useNavigate();
   const userData = TokenInfo();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -21,6 +21,11 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const menuRef = useRef(null);
   const { sessionId } = useParams();
+  const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
+
+    const handleIrParaHistorico = () => {
+     navigate(`/historico-quizzes/${userData.id}`);
+  };
 
 
   const fetchSessions = async () => {
@@ -85,8 +90,20 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
     navigate("/perfil");
   };
 
+  const handleFeedbackClick = () => {
+    navigate("/feedback");
+  };
+
    const handleAlternarModo = () => {
     setModo((prev) => (prev === "exploratório" ? "instrucional" : "exploratório"));
+  };
+
+   const handleAlternarTTS = () => {
+    setTtsProvider((prev) => {
+      const next = prev === "azure" ? "web" : "azure";
+      localStorage.setItem("ttsProvider", next);
+      return next;
+    });
   };
 
   const filteredSessions = sessions.filter((session) =>
@@ -114,7 +131,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
             </span>
           )}
         </div>
-        <button className="new-chat-btn" onClick={() => navigate("/chat")}>
+        <button className="new-chat-btn" onClick={() => navigate("/tema")}>
           Novo Chat <FaPlus />
         </button>
       </div>
@@ -124,7 +141,8 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
           filteredSessions.map((session) => (
             <div key={session.id} className="chat-item-wrapper">
               <div
-                className="chat-item"
+                className={`chat-item 
+                ${String(session.id) === String(sessionId) ? "chat-item-selected" : ""}`}
                 onClick={() => navigate(`/chat/${session.id}`)}
               >
                 <span className="chat-tema">
@@ -137,7 +155,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
                     toggleSessionMenu(session.id);
                   }}
                 >
-                  <FaEllipsisH />
+                  <FaEllipsisH className={"fa-options"}/>
                 </div>
               </div>
 
@@ -146,6 +164,7 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
                   ref={menuRef}
                   session={session}
                   userData={userData}
+                  onQuizRequested={onQuizRequested}
                   onSessionUpdated={(id, novoTema) => {
                     setSessions((prev) =>
                       prev.map((s) =>
@@ -191,12 +210,24 @@ const Sidebar = ({modo, setModo, refreshTrigger}) => {
 
         <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
           {isAdmin && (
-                <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
+              <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
-         <li onClick={handleAlternarModo}><FaNoteSticky /> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}</li>
-          <li onClick={handleTrocaChatClick}><FaComments /> Trocar chat</li>
-          <li onClick={handleEditarPerfilClick}><FaUserEdit /> Editar Perfil</li>
-          <li onClick={handleLogout}><FaSignOutAlt /> Sair</li>
+          <li onClick={handleAlternarModo}>
+            <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
+          </li>
+          <li onClick={handleAlternarTTS}>
+            <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
+          </li>
+                    <li onClick={handleIrParaHistorico}>
+            <FaQuestionCircle /> Histórico de Quizzes
+          </li>
+          {isAdmin && (
+            <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
+          )}
+
+          <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
+          <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
+          <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
         </ul>
       </div>
     </div>

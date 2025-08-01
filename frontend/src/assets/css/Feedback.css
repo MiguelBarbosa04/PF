@@ -4,12 +4,14 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 .feedback-wrapper {
   height: 100vh;
   overflow: auto;
   position: relative;
+  width: 100vw;
 }
 
 .back-button {
@@ -127,4 +129,145 @@ html, body {
   font-size: 0.95em;
   color: var(--color-chat-model);
   margin-top: 10px;
+}
+
+.filtro-avaliacao {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filtro-avaliacao select {
+  padding: 4px;
+  width: 10rem;
+  margin-top: 1rem;
+}
+
+.rating-select {
+  color: var(--color-text-heading);
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.grafico-container {
+  flex: 1;
+  min-width: 300px;
+  max-width: 50rem;
+}
+
+.tabela-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.tabela-modelos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-modelos th,
+.tabela-modelos td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.tabela-modelos th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.tabela-modelos tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.dashboard-container {
+  margin-top: 2rem;
+}
+
+.dashboard-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.dashboard-chart, .dashboard-table {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+  flex: 1 1 400px;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.sem-dados {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  font-style: italic;
+  font-size: 1.2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+}
+
+.dashboard-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th, .dashboard-table td {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.dashboard-table button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.dashboard-table button:hover {
+  background-color: #0056b3;
+}
+
+.painel-detalhes {
+  margin-top: 2rem;
+  border-top: 1px solid #ccc;
+  padding-top: 1rem;
+}
+
+.painel-detalhes button {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.painel-detalhes button:hover {
+  background-color: #a71d2a;
 }

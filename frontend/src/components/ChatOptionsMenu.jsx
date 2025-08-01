@@ -1,10 +1,11 @@
 import React, { forwardRef } from "react";
 import "../assets/css/ChatOptionsMenu.css";
 import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { updateSession } from "../services/api.js";
+import axios from "axios";
 
-const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete }, ref) => {
+const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete, onQuizRequested }, ref) => {
   const navigate = useNavigate();
   const TUTOR_AI = "Tutor";
   const papelAtual = localStorage.getItem("papel");
@@ -29,17 +30,23 @@ const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDel
     }
   };
 
-  const handleQuiz = () => {
-    navigate(`/quiz/${session.id}`);
-  };
+
+const handleQuiz = async () => {
+  if (onQuizRequested) {
+    onQuizRequested(session.id);
+  }
+};
+
+
 
   return (
     <div className="chat-options-menu" ref={ref}>
       <button onClick={handleEdit}><FaEdit /> Editar</button>
       <button onClick={handleDelete}><FaTrash /> Eliminar</button>
       {papelAtual === TUTOR_AI && (
-        <button onClick={handleQuiz}><FaQuestionCircle /> Quiz</button>
-      )}
+      <button onClick={()=>handleQuiz()}><FaQuestionCircle /> Quiz</button>
+    )}
+
     </div>
   );
 });

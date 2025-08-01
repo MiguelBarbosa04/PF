@@ -230,15 +230,15 @@ export const uploadPDF = async (file) => {
 };
 
 export const getTemas = async () => {
-  const response = await fetch("http://localhost:8000/inspect-colecao/temas");
+  const response = await fetch(`${API_URL}/inspect-colecao/temas`);
   if (!response.ok) {
     throw new Error("Erro ao buscar os temas");
   }
   return response.json();
 };
 
-export async function updateTema(id, data) {
-  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+export async function updateTema(nomeAntigo, data) {
+  const res = await fetch(`${API_URL}/inspect-colecao/temas/${nomeAntigo}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -247,8 +247,8 @@ export async function updateTema(id, data) {
   return res.json();
 }
 
-export async function deleteTema(id) {
-  const res = await fetch(`http://localhost:8000/temas/${id}`, {
+export async function deleteTema(nome) {
+  const res = await fetch(`${API_URL}/inspect-colecao/temas/apagar-por-nome/${nome}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Erro ao apagar tema");
@@ -278,12 +278,55 @@ export async function updateLLM(modelo) {
   return await response.json();
 }
 
-export async function getLowRatedMessages() {
-  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas`);
-  return response.json();
+export async function getRatedModels(rating = 2, limite = 10) {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes-por-modelo?rating=${rating}&limite=${limite}`);
+  if (!response.ok) throw new Error("Erro ao buscar avaliações por modelo");
+  return await response.json();
 }
 
-export async function getLowRatedModels() {
-  const response = await fetch(`${API_URL}/feedback/avaliacoes-baixas-por-modelo`);
-  return response.json();
+export async function getRatedMessages(rating = 3) {
+  const response = await fetch(`${API_URL}/feedback/avaliacoes?rating=${rating}`);
+  if (!response.ok) throw new Error("Erro ao buscar mensagens por avaliação");
+  return await response.json();
 }
+
+export default function getTokenInfo() {
+  try {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    return data?.id || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export const getQuizBySession = async (sessionId) => {
+  const response = await fetch(`${API_URL}/quizzes/session/quiz/${sessionId}`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar o quiz");
+  }
+  return await response.json();
+};
+
+export const corrigirRespostasQuiz = async (quizId, payload) => {
+  const response = await fetch(`${API_URL}/quizzes/${quizId}/respostas/corrigir`,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao enviar respostas");
+  }
+
+  return await response.json();
+};
+
+export const getQuizById = async (quizId) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/quizzes/${quizId}`);
+  if (!res.ok) throw new Error("Erro ao buscar quiz");
+  return res.json();
+};
+
+

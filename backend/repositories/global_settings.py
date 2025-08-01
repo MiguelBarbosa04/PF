@@ -19,3 +19,11 @@ def create_or_update_global_settings(db: Session, settings_in: GlobalSettingsCre
     db.commit()
     db.refresh(settings)
     return settings
+
+def obter_modelo_mais_recente(db: Session) -> str:
+    setting = (
+        db.query(GlobalSettings)
+        .order_by(GlobalSettings.atualizado_em.desc())
+        .first()
+    )
+    return setting.modelo if setting else "ollama"

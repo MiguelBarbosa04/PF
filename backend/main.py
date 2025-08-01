@@ -1,4 +1,4 @@
-from backend.api.routes import users, sessions, messages, rag, upload, inspect, global_settings, feedback
+from backend.api.routes import users, sessions, messages, rag, upload, inspect, global_settings, feedback, tts , quiz
 from backend.database.db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -33,3 +33,5 @@ app.include_router(upload.router)
 app.include_router(inspect.router)
 app.include_router(global_settings.router)
 app.include_router(feedback.router)
+app.include_router(quiz.router)
+app.include_router(tts.router)
