@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../assets/css/Sidebar.css";
 import TokenInfo from "./TokenInfo.jsx";
 import {
-  FaFileAlt, FaComments, FaUserEdit, FaSignOutAlt,
-  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle
+  FaSearch, FaPlus, FaAngleDown, FaAngleUp, FaEllipsisH, FaTimes, FaQuestionCircle, FaComment
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
@@ -91,6 +90,10 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
     navigate("/perfil");
   };
 
+  const handleFeedbackClick = () => {
+    navigate("/feedback");
+  };
+
    const handleAlternarModo = () => {
     setModo((prev) => (prev === "exploratório" ? "instrucional" : "exploratório"));
   };
@@ -128,7 +131,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
             </span>
           )}
         </div>
-        <button className="new-chat-btn" onClick={() => navigate("/chat")}>
+        <button className="new-chat-btn" onClick={() => navigate("/tema")}>
           Novo Chat <FaPlus />
         </button>
       </div>
@@ -138,7 +141,8 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           filteredSessions.map((session) => (
             <div key={session.id} className="chat-item-wrapper">
               <div
-                className="chat-item"
+                className={`chat-item 
+                ${String(session.id) === String(sessionId) ? "chat-item-selected" : ""}`}
                 onClick={() => navigate(`/chat/${session.id}`)}
               >
                 <span className="chat-tema">
@@ -151,7 +155,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
                     toggleSessionMenu(session.id);
                   }}
                 >
-                  <FaEllipsisH />
+                  <FaEllipsisH className={"fa-options"}/>
                 </div>
               </div>
 
@@ -217,6 +221,9 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
                     <li onClick={handleIrParaHistorico}>
             <FaQuestionCircle /> Histórico de Quizzes
           </li>
+          {isAdmin && (
+            <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
+          )}
 
           <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
           <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
