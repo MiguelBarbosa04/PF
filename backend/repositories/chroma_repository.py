@@ -1,4 +1,3 @@
-from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from backend.services.chroma_service import collection
 import uuid
@@ -58,9 +57,9 @@ def listar_documentos_chroma(limit: int = 10):
     results = collection.get(limit=limit)
     documentos = []
     for doc, meta in zip(results['documents'], results['metadatas']):
-        # print("📄 Documento:", doc)
-        # print("🔖 Metadata:", meta)
-        # print("---")
+        print("📄 Documento:", doc)
+        print("🔖 Metadata:", meta)
+        print("---")
         documentos.append({
             "documento": doc,
             "metadata": meta
