@@ -231,7 +231,8 @@
 }
 
 .estatisticas-bloco {
-  width: 280px;      /* largura fixa, ajusta conforme preferires */
+  width: 280px;
+  height: 100px;
   background-color: var(--color-white);
   padding: 20px;
   border-radius: var(--radius-md);

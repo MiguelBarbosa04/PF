@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { corrigirRespostasQuiz, getQuizById } from "../services/api";
 import getTokenInfo from "./TokenInfo";
 import "../assets/css/Modal.css";
+import {FaRegTimesCircle} from "react-icons/fa";
 
 const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   const [quiz, setQuiz] = useState(null);
@@ -84,8 +85,21 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>
-          Fechar
+        <button style={{
+    position: "absolute",
+    width: "5rem",
+          height: "5rem",
+    background : "none",
+    top: "10px",
+    right: "10px",
+    color: "black",
+    border: "none",
+    padding: "4px 8px",
+    fontSize: "12px",
+    borderRadius: "4px",
+    cursor: "pointer"
+  } } onClick={onClose}>
+<FaRegTimesCircle style={{fontSize: "2rem", color : "black"}}/>
         </button>
 
         <h2 className="quiz-title">{quiz.titulo}</h2>
