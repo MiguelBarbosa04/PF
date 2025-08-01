@@ -11,9 +11,9 @@ import {
   FaTimes,
   FaQuestionCircle,
   FaComment,
+  FaFileAlt,
   FaComments,
-  FaUserEdit,
-  FaSignOutAlt, FaFileAlt
+  FaUserEdit, FaSignOutAlt
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
@@ -33,8 +33,9 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const { sessionId } = useParams();
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
 
-    const handleIrParaHistorico = () => {
-     navigate(`/historico-quizzes/${userData.id}`);
+
+  const handleIrParaHistorico = () => {
+   navigate(`/historico-quizzes/${userData.id}`);
   };
 
 
@@ -222,7 +223,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           {isAdmin && (
               <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
           )}
-            {localStorage.getItem("papel") === "Tutor" && (
+          {localStorage.getItem("papel") === "Tutor" && (
             <li onClick={handleAlternarModo}>
               <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
             </li>
@@ -230,12 +231,12 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
-                    {localStorage.getItem("papel") === "Tutor" && (
-      <li onClick={handleIrParaHistorico}>
-        <FaQuestionCircle /> Histórico de Quizzes
-      </li>
-    )}
 
+          {localStorage.getItem("papel") === "Tutor" && (
+            <li onClick={handleIrParaHistorico}>
+              <FaQuestionCircle /> Histórico de Quizzes
+            </li>
+          )}
           {isAdmin && (
             <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
           )}

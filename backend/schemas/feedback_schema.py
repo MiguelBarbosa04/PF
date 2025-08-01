@@ -5,3 +5,8 @@ from typing import Optional
 class FeedbackMessage(BaseModel):
     pergunta: Optional[MessageRead]
     resposta: MessageRead
+
+class QAExport(BaseModel):
+    pergunta: str
+    resposta: str
+

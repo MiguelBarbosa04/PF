@@ -75,7 +75,6 @@ class RespostaEnvio(BaseModel):
     respostas: Dict[int, int]  # { pergunta_id: opcao_id }
     respondido_em: datetime
 
-
 class QuizHistoricoRead(BaseModel):
     id: int
     titulo: str

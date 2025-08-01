@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getRatedMessages, getRatedModels } from '../services/api';
 import StarsRating from "../components/StarsRating.jsx";
 import "../assets/css/IconMenuWrapper.css";
-import { FaStar } from "react-icons/fa";
+import {FaAngleLeft, FaAngleRight, FaChevronLeft, FaChevronRight, FaStar} from "react-icons/fa";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
@@ -18,6 +18,9 @@ const FeedbackPage = () => {
   const [modeloSelecionado, setModeloSelecionado] = useState(null);
   const [ratingFiltro, setRatingFiltro] = useState(3);
   const navigate = useNavigate();
+
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const mensagensPorPagina = 5;
 
   useEffect(() => {
     async function fetchData() {
@@ -62,6 +65,11 @@ const FeedbackPage = () => {
     acc[id] = (acc[id] || 0) + 1;
     return acc;
   }, {});
+
+  const mensagensFiltradas = mensagens.filter(
+    (item) => item.resposta.modelo === modeloSelecionado
+  );
+  const totalPaginas = Math.ceil(mensagensFiltradas.length / mensagensPorPagina);
 
   return (
     <div className="feedback-wrapper">
@@ -134,7 +142,7 @@ const FeedbackPage = () => {
                       <td>{modelo.modelo}</td>
                       <td>{modelo.total}</td>
                       <td>
-                        <button onClick={() => setModeloSelecionado(modelo.modelo)}>
+                        <button onClick={() => {setModeloSelecionado(modelo.modelo); setPaginaAtual(1);}}>
                           Ver detalhes
                         </button>
                       </td>
@@ -149,11 +157,12 @@ const FeedbackPage = () => {
         {modeloSelecionado && (
             <section className="painel-detalhes">
               <h3>Mensagens do modelo: {modeloSelecionado}</h3>
-              <button onClick={() => setModeloSelecionado(null)}>Fechar painel</button>
+              <button className="btn-close-panel" onClick={() => setModeloSelecionado(null)}>Fechar painel</button>
 
               <div className="mensagens-scroll">
                 {mensagens
                     .filter((item) => item.resposta.modelo === modeloSelecionado)
+                    .slice((paginaAtual - 1) * mensagensPorPagina, paginaAtual * mensagensPorPagina)
                     .map((item, index) => (
                         <div className="mensagem-card" key={index}>
                           <p><strong>Pergunta:</strong> {item.pergunta?.conteudo || '(sem pergunta)'}</p>
@@ -165,6 +174,29 @@ const FeedbackPage = () => {
                     <p>Nenhuma mensagem encontrada para este modelo e avaliação.</p>
                 )}
               </div>
+              {totalPaginas > 1 && (
+                <div className="paginacao-wrapper">
+                  <div className="paginacao-bloco">
+                    <button
+                      className="seta"
+                      onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+                      disabled={paginaAtual === 1}
+                    >
+                      <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
+                    </button>
+                    <span className="pagina-atual">
+                      Página {paginaAtual} de {totalPaginas}
+                    </span>
+                    <button
+                      className="seta"
+                      onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas))}
+                      disabled={paginaAtual === totalPaginas}
+                    >
+                      <FaAngleRight style={{paddingTop: '3px', fontSize: '20px'}}/>
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
         )}
       </div>

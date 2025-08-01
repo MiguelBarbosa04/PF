@@ -23,13 +23,11 @@ def criar_quiz(quiz_data: QuizCreate, db: Session = Depends(get_db)):
 def responder_pergunta(resposta: RespostaUserCreate, db: Session = Depends(get_db)):
     return quiz_repo.registar_resposta(db, resposta)
 
-# @router.get("/historico/{user_id}", response_model=list[QuizRead])
-# def ver_historico_quizzes(user_id: int, db: Session = Depends(get_db)):
-#     return quiz_repo.listar_quizzes_por_user(db, user_id)
 
 @router.get("/historico/{user_id}", response_model=list[QuizHistoricoRead])
 def ver_historico_quizzes(user_id: int, db: Session = Depends(get_db)):
     return quiz_repo.listar_quizzes_por_user_historico(db, user_id)
+
 
 
 @router.get("/respostas/{user_id}", response_model=list[RespostaUserRead])
@@ -169,6 +167,7 @@ def get_quiz_by_id(quiz_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
     return quiz
 
+
 @router.post("/quizzes/{quiz_id}/duplicar")
 def duplicar_quiz(quiz_id: int, db: Session = Depends(get_db)):
     quiz_original = db.query(Quiz).filter(Quiz.id == quiz_id).first()
@@ -199,4 +198,5 @@ def duplicar_quiz(quiz_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(novo_quiz)
     return novo_quiz
+
 

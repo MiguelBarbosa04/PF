@@ -46,6 +46,7 @@ def listar_quizzes_por_user(db: Session, user_id: int):
         .all()
     )
 
+
 def listar_quizzes_por_user_historico(db: Session, user_id: int):
     subquery = (
         db.query(
@@ -69,6 +70,7 @@ def listar_quizzes_por_user_historico(db: Session, user_id: int):
         Quiz.session_id,
         subquery.c.data_resposta.label("data")
     ).join(subquery, Quiz.id == subquery.c.quiz_id).all()
+
 
 
 def listar_respostas_do_user(db: Session, user_id: int):
