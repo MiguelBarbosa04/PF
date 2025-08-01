@@ -1,8 +1,9 @@
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
+from backend.services.chroma_service import collection
 import uuid
 import re
 import unicodedata
-
-from backend.services.chroma_service import collection
 
 STOPWORDS = {"a", "o", "de", "que", "e", "as", "os", "um", "uma", "do", "da", "dos", "das", "em", "por", "para", "com", "sem"}
 
@@ -55,7 +56,14 @@ def indexar_qa_pergunta_resposta(pergunta: str, resposta: str, modelo: str = Non
 
 def listar_documentos_chroma(limit: int = 10):
     results = collection.get(limit=limit)
+    documentos = []
     for doc, meta in zip(results['documents'], results['metadatas']):
-        print("📄 Documento:", doc)
-        print("🔖 Metadata:", meta)
-        print("---")
+        # print("📄 Documento:", doc)
+        # print("🔖 Metadata:", meta)
+        # print("---")
+        documentos.append({
+            "documento": doc,
+            "metadata": meta
+        })
+
+    return JSONResponse(content=documentos)
