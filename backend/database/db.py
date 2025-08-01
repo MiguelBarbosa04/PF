@@ -1,7 +1,7 @@
 from sqlalchemy import  create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from backend.services.config import Settings
+from backend.services.config_service import Settings
 
 settings = Settings()
 

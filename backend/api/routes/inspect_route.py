@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException
 import shutil
-from backend.schemas.chroma import  TemaUpdateRequest
+from backend.schemas.chroma_schema import  TemaUpdateRequest
 from backend.services.chroma_service import *
 import os
 import gc
+from backend.repositories import chroma_repository
 
 router = APIRouter(prefix="/inspect-colecao", tags=["Inspeção"])
 
@@ -179,3 +180,7 @@ def apagar_tema_por_nome(filename: str):
     except Exception as e:
         print("Erro ao apagar documentos:", str(e))
         raise HTTPException(status_code=500, detail="Erro ao apagar documentos.")
+
+@router.get("/documentos")
+def listar_documentos(limit: int = 10):
+    return chroma_repository.listar_documentos_chroma(limit)

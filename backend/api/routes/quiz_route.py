@@ -3,10 +3,10 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db
-from backend.schemas.quiz import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest, RespostaEnvio
-from backend.repositories.quiz import obter_respostas_quiz
-import backend.repositories.quiz as quiz_repo
-from backend.repositories.global_settings import obter_modelo_mais_recente
+from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, QuizGenerationRequest, RespostaEnvio
+from backend.repositories.quiz_repository import obter_respostas_quiz
+import backend.repositories.quiz_repository as quiz_repo
+from backend.repositories.global_settings_repository import obter_modelo_mais_recente
 from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
 from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta, Opcao
 from sqlalchemy import desc

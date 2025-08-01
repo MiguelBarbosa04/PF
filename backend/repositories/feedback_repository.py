@@ -44,3 +44,31 @@ def get_rated_models(db: Session, rating: int = 2, limite: int = 10):
         .all()
     )
     return resultados
+
+def get_good_rated_messages(db: Session, rating: int = 5):
+    mensagens_bom_feedback = (
+        db.query(Messages)
+        .filter(Messages.remetente == "bot", Messages.avaliacao == rating)
+        .order_by(Messages.criado_em.desc())
+        .all()
+    )
+
+    resultados = []
+    for msg in mensagens_bom_feedback:
+        pergunta = (
+            db.query(Messages)
+            .filter(
+                Messages.session_id == msg.session_id,
+                Messages.id < msg.id,
+                Messages.remetente == "user"
+            )
+            .order_by(Messages.id.desc())
+            .first()
+        )
+        if pergunta:  # só adiciona se tiver pergunta
+            resultados.append({
+                "resposta": msg,
+                "pergunta": pergunta
+            })
+
+    return resultados

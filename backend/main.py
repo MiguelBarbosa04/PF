@@ -1,4 +1,5 @@
-from backend.api.routes import users, sessions, messages, rag, upload, inspect, global_settings, feedback, tts , quiz
+from backend.api.routes import users_route, sessions_route, messages_route, rag_route, upload_route, inspect_route, \
+    global_settings_route, feedback_route, tts_route, quiz_route
 from backend.database.db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -25,13 +26,13 @@ app.add_middleware(
 )
 
 # Inclui rotas
-app.include_router(users.router)
-app.include_router(sessions.router)
-app.include_router(messages.router)
-app.include_router(rag.router)
-app.include_router(upload.router)
-app.include_router(inspect.router)
-app.include_router(global_settings.router)
-app.include_router(feedback.router)
-app.include_router(quiz.router)
-app.include_router(tts.router)
+app.include_router(users_route.router)
+app.include_router(sessions_route.router)
+app.include_router(messages_route.router)
+app.include_router(rag_route.router)
+app.include_router(upload_route.router)
+app.include_router(inspect_route.router)
+app.include_router(global_settings_route.router)
+app.include_router(feedback_route.router)
+app.include_router(quiz_route.router)
+app.include_router(tts_route.router)
