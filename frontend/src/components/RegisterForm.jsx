@@ -105,7 +105,7 @@ const RegisterForm = () => {
         <input
           type="email"
           name="email"
-          placeholder="Email"
+          placeholder={t("email-placeholder")}
           value={formData.email}
           onChange={handleChange}
           className="input"
@@ -113,7 +113,7 @@ const RegisterForm = () => {
         <input
           type="text"
           name="nome"
-          placeholder={t("register-name-place")}
+          placeholder={t("name-placeholder")}
           value={formData.nome}
           onChange={handleChange}
           className="input"
@@ -121,7 +121,7 @@ const RegisterForm = () => {
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder={t("password-placeholder")}
           value={formData.password}
           onChange={handleChange}
           className="input"

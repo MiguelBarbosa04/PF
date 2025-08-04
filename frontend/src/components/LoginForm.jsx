@@ -36,7 +36,7 @@ const LoginForm = ({ onLogin }) => {
               <p className="label">{t("login-label")}</p>
               <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t("email-placeholder")}
                   className="input"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -44,7 +44,7 @@ const LoginForm = ({ onLogin }) => {
               />
               <input
                   type="password"
-                  placeholder="Password"
+                  placeholder={t("password-placeholder")}
                   className="input"
                   value={password}
                   onChange={e => setPassword(e.target.value)}

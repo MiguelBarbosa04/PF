@@ -13,9 +13,9 @@ const Welcome = () => {
   const roleOptions = [
       {
         key: "Agente",
-        label: "agente-label",
+        label: "agent-label",
         description:
-          "agente-desc",
+          "agent-desc",
       },
       {
         key: "Tutor",
@@ -59,7 +59,7 @@ const Welcome = () => {
             <FaRobot className="role-card-icon" />
             <h2 className="role-card-title">{t(role.label)}</h2>
             <p className="role-card-desc">{t(role.description)}</p>
-            <span className="role-card-cta">{t("entrar-btn")}</span>
+            <span className="role-card-cta">{t("enter-btn")}</span>
           </button>
         ))}
       </div>

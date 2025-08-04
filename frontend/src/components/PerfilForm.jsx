@@ -3,6 +3,7 @@ import TokenInfo from "./TokenInfo.jsx";
 import {getExperiencias, getFuncoes, getLinguagens, updateUser} from "../services/api.js";
 import {useNavigate} from "react-router";
 import "../assets/css/PerfilForm.css"
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const PerfilForm = () => {
     const userData = TokenInfo();
@@ -11,7 +12,7 @@ const PerfilForm = () => {
     const [experiencias, setExperiencias] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
     const [linguagens, setLinguagens] = useState([]);
-
+    const { t } = useLanguage();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -92,7 +93,7 @@ const PerfilForm = () => {
         await updateUser(userId, updatePayload);
         setSuccess("Perfil atualizado com sucesso!");
         setError("");
-        alert("Perfil atualizado com sucesso!");
+        alert(t("perfil-alert"));
         navigate(-1);
       } catch (err) {
         setError(err.message);
@@ -100,18 +101,18 @@ const PerfilForm = () => {
       }
     };
 
-    if (!userData) return <div>Carregando...</div>;
+    if (!userData) return <div>{t("register-loading")}</div>;
     return (
     <div className="container">
         <form onSubmit={handleSubmit} className="form">
-            <h2 className="title">Editar Utilizador</h2>
+            <h2 className="title">{t("perfil-title")}</h2>
             {error && <div className="error">{error}</div>}
             {success && <div className="success">{success}</div>}
 
             <input
                 type="email"
                 name="email"
-                placeholder="Email"
+                placeholder={t("email-placeholder")}
                 value={formData.email}
                 onChange={handleChange}
                 className="input"
@@ -119,7 +120,7 @@ const PerfilForm = () => {
             <input
                 type="text"
                 name="nome"
-                placeholder="Nome"
+                placeholder={t("name-placeholder")}
                 value={formData.nome}
                 onChange={handleChange}
                 className="input"
@@ -127,7 +128,7 @@ const PerfilForm = () => {
             <input
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder={t("password-placeholder")}
                 value={formData.password}
                 onChange={handleChange}
                 className="input"
@@ -136,7 +137,7 @@ const PerfilForm = () => {
             <input
                 type="password"
                 name="confirmPassword"
-                placeholder="Repita Password"
+                placeholder={t("password-again-placeholder")}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="input"
@@ -149,13 +150,13 @@ const PerfilForm = () => {
                 className="input"
                 required
             >
-                <option value="" disabled>Experiência</option>
+                <option value="" disabled>{t("register-experience-place")}</option>
                 {experiencias.length > 0 ? (
                     experiencias.map(exp => (
-                        <option key={exp.id} value={exp.id}>{exp.nome}</option>
+                        <option key={exp.id} value={exp.id}>{t(exp.nome)}</option>
                     ))
                 ) : (
-                    <option disabled>Carregando....</option>
+                    <option disabled>{t("register-loading")}</option>
                 )}
             </select>
             <select
@@ -165,13 +166,13 @@ const PerfilForm = () => {
                 className="input"
                 required
             >
-                <option value="" disabled>Função</option>
+                <option value="" disabled>{t("register-role-place")}</option>
                 {funcoes.length > 0 ? (
                     funcoes.map(func => (
-                        <option key={func.id} value={func.id}>{func.nome}</option>
+                        <option key={func.id} value={func.id}>{t(func.nome)}</option>
                     ))
                 ) : (
-                    <option disabled>Carregando....</option>
+                    <option disabled>{t("register-loading")}</option>
                 )}
             </select>
             <select
@@ -181,18 +182,18 @@ const PerfilForm = () => {
                 className="input"
                 required
             >
-                <option value="" disabled>Linguagem preferida</option>
+                <option value="" disabled>{t("register-lang-place")}</option>
                 {linguagens.length > 0 ? (
                     linguagens.map(ling => (
-                        <option key={ling.id} value={ling.id}>{ling.nome}</option>
+                        <option key={ling.id} value={ling.id}>{t(ling.nome)}</option>
                     ))
                 ) : (
-                    <option disabled>Carregando....</option>
+                    <option disabled>{t("register-loading")}</option>
                 )}
             </select>
             <div className="button-perfil">
-                <button type="button" onClick={() => navigate(-1)}>Voltar</button>
-                <button type="submit">Atualizar</button>
+                <button type="button" onClick={() => navigate(-1)}>{t("back-btn")}</button>
+                <button type="submit">{t("update-btn")}</button>
             </div>
 
         </form>
