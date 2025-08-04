@@ -32,5 +32,14 @@
   "Informal": "Informal",
   "register-btn": "Sign Up",
   "register-p": "If you already have an account,",
-  "register-link": "Log in"
+  "register-link": "Log in",
+  "icon-menu-editar": "Edit Profile",
+  "icon-menu-lang": "Language",
+  "icon-menu-logout": "Logout",
+  "welcome-h1": "Welcome",
+  "agente-label": "Agent",
+  "agente-desc": "Conversational assistant capable of answering questions about procedures, technical manuals, and operational instructions.",
+  "tutor-label": "Tutor",
+  "tutor-desc": "Interactive virtual tutor who guides new operators during onboarding, adapting explanations based on experience and role.",
+  "entrar-btn": "Enter"
 }

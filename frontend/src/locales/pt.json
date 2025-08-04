@@ -32,5 +32,14 @@
   "Informal": "Informal",
   "register-btn": "Registar",
   "register-p": "Se já tem conta, faça",
-  "register-link": "Login"
+  "register-link": "Login",
+  "icon-menu-editar": "Editar Perfil",
+  "icon-menu-lang": "Idioma",
+  "icon-menu-logout": "Sair",
+  "welcome-h1": "Bem-vindo",
+  "agente-label": "Agente",
+  "agente-desc": "Assistente conversacional capaz de responder a questões sobre procedimentos, manuais técnicos e instruções operacionais.",
+  "tutor-label": "Tutor",
+  "tutor-desc": "Tutor virtual interativo que guia novos operadores durante a integração, adaptando explicações com base na experiência e função.",
+  "entrar-btn": "Entrar"
 }

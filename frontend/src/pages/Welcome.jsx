@@ -5,23 +5,26 @@ import "../assets/css/IconMenuWrapper.css";
 import { FaRobot } from "react-icons/fa";
 import IconMenu from "../components/IconMenu.jsx";
 import TokenInfo from "../components/TokenInfo.jsx";
-
-const roleOptions = [
-  {
-    key: "Agente",
-    label: "Agente",
-    description:
-      "Assistente conversacional capaz de responder a questões sobre procedimentos, manuais técnicos e instruções operacionais.",
-  },
-  {
-    key: "Tutor",
-    label: "Tutor",
-    description:
-      "Tutor virtual interativo que guia novos operadores durante a integração, adaptando explicações com base na experiência e função.",
-  },
-];
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const Welcome = () => {
+  const { t } = useLanguage();
+
+  const roleOptions = [
+      {
+        key: "Agente",
+        label: "agente-label",
+        description:
+          "agente-desc",
+      },
+      {
+        key: "Tutor",
+        label: "tutor-label",
+        description:
+          "tutor-desc",
+      },
+  ];
+
   const navigate = useNavigate();
   const userData = TokenInfo(); // chama o hook aqui dentro do componente
 
@@ -42,7 +45,7 @@ const Welcome = () => {
         <IconMenu />
       </div>
 
-      <h1 className="welcome-title">Bem-vindo {userData.nome}!</h1>
+      <h1 className="welcome-title">{t("welcome-h1")} {userData.nome}!</h1>
 
       <div className="role-card-container">
         {roleOptions.map((role) => (
@@ -51,12 +54,12 @@ const Welcome = () => {
             type="button"
             className="role-card"
             onClick={() => handleEscolhaPapel(role.key)}
-            aria-label={`Entrar como ${role.label}`}
+            aria-label={`Entrar como ${t(role.labelKey)}`}
           >
             <FaRobot className="role-card-icon" />
-            <h2 className="role-card-title">{role.label}</h2>
-            <p className="role-card-desc">{role.description}</p>
-            <span className="role-card-cta">Entrar</span>
+            <h2 className="role-card-title">{t(role.label)}</h2>
+            <p className="role-card-desc">{t(role.description)}</p>
+            <span className="role-card-cta">{t("entrar-btn")}</span>
           </button>
         ))}
       </div>
