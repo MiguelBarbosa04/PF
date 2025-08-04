@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { loginUser } from '../services/api.js';
 import '../assets/css/LoginForm.css';
 import { Link } from "react-router";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { t } = useLanguage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ const LoginForm = ({ onLogin }) => {
 
       localStorage.setItem("token_type", data.token_type);
 
-      onLogin(email);  // Passar também `data` se depois for para guardar o token
+      onLogin(email);
     } catch (err) {
       setError(err.message);
     }
@@ -28,10 +30,10 @@ const LoginForm = ({ onLogin }) => {
   return (
       <div className="container">
           <form onSubmit={handleSubmit} className="form">
-              <h2 className="title">Login</h2>
+              <h2 className="title">{t("login-title")}</h2>
               {error && <p style={{color: 'red'}}>{error}</p>}
 
-              <p className="label">Digite o seu email e password</p>
+              <p className="label">{t("login-label")}</p>
               <input
                   type="email"
                   placeholder="Email"
@@ -48,8 +50,8 @@ const LoginForm = ({ onLogin }) => {
                   onChange={e => setPassword(e.target.value)}
                   required
               />
-              <button type="submit">Entrar</button>
-              <p>Se não tem conta, faça <Link to="/register">Registo</Link></p>
+              <button type="submit">{t("login-btn")}</button>
+              <p>{t("login-p")} <Link to="/register">{t("login-link")}</Link></p>
           </form>
       </div>
   );

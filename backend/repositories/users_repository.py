@@ -6,6 +6,10 @@ from backend.auth.hashing import get_password_hash
 from backend.auth.hashing import verify_password
 
 def create_user(db: Session, user: UserCreate):
+    existing_user = db.query(Users).filter(Users.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email já registado.")
+
     db_user = Users(
         nome=user.nome,
         email=user.email,
@@ -20,7 +24,8 @@ def create_user(db: Session, user: UserCreate):
         db.refresh(db_user)
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Erro ao criar usuário: {e}")
+        raise HTTPException(status_code=400, detail=f"Erro ao criar utilizador: {e}")
+
     return db_user
 
 
