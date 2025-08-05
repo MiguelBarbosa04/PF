@@ -79,5 +79,22 @@
   "chat-otions-edit": "Edit",
   "chat-otions-delete": "Delete",
   "chat-otions-quiz": "Quiz",
-  "chat-modelo": "Model"
+  "chat-modelo": "Model",
+  "feedback-title": "Ratings",
+  "feedback-filter":"Filter by rating",
+  "feedback-stars": "star",
+  "feedback-dashboard": "Ratings Dashboard with",
+  "feedback-without-data": "No data for this filter",
+  "feedback-total": "Total",
+  "feedback-actions": "Actions",
+  "feedback-details": "View details",
+  "feedback-panel-details-title": "Model messages",
+  "feedback-panel-btn": "Close panel",
+  "feedback-message-card-q": "Question",
+  "feedback-message-card-no-q": "No question provided",
+  "feedback-message-card-a": "Answer",
+  "feedback-message-card-r": "Rating",
+  "feedback-no-ratings": "No messages found for this model and rating.",
+  "feedback-page": "Page",
+  "feedback-of": "of"
 }

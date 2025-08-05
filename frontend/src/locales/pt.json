@@ -79,5 +79,22 @@
   "chat-otions-edit": "Editar",
   "chat-otions-delete": "Eliminar",
   "chat-otions-quiz": "Quiz",
-  "chat-modelo": "Modelo"
+  "chat-modelo": "Modelo",
+  "feedback-title": "Avaliações",
+  "feedback-filter":"Filtrar por avaliação",
+  "feedback-stars": "estrela",
+  "feedback-dashboard": "Dashboard de Avaliações com",
+  "feedback-without-data": "Sem dados para este filtro",
+  "feedback-total": "Total",
+  "feedback-actions": "Ações",
+  "feedback-details": "Ver detalhes",
+  "feedback-panel-details-title": "Mensagens do modelo",
+  "feedback-panel-btn": "Fechar painel",
+  "feedback-message-card-q": "Pergunta",
+  "feedback-message-card-no-q": "sem pergunta",
+  "feedback-message-card-a": "Resposta",
+  "feedback-message-card-r": "Avaliação",
+  "feedback-no-ratings": "Nenhuma mensagem encontrada para este modelo e avaliação.",
+  "feedback-page": "Página",
+  "feedback-of": "de"
 }

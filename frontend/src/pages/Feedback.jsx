@@ -9,6 +9,7 @@ import {
 import '../assets/css/Feedback.css';
 import IconMenu from "../components/IconMenu.jsx";
 import { useNavigate } from "react-router";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const COLORS = ['#2F5AAE', '#007BFF'];
 
@@ -18,9 +19,9 @@ const FeedbackPage = () => {
   const [modeloSelecionado, setModeloSelecionado] = useState(null);
   const [ratingFiltro, setRatingFiltro] = useState(3);
   const navigate = useNavigate();
-
   const [paginaAtual, setPaginaAtual] = useState(1);
   const mensagensPorPagina = 5;
+  const { t } = useLanguage();
 
   useEffect(() => {
     async function fetchData() {
@@ -74,35 +75,35 @@ const FeedbackPage = () => {
   return (
     <div className="feedback-wrapper">
       <button className="back-button" onClick={handleBack}>
-        Voltar
+        {t("back-btn")}
       </button>
       <div className="user-profile-wrapper">
         <IconMenu />
       </div>
       <div className="feedback-page">
-        <h1 className="feedback-title">Avaliações</h1>
+        <h1 className="feedback-title">{t("feedback-title")}</h1>
 
         <section className="filtro-avaliacao">
-          <label htmlFor="rating-select">Filtrar por avaliação:</label>
+          <label htmlFor="rating-select">{t("feedback-filter")}:</label>
           <select
               id="rating-select"
               value={ratingFiltro}
               onChange={(e) => setRatingFiltro(Number(e.target.value))}
           >
             {[1, 2, 3, 4, 5].map((r) => (
-                <option key={r} value={r}>{r} estrela{r > 1 ? 's' : ''}</option>
+                <option key={r} value={r}>{r} {t("feedback-stars")}{r > 1 ? 's' : ''}</option>
             ))}
           </select>
         </section>
         <h2 className="section-title">
-          Dashboard de Avaliações com {ratingFiltro} <FaStar style={{fontSize: '16px'}}/>
+          {t("feedback-dashboard")} {ratingFiltro} <FaStar style={{fontSize: '16px'}}/>
         </h2>
         <section className="dashboard-container">
           <div className="dashboard-grid">
             {/* Gráfico de Pizza */}
             <div className="dashboard-chart">
               {modelos.length === 0 || modelos.every(m => m.total === 0) ? (
-                  <div className="sem-dados">Sem dados para este filtro</div>
+                  <div className="sem-dados">{t("feedback-without-data")}</div>
               ) : (
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
@@ -131,9 +132,9 @@ const FeedbackPage = () => {
               <table>
                 <thead>
                 <tr>
-                  <th>Modelo</th>
-                  <th>Total</th>
-                  <th>Ações</th>
+                  <th>{t("chat-modelo")}</th>
+                  <th>{t("feedback-total")}</th>
+                  <th>{t("feedback-actions")}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -143,7 +144,7 @@ const FeedbackPage = () => {
                       <td>{modelo.total}</td>
                       <td>
                         <button onClick={() => {setModeloSelecionado(modelo.modelo); setPaginaAtual(1);}}>
-                          Ver detalhes
+                          {t("feedback-details")}
                         </button>
                       </td>
                     </tr>
@@ -156,22 +157,23 @@ const FeedbackPage = () => {
 
         {modeloSelecionado && (
             <section className="painel-detalhes">
-              <h3>Mensagens do modelo: {modeloSelecionado}</h3>
-              <button className="btn-close-panel" onClick={() => setModeloSelecionado(null)}>Fechar painel</button>
-
+              <h3>{t("feedback-panel-details-title")}: {modeloSelecionado}</h3>
+              <button className="btn-close-panel" onClick={() => setModeloSelecionado(null)}>
+                {t("feedback-panel-btn")}
+              </button>
               <div className="mensagens-scroll">
                 {mensagens
                     .filter((item) => item.resposta.modelo === modeloSelecionado)
                     .slice((paginaAtual - 1) * mensagensPorPagina, paginaAtual * mensagensPorPagina)
                     .map((item, index) => (
                         <div className="mensagem-card" key={index}>
-                          <p><strong>Pergunta:</strong> {item.pergunta?.conteudo || '(sem pergunta)'}</p>
-                          <p><strong>Resposta:</strong> {item.resposta.conteudo}</p>
-                          <p><strong>Rating:</strong> <StarsRating avaliacao={item.resposta.avaliacao}/></p>
+                          <p><strong>{t("feedback-message-card-q")}:</strong> {item.pergunta?.conteudo || (t("feedback-message-card-no-q"))}</p>
+                          <p><strong>{t("feedback-message-card-a")}:</strong> {item.resposta.conteudo}</p>
+                          <p><strong>{t("feedback-message-card-r")}:</strong> <StarsRating avaliacao={item.resposta.avaliacao}/></p>
                         </div>
                     ))}
                 {mensagens.filter((item) => item.resposta.modelo === modeloSelecionado).length === 0 && (
-                    <p>Nenhuma mensagem encontrada para este modelo e avaliação.</p>
+                    <p>{t("feedback-no-ratings")}</p>
                 )}
               </div>
               {totalPaginas > 1 && (
@@ -185,7 +187,7 @@ const FeedbackPage = () => {
                       <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                     </button>
                     <span className="pagina-atual">
-                      Página {paginaAtual} de {totalPaginas}
+                      {t("feedback-page")} {paginaAtual} {t("feedback-of")} {totalPaginas}
                     </span>
                     <button
                       className="seta"
