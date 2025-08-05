@@ -64,5 +64,20 @@
   "save-file-btn": "Save File",
   "choose-llm-title": "Choose LLM",
   "choose-model": "Choose model",
-  "save-model-btn": "Save LLM"
+  "save-model-btn": "Save LLM",
+  "chat-welcome": "How can I help you?",
+  "chat-input-placeholder": "Type your question/doubt",
+  "chat-voice-btn": "Listening...",
+  "sidebar-search": "Search",
+  "new-chat-btn": "New Chat",
+  "sidebar-action-file": "Files and LLM",
+  "sidebar-action-quiz-h":"Quiz History",
+  "sidebar-action-change-chat": "Switch chat",
+  "modo": "Mode",
+  "exploratorio": "Exploratory",
+  "instrucional": "Instructional",
+  "chat-otions-edit": "Edit",
+  "chat-otions-delete": "Delete",
+  "chat-otions-quiz": "Quiz",
+  "chat-modelo": "Model"
 }

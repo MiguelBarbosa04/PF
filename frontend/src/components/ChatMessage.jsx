@@ -3,17 +3,17 @@ import StarsRating from "./StarsRating.jsx";
 import { FaVolumeUp } from "react-icons/fa";
 import useAzureTTS from "../hooks/useAzureTTS.js";
 import useWebSpeechTTS from "../hooks/useWebSpeechTTS.js";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const ChatMessage = ({ msg, onRate, stopAll, addStopFn, isVoiceInput = false, ttsProvider = "azure"  }) => {
   const isBot = msg.remetente === "bot";
   const hasSpokenRef = useRef(false);
-
   const azureTTS = useAzureTTS();
   const webTTS = useWebSpeechTTS();
-
   const isSpeaking = ttsProvider === "azure" ? azureTTS.isSpeaking : webTTS.isSpeaking;
   const speak = ttsProvider === "azure" ? azureTTS.speak : webTTS.speak;
   const stop = ttsProvider === "azure" ? azureTTS.stop : webTTS.stop;
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (addStopFn) addStopFn(stop);
@@ -60,7 +60,7 @@ const ChatMessage = ({ msg, onRate, stopAll, addStopFn, isVoiceInput = false, tt
               <FaVolumeUp style={{ color: isSpeaking ? "#1e88e5" : "inherit" }}/>
             </button>
           </div>
-          <p className="chat-modelo">Modelo: {msg.modelo}</p>
+          <p className="chat-modelo">{t("chat-modelo")}: {msg.modelo}</p>
         </div>
       )}
     </div>

@@ -64,5 +64,20 @@
   "save-file-btn": "Guardar Ficheiro",
   "choose-llm-title": "Escolha LLM",
   "choose-model": "Escolha o modelo",
-  "save-model-btn": "Guardar LLM"
+  "save-model-btn": "Guardar LLM",
+  "chat-welcome": "No que posso ajudar?",
+  "chat-input-placeholder": "Digite a sua pergunta/dúvida",
+  "chat-voice-btn": "A ouvir...",
+  "sidebar-search": "Procura",
+  "new-chat-btn": "Novo Chat",
+  "sidebar-action-file": "Ficheiros e LLM",
+  "sidebar-action-quiz-h":"Histórico de Quizzes",
+  "sidebar-action-change-chat": "Trocar chat",
+  "modo": "Modo",
+  "exploratorio": "Exploratório",
+  "instrucional": "Instrucional",
+  "chat-otions-edit": "Editar",
+  "chat-otions-delete": "Eliminar",
+  "chat-otions-quiz": "Quiz",
+  "chat-modelo": "Modelo"
 }
