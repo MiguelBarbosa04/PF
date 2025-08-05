@@ -49,5 +49,20 @@
   "perfil-alert": "User updated successfully!",
   "perfil-error-alert": "Error updating user data.",
   "perfil-title": "Edit User",
-  "update-btn": "Update"
+  "update-btn": "Update",
+  "choose-topic-title": "Choose the topic",
+  "topic-loading": "Loading topics...",
+  "search-topic": "Search or select a topic...",
+  "topic-edit-btn": "Edit",
+  "go-chat-btn": "Go to chat",
+  "upload-files-btn": "File upload",
+  "edit-topic-title": "Edit topics",
+  "edit-topic-table-name": "Topic",
+  "edit-topic-table-action": "Action",
+  "file-upload-title": "Upload Files",
+  "add-file-btn": "Add File",
+  "save-file-btn": "Save File",
+  "choose-llm-title": "Choose LLM",
+  "choose-model": "Choose model",
+  "save-model-btn": "Save LLM"
 }

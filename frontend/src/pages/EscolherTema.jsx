@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { getCurrentUser, createSession, getTemas } from "../services/api.js";
 import IconMenu from "../components/IconMenu.jsx";
 import '../assets/css/IconMenuWrapper.css';
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const EscolherTema = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const EscolherTema = () => {
   const [temas, setTemas] = useState([]);
   const [loadingTemas, setLoadingTemas] = useState(true);
   const papel = localStorage.getItem("papel");
+  const { t } = useLanguage();
 
   // Redireciona para /welcome se não houver papel
   useEffect(() => {
@@ -103,16 +105,16 @@ const EscolherTema = () => {
         <IconMenu />
       </div>
       <div className="tema-card">
-        <h2 className="tema-title">Escolha o tema</h2>
+        <h2 className="tema-title">{t("choose-topic-title")}</h2>
 
         {loadingTemas ? (
-          <p>Carregando temas...</p>
+          <p>{t("loading-topics")}</p>
         ) : (
           <Select
             options={temas}
             value={selectedTema}
             onChange={handleTemaSelect}
-            placeholder="Pesquise ou selecione um tema..."
+            placeholder={t("search-topic")}
             isClearable
             className="tema-select"
           />
@@ -124,22 +126,22 @@ const EscolherTema = () => {
               type="button"
               onClick={() => navigate('/editar_tema')}
             >
-              Editar
+              {t("topic-edit-btn")}
             </button>
           )}
         </div>
         <div className="button-perfil">
-          <button type="button" onClick={handleIrParaChatDireto}>Ir para o chat</button>
+          <button type="button" onClick={handleIrParaChatDireto}>{t("go-chat-btn")}</button>
         </div>
         <div className="button-perfil">
-          <button type="button" onClick={() => navigate("/welcome")}>Voltar</button>
+          <button type="button" onClick={() => navigate("/welcome")}>{t("back-btn")}</button>
         </div>
         {isAdmin && (
           <button
             className="upload-button"
             onClick={() => navigate('/upload')}
           >
-            📄 Upload de ficheiros
+            📄 {t("upload-files-btn")}
           </button>
         )}
       </div>

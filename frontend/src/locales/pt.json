@@ -49,5 +49,20 @@
   "perfil-alert": "Utilizador atualizados com sucesso!",
   "perfil-error-alert": "Erro ao atualizar os dados do utilizador",
   "perfil-title": "Editar Utilizador",
-  "update-btn": "Atualizar"
+  "update-btn": "Atualizar",
+  "choose-topic-title": "Escolha o tema",
+  "topic-loading": "Carregando temas...",
+  "search-topic": "Pesquise ou selecione um tema...",
+  "topic-edit-btn": "Editar",
+  "go-chat-btn": "Ir para o chat",
+  "upload-files-btn": "Upload de ficheiros",
+  "edit-topic-title": "Editar temas",
+  "edit-topic-table-name": "Tema",
+  "edit-topic-table-action": "Ação",
+  "file-upload-title": "Upload Ficheiros",
+  "add-file-btn": "Adicionar Ficheiro",
+  "save-file-btn": "Guardar Ficheiro",
+  "choose-llm-title": "Escolha LLM",
+  "choose-model": "Escolha o modelo",
+  "save-model-btn": "Guardar LLM"
 }
