@@ -10,14 +10,15 @@
 }
 
 .quiz-item-publico {
+  background-color: var(--color-white);
+  border-left: 5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-medium);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  margin-bottom: 8px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  transition: background-color var(--transition-fast);
 }
 
 .quiz-info-publico {
