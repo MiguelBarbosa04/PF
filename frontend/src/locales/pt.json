@@ -120,5 +120,10 @@
   "quiz-error-fetching": "Erro ao buscar o quiz:",
   "quiz-error-duplicate": "Erro ao duplicar quiz:",
   "quiz-error-fetching-a": "Erro ao buscar respostas:",
-
+  "chatForm-error-message": "Erro ao enviar mensagem:",
+  "chatOptions-prompt": "Novo nome para a sessão:",
+  "chatOptions-error-edit": "Erro ao editar sessão:",
+  "chatOptions-confirm-delete": "Tens a certeza que queres eliminar esta sessão?",
+  "chatPage-error-quiz": "Erro ao gerar quiz:",
+  "chatPage-error-create-quiz": "Erro ao criar quiz. Tenta novamente."
 }
