@@ -1,6 +1,6 @@
 import QuizModal from "../components/QuizModal.jsx";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
@@ -8,6 +8,7 @@ import Estatisticas from "../components/Estatisticas.jsx";
 import { useNavigate } from "react-router";
 import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
+import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -98,13 +99,20 @@ function HistoricoQuizzes() {
       </div>
       <div className="historico-container">
         <h2>Histórico de Quizzes</h2>
-
+         <div className="estatistica-botao-quizzes-publicos">
         {userId && (
           <div className="estatisticas-bloco">
             <Estatisticas userId={userId} />
           </div>
         )}
+        <button
+              className="botao-quizzes-publicos"
+              onClick={() => navigate("/quizzes/publicos")}
+            >
+              Ver Quizzes Públicos
+            </button>
 
+         </div>
         {loading ? (
           <p>A carregar...</p>
         ) : quizSelecionado ? (
@@ -117,12 +125,7 @@ function HistoricoQuizzes() {
           <p>Não foram encontrados quizzes.</p>
         ) : (
           <>
-            <button
-              className="botao-quizzes-publicos"
-              onClick={() => navigate("/quizzes/publicos")}
-            >
-              Ver Quizzes Públicos
-            </button>
+
 
             <ul className="quiz-list">
               {quizzesPaginaAtual.map((quiz) => (
@@ -169,7 +172,7 @@ function HistoricoQuizzes() {
                     }
                     disabled={paginaAtual === 0}
                   >
-                    ◀
+                    <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                   <span className="pagina-atual">
                     Página {paginaAtual + 1} de {totalPaginas}
@@ -183,7 +186,7 @@ function HistoricoQuizzes() {
                     }
                     disabled={paginaAtual === totalPaginas - 1}
                   >
-                    ▶
+                    <FaAngleRight style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                 </div>
               </div>

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import QuizModal from "../components/QuizModal.jsx";
 import "../assets/css/HistoricoQuizzes.css";
+import IconMenu from "../components/IconMenu.jsx";
+import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 function QuizzesPublicos() {
   const [quizzes, setQuizzes] = useState([]);
@@ -41,8 +43,11 @@ function QuizzesPublicos() {
       <button className="back-button" onClick={() => navigate(-1)}>
         Voltar
       </button>
+             <div className="user-profile-wrapper">
+        <IconMenu />
+      </div>
       <div className="historico-container">
-        <h2 className="cabecalho-historico">Quizzes Públicos</h2>
+        <h2 >Quizzes Públicos</h2>
 
         {loading ? (
           <p>A carregar quizzes públicos...</p>
@@ -91,7 +96,7 @@ function QuizzesPublicos() {
                     }
                     disabled={paginaAtual === 0}
                   >
-                    ◀
+                     <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                   <span className="pagina-atual">
                     Página {paginaAtual + 1} de {totalPaginas}
@@ -105,7 +110,7 @@ function QuizzesPublicos() {
                     }
                     disabled={paginaAtual === totalPaginas - 1}
                   >
-                    ▶
+                     <FaAngleRight style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                 </div>
               </div>
