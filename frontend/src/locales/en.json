@@ -135,5 +135,9 @@
   "RegisterForm-success-alert": "Registration completed successfully.",
   "Sidebar-error-sessions": "Error loading sessions:",
   "TokenInfo-error": "Error retrieving user information:",
-  "UploadForm-error-LLM": "Error loading LLM:"
+  "UploadForm-error-LLM": "Error loading LLM:",
+  "useAzureSpeRec-error-start": "Error starting recognition:",
+  "useAzureSpeRec-error-stop": " Error stopping recognition:",
+  "useAzureTTS-error": "Azure TTS error.",
+  "useAzureTTS-error-audio": "Error playing audio:"
 }
