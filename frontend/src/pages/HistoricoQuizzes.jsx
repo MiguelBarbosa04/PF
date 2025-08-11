@@ -1,6 +1,6 @@
 import QuizRepeatModal from "../components/QuizRepeatModal";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
@@ -8,6 +8,8 @@ import Estatisticas from "../components/Estatisticas.jsx";
 import {useNavigate} from "react-router";
 import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
+import {useLanguage} from "../locales/LanguageContext.jsx";
+import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -19,6 +21,7 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
 const handleBack = () => {
     navigate(-1);
@@ -32,7 +35,7 @@ const handleBack = () => {
 
   const carregarQuizzes = () => {
     if (!userId) {
-      console.warn("userId está undefined. Não foi feita a fetch.");
+      console.warn(t("quiz-history-error-fetch-user"));
       return;
     }
     setLoading(true);
@@ -50,7 +53,7 @@ const handleBack = () => {
         );
         setQuizzes(dataOrdenada);
       })
-      .catch((err) => console.error("Erro ao carregar histórico:", err))
+      .catch((err) => console.error(t("quiz-history-error"), err))
       .finally(() => setLoading(false));
   };
 
@@ -61,13 +64,13 @@ const handleBack = () => {
   return (
     <div className="historico-wrapper">
       <button className="back-button" onClick={handleBack}>
-        Voltar
+        {t("back-btn")}
       </button>
       <div className="user-profile-wrapper">
         <IconMenu />
       </div>
       <div className="historico-container">
-        <h2>Histórico de Quizzes</h2>
+        <h2>{t("quiz-history-title")}</h2>
 
         {userId && (
           <div className="estatisticas-bloco">
@@ -76,7 +79,7 @@ const handleBack = () => {
         )}
 
         {loading ? (
-          <p>A carregar...</p>
+          <p>{t("register-loading")}</p>
         ) : quizSelecionado ? (
           <QuizDetalhes
             quizId={quizSelecionado.id}
@@ -84,7 +87,7 @@ const handleBack = () => {
             onVoltar={() => setQuizSelecionado(null)}
           />
         ) : quizzes.length === 0 ? (
-          <p>Não foram encontrados quizzes.</p>
+          <p>{t("quizzes-not-found")}</p>
         ) : (
           <>
             <ul className="quiz-list">
@@ -99,13 +102,13 @@ const handleBack = () => {
                       className="botao-ver"
                       onClick={() => setQuizSelecionado(quiz)}
                     >
-                      Ver
+                      {t("view-btn")}
                     </button>
                     <button
                       className="botao-repetir"
                       onClick={() => setQuizParaRepetir(quiz.id)}
                     >
-                      Repetir
+                      {t("repeat-btn")}
                     </button>
                   </div>
                 </li>
@@ -120,10 +123,10 @@ const handleBack = () => {
                     onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
                     disabled={paginaAtual === 0}
                   >
-                    ◀
+                    <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                   <span className="pagina-atual">
-                    Página {paginaAtual + 1} de {totalPaginas}
+                    {t("feedback-page")} {paginaAtual + 1} {t("feedback-of")} {totalPaginas}
                   </span>
                   <button
                     className="seta"
@@ -134,7 +137,7 @@ const handleBack = () => {
                     }
                     disabled={paginaAtual === totalPaginas - 1}
                   >
-                    ▶
+                    <FaAngleRight style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                 </div>
               </div>
