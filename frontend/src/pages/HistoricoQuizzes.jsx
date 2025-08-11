@@ -1,4 +1,4 @@
-import QuizRepeatModal from "../components/QuizRepeatModal";
+import QuizModal from "../components/QuizModal.jsx";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -192,7 +192,7 @@ function HistoricoQuizzes() {
         )}
 
         {quizParaRepetir && (
-          <QuizRepeatModal
+          <QuizModal
             quizId={quizParaRepetir}
             onClose={() => setQuizParaRepetir(null)}
             onRepetido={() => {

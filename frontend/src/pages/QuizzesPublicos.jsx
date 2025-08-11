@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import QuizRepeatModal from "../components/QuizRepeatModal";
+import QuizModal from "../components/QuizModal.jsx";
 import "../assets/css/HistoricoQuizzes.css";
 
 function QuizzesPublicos() {
@@ -71,7 +71,7 @@ function QuizzesPublicos() {
 
             {/* 🔹 Modal só aparece se houver quiz selecionado */}
             {quizParaFazer && (
-              <QuizRepeatModal
+              <QuizModal
                 quizId={quizParaFazer}
                 onClose={() => setQuizParaFazer(null)}
                 onRepetido={() => {
