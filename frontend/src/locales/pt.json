@@ -139,5 +139,18 @@
   "useAzureSpeRec-error-start": "Erro ao iniciar reconhecimento:",
   "useAzureSpeRec-error-stop": "Erro ao parar reconhecimento:",
   "useAzureTTS-error": "Erro no TTS Azure",
-  "useAzureTTS-error-audio": "Erro ao reproduzir áudio:"
+  "useAzureTTS-error-audio": "Erro ao reproduzir áudio:",
+  "EditarTema-error": "Erro ao buscar temas:",
+  "EditarTema-error-edit": "Erro ao atualizar tema:",
+  "EditarTema-delete-confirm": "Tem certeza que quer apagar este tema?",
+  "EditarTema-error-delete": "Erro ao apagar tema:",
+  "EscolherTema-error-user": "Erro ao verificar função do utilizador:",
+  "EscolherTema-error-create-s": "Erro ao criar sessão direta:",
+  "Register-alert": "Utilizador registado com sucesso!",
+  "Register-error-alert": "Erro ao registar utilizador",
+  "Upload-alert": "Por favor selecione um ficheiro antes de guardar.",
+  "Upload-error": "Erro ao fazer upload:",
+  "Upload-select-LLM": "Por favor selecione um modelo LLM.",
+  "Upload-model-sucess": "Modelo atualizado com sucesso!",
+  "Upload-model-error": "Erro ao guardar modelo:"
 }

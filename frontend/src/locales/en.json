@@ -139,5 +139,18 @@
   "useAzureSpeRec-error-start": "Error starting recognition:",
   "useAzureSpeRec-error-stop": " Error stopping recognition:",
   "useAzureTTS-error": "Azure TTS error.",
-  "useAzureTTS-error-audio": "Error playing audio:"
+  "useAzureTTS-error-audio": "Error playing audio:",
+  "EditarTema-error": "Error fetching topics:",
+  "EditarTema-error-edit": "Error updating topic:",
+  "EditarTema-delete-confirm": "Are you sure you want to delete this topic?",
+  "EditarTema-error-delete": "Error deleting topic:",
+  "EscolherTema-error-user": "Error checking user role:",
+  "EscolherTema-error-create-s": "Error creating direct session:",
+  "Register-alert": "User registered successfully!",
+  "Register-error-alert": "Error registering user.",
+  "Upload-alert": "Please select a file before saving.",
+  "Upload-error": "Error uploading file:",
+  "Upload-select-LLM": "Please select an LLM model.",
+  "Upload-model-sucess": " Model updated successfully!",
+  "Upload-model-error": " Error saving model:"
 }
