@@ -11,14 +11,15 @@ import {
   FaTimes,
   FaQuestionCircle,
   FaComment,
+  FaFileAlt,
   FaComments,
-  FaUserEdit,
-  FaSignOutAlt, FaFileAlt
+  FaUserEdit, FaSignOutAlt, FaGlobe
 } from "react-icons/fa";
 import {logout, deleteSession, getSessionsByUserOrdered} from "../services/api.js";
 import ChatOptionsMenu from "./ChatOptionsMenu.jsx";
 import {useParams} from "react-router";
 import {FaNoteSticky} from "react-icons/fa6";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 
 const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
@@ -32,9 +33,10 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
   const menuRef = useRef(null);
   const { sessionId } = useParams();
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
+  const { lang, changeLanguage, t } = useLanguage();
 
-    const handleIrParaHistorico = () => {
-     navigate(`/historico-quizzes/${userData.id}`);
+  const handleIrParaHistorico = () => {
+   navigate(`/historico-quizzes/${userData.id}`);
   };
 
 
@@ -126,7 +128,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
         <div className="search">
           <input
             type="text"
-            placeholder="Procura"
+            placeholder={t("sidebar-search")}
             className="sidebar-search"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -142,7 +144,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           )}
         </div>
         <button className="new-chat-btn" onClick={() => navigate("/tema")}>
-          Novo Chat <FaPlus />
+          {t("new-chat-btn")} <FaPlus />
         </button>
       </div>
 
@@ -220,24 +222,36 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
 
         <ul className={`sidebar-actions ${showMenu ? "menu-open" : "menu-closed"}`}>
           {isAdmin && (
-              <li onClick={handleFicheirosClick}><FaFileAlt/> Ficheiros e LLM</li>
+              <li onClick={handleFicheirosClick}><FaFileAlt/> {t("sidebar-action-file")}</li>
           )}
-          <li onClick={handleAlternarModo}>
-            <FaNoteSticky/> Modo: {modo === "exploratório" ? "Exploratório" : "Instrucional"}
-          </li>
+          {localStorage.getItem("papel") === "Tutor" && (
+              <li onClick={handleAlternarModo}>
+                <FaNoteSticky/> {t("modo")}: {modo === "exploratório" ? t("exploratorio") : t("instrucional")}
+              </li>
+          )}
           <li onClick={handleAlternarTTS}>
             <FaNoteSticky/> TTS: {ttsProvider === "azure" ? "Azure" : "Web"}
           </li>
-                    <li onClick={handleIrParaHistorico}>
-            <FaQuestionCircle /> Histórico de Quizzes
-          </li>
+
+          {localStorage.getItem("papel") === "Tutor" && (
+              <li onClick={handleIrParaHistorico}>
+                <FaQuestionCircle/> {t("sidebar-action-quiz-h")}
+              </li>
+          )}
           {isAdmin && (
-            <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
+              <li onClick={handleFeedbackClick}><FaComment/> Feedback</li>
           )}
 
-          <li onClick={handleTrocaChatClick}><FaComments/> Trocar chat</li>
-          <li onClick={handleEditarPerfilClick}><FaUserEdit/> Editar Perfil</li>
-          <li onClick={handleLogout}><FaSignOutAlt/> Sair</li>
+          <li onClick={handleTrocaChatClick}><FaComments/> {t("sidebar-action-change-chat")}</li>
+          <li onClick={handleEditarPerfilClick}><FaUserEdit/> {t("icon-menu-editar")}</li>
+          <li onClick={() => {
+            const newLang = lang === "pt" ? "en" : "pt";
+            changeLanguage(newLang);
+            localStorage.setItem("language", newLang);
+          }}>
+            <FaGlobe/> {t("icon-menu-lang")}: {lang.toUpperCase()}
+          </li>
+          <li onClick={handleLogout}><FaSignOutAlt/> {t("icon-menu-logout")}</li>
         </ul>
       </div>
     </div>

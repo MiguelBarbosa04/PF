@@ -1,9 +1,10 @@
 import React, {useEffect, useState, useRef} from "react";
 import "../assets/css/IconMenu.css";
-import {FaCog, FaComment, FaSignOutAlt} from "react-icons/fa";
+import {FaCog, FaComment, FaGlobe, FaSignOutAlt} from "react-icons/fa";
 import { logout } from "../services/api.js";
 import { useNavigate } from "react-router";
 import TokenInfo from "./TokenInfo.jsx";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const IconMenu = () => {
 
@@ -11,6 +12,7 @@ const IconMenu = () => {
   const navigate = useNavigate();
   const profileRef = useRef(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { lang, changeLanguage, t } = useLanguage();
 
   const handleEditClick = () => {
     navigate("/perfil");
@@ -47,10 +49,10 @@ const IconMenu = () => {
     }
   }, [userData]);
 
-const handleLogout = () => {
-  logout();
-  navigate("/login");
-};
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
 return (
     <div className="user-profile" ref={profileRef}>
@@ -70,17 +72,24 @@ return (
           <div className="profile-actions">
             <button className="action-button" onClick={handleEditClick}>
               <FaCog className="action-icon"/>
-              Editar Perfil
+              {t("icon-menu-editar")}
             </button>
             {isAdmin && (
-              <button className="action-button" onClick={handleFeedbackClick}>
-                <FaComment className="action-icon"/>
-                Feedback
-              </button>
+                <button className="action-button" onClick={handleFeedbackClick}>
+                  <FaComment className="action-icon"/>
+                  Feedback
+                </button>
             )}
+            <button className="action-button" onClick={() => {
+              const newLang = lang === "pt" ? "en" : "pt";
+              changeLanguage(newLang);
+              localStorage.setItem("language", newLang);
+            }}>
+              <FaGlobe/> {t("icon-menu-lang")}: {lang.toUpperCase()}
+            </button>
             <button className="action-button" onClick={handleLogout}>
               <FaSignOutAlt className="action-icon"/>
-              Sair
+              {t("icon-menu-logout")}
             </button>
           </div>
         </div>

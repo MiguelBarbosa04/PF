@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session as DBSession
 from datetime import datetime
 import httpx
 import re
-from backend.repositories.global_settings import get_global_settings
-from backend.schemas.sessions import SessionCreate
-from backend.repositories.sessions import create_session
-from backend.schemas.messages import ChatRequest
+from backend.repositories.global_settings_repository import get_global_settings
+from backend.schemas.sessions_schema import SessionCreate
+from backend.repositories.sessions_repository import create_session
+from backend.schemas.messages_schema import ChatRequest
 from backend.database.models import Messages, Users
 from backend.services.rag_service import generate_rag_response
 from dotenv import load_dotenv
@@ -130,7 +130,7 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
     # Se for o utilizador, gerar resposta com RAG
     if request.remetente == "user":
         current_user = db.query(Users).filter(Users.id == user_id).first()
-        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo)
+        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo, papel=request.papel)
 
         # Obter o modelo usado para gravar na BD
         settings = get_global_settings(db)

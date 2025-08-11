@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from backend.auth.hashing import get_password_hash
-from backend.schemas.users import UserCreate, UserRead, UserLogin, UserUpdate
+from backend.schemas.users_schema import UserCreate, UserRead, UserLogin, UserUpdate
 from backend.database.db import get_db
-from backend.repositories.users import create_user, authenticate_user
+from backend.repositories.users_repository import create_user, authenticate_user
 from backend.database.models import Experiencia, Funcao, Linguagem
 from backend.auth.auth import create_access_token
 from backend.database.models import Users

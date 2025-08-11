@@ -2,9 +2,12 @@ import {FaFileUpload} from "react-icons/fa";
 import React, {useEffect} from "react";
 import '../assets/css/UploadPage.css';
 import {getLLM} from "../services/api.js";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
                       selectedLLM, setSelectedLLM, tema, setTema, navigate, file }) => {
+
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchLLM = async () => {
@@ -22,10 +25,10 @@ const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
       <div className="upload-container">
         <div className="cards-wrapper">
           <div className="upload-card">
-            <h2 className="upload-title">Upload Ficheiros</h2>
+            <h2 className="upload-title">{t("file-upload-title")}</h2>
             <label className="upload-button-label">
               <FaFileUpload className="upload-icon"/>
-              Adicionar Ficheiro
+              {t("add-file-btn")}
               <input
                   type="file"
                   onChange={handleFileChange}
@@ -40,11 +43,11 @@ const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
             )}
 
             <div className="button-group">
-              <button className="save-button" onClick={handleGuardar}>Guardar Ficheiro</button>
+              <button className="save-button" onClick={handleGuardar}>{t("save-file-btn")}</button>
             </div>
           </div>
           <div className="llm-card">
-            <h2 className="upload-title">Escolha LLM</h2>
+            <h2 className="upload-title">{t("choose-llm-title")}</h2>
             <select
                 name="modelo"
                 onChange={(e) => setSelectedLLM(e.target.value)}
@@ -52,18 +55,18 @@ const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
                 value={selectedLLM}
                 required
             >
-              <option value="" disabled>Escolha o modelo</option>
+              <option value="" disabled>{t("choose-model")}</option>
               <option value="mistral">Mistral (Local)</option>
               <option value="gemini">Gemini (Cloud)</option>
             </select>
 
             <div className="button-group">
-              <button className="save-button" onClick={handleGuardarLLM}>Guardar LLM</button>
+              <button className="save-button" onClick={handleGuardarLLM}>{t("save-model-btn")}</button>
             </div>
           </div>
         </div>
         <div className="cancel-wrapper">
-          <button className="cancel-button" onClick={() => navigate(-1)}>Voltar</button>
+          <button className="cancel-button" onClick={() => navigate(-1)}>{t("back-btn")}</button>
         </div>
       </div>
   );

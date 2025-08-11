@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from backend.database.db import get_db
-from backend.schemas.sessions import SessionCreate, SessionRead, SessionUpdate
-from backend.repositories.sessions import create_session, get_session, get_sessions_by_user, update_session, \
+from backend.schemas.sessions_schema import SessionCreate, SessionRead, SessionUpdate
+from backend.repositories.sessions_repository import create_session, get_session, get_sessions_by_user, update_session, \
     delete_session, get_sessions_ordered_by_last_message
 
 router = APIRouter(prefix="/sessions", tags=["Sessions"])

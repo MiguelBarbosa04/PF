@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { createUser } from "../services/api.js";
 import RegisterForm from "../components/RegisterForm.jsx";
+import LanguageSwitcher from "../components/LanguageSwitcher.jsx";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Register = () => {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
+      <LanguageSwitcher/>
       <RegisterForm onSubmit={handleRegister} />
     </div>
   );

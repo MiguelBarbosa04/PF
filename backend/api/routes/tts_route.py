@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Response
 import requests
 import os
-from backend.schemas.tts import TextRequest
+from backend.schemas.tts_schema import TextRequest
 from dotenv import load_dotenv
 load_dotenv()
 

@@ -13,20 +13,21 @@ const QuizRepeatPage = () => {
   const [correcoes, setCorrecoes] = useState(null);
   const user_id = getTokenInfo().id;
 
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const quizData = await getQuizById(quizId);
-        setQuiz(quizData);
-      } catch (error) {
-        console.error("Erro ao carregar quiz:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchDuplicatedQuiz = async () => {
+    try {
+      const response = await axios.post(`/quizzes/${quizId}/duplicar`);
+      setQuiz(response.data);
+    } catch (err) {
+      console.error("Erro ao duplicar quiz:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchQuiz();
-  }, [quizId]);
+  fetchDuplicatedQuiz();
+}, [quizId]);
+
 
   const handleSelectOption = (perguntaId, opcaoId) => {
     if (!correcoes) {

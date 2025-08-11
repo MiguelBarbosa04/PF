@@ -6,6 +6,7 @@ import { FaRegEdit, FaRegSave, FaSearch, FaTrashAlt } from "react-icons/fa";
 import { TbCircleX } from "react-icons/tb";
 import { useNavigate } from "react-router";
 import { getTemas, updateTema, deleteTema } from "../services/api.js";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const EditarTema = () => {
   const [temas, setTemas] = useState([]);
@@ -13,6 +14,7 @@ const EditarTema = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editId, setEditId] = useState(null);
   const [editedNome, setEditedNome] = useState('');
+  const { t } = useLanguage();
 
 useEffect(() => {
   async function fetchTemas() {
@@ -82,11 +84,11 @@ const handleDelete = async (nome) => {
       <div className="user-profile-wrapper">
         <IconMenu />
       </div>
-      <h2 className="editar-tema-title">Editar temas</h2>
+      <h2 className="editar-tema-title">{t("edit-topic-title")}</h2>
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Pesquisar tema..."
+          placeholder={t("search-topic")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -96,8 +98,8 @@ const handleDelete = async (nome) => {
         <table className="tema-table">
           <thead>
             <tr>
-              <th>Tema</th>
-              <th>Ação</th>
+              <th>{t("edit-topic-table-name")}</th>
+              <th>{t("edit-topic-table-action")}</th>
             </tr>
           </thead>
           <tbody>
@@ -134,7 +136,7 @@ const handleDelete = async (nome) => {
         </table>
       </div>
       <div className="button-perfil">
-        <button type="button" onClick={() => navigate("/tema")}>Voltar</button>
+        <button type="button" onClick={() => navigate("/tema")}>{t("back-btn")}</button>
       </div>
     </div>
   );

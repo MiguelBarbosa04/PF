@@ -4,11 +4,13 @@ import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { updateSession } from "../services/api.js";
 import axios from "axios";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete, onQuizRequested }, ref) => {
   const navigate = useNavigate();
   const TUTOR_AI = "Tutor";
   const papelAtual = localStorage.getItem("papel");
+  const { t } = useLanguage();
 
   const handleEdit = async () => {
     const novoTema = prompt("Novo nome para a sessão:", session.tema || "");
@@ -41,10 +43,10 @@ const handleQuiz = async () => {
 
   return (
     <div className="chat-options-menu" ref={ref}>
-      <button onClick={handleEdit}><FaEdit /> Editar</button>
-      <button onClick={handleDelete}><FaTrash /> Eliminar</button>
+      <button onClick={handleEdit}><FaEdit /> {t("chat-otions-edit")}</button>
+      <button onClick={handleDelete}><FaTrash /> {t("chat-otions-delete")}</button>
       {papelAtual === TUTOR_AI && (
-      <button onClick={()=>handleQuiz()}><FaQuestionCircle /> Quiz</button>
+      <button onClick={()=>handleQuiz()}><FaQuestionCircle /> {t("chat-otions-quiz")}</button>
     )}
 
     </div>
