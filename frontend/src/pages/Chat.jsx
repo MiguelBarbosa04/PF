@@ -4,14 +4,15 @@ import Modal from 'react-modal';
 import QuizPage from './QuizPage.jsx';
 import axios from 'axios';
 import {FaRegTimesCircle} from "react-icons/fa";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 Modal.setAppElement('#root'); // garante acessibilidade
 
 const Chat = () => {
   const [modo, setModo] = useState("exploratório");
-
   const [quizSessionId, setQuizSessionId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
+  const { t } = useLanguage();
 
   const abrirQuizModal = async (sessionId) => {
     try {
@@ -21,8 +22,8 @@ const Chat = () => {
       setQuizSessionId(response.data.session_id);
       setModalAberto(true);
     } catch (error) {
-      console.error("Erro ao gerar quiz:", error);
-      alert("Erro ao criar quiz. Tenta novamente.");
+      console.error(t("chatPage-error-quiz"), error);
+      alert(t("chatPage-error-create-quiz"));
     }
   };
 

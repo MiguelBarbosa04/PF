@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import '../assets/css/QuizPage.css';
 import { corrigirRespostasQuiz, getQuizBySession } from "../services/api.js";
 import getTokenInfo from "../components/TokenInfo.jsx";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const QuizPage = ({sessionId: propSessionId}) => {
   const [quiz, setQuiz] = useState(null);
@@ -12,6 +13,7 @@ const QuizPage = ({sessionId: propSessionId}) => {
   const routeParams = useParams();
   const sessionId = propSessionId || routeParams.sessionId;
   const user_id = getTokenInfo().id;
+  const { t } = useLanguage();
 
   useEffect(() => {
     (async () => {
@@ -19,7 +21,7 @@ const QuizPage = ({sessionId: propSessionId}) => {
         const quizData = await getQuizBySession(sessionId);
         setQuiz(quizData);
       } catch (error) {
-        console.error("Erro ao buscar o quiz:", error);
+        console.error(t("quiz-error-fetching"), error);
       } finally {
         setLoading(false);
       }
@@ -37,7 +39,7 @@ const QuizPage = ({sessionId: propSessionId}) => {
 
   const enviarRespostas = async () => {
     if (!quiz || !quiz.perguntas) {
-      alert("Quiz não carregado corretamente.");
+      alert(t("alert-quiz-page-load"));
       return;
     }
 
@@ -46,7 +48,7 @@ const QuizPage = ({sessionId: propSessionId}) => {
     );
 
     if (!todasRespondidas) {
-      alert("Por favor, responde a todas as perguntas antes de submeter.");
+      alert(t("quiz-page-alert"));
       return;
     }
 
@@ -67,16 +69,16 @@ const QuizPage = ({sessionId: propSessionId}) => {
 
       setCorrecoes(correcoesMap);
 
-      alert("Respostas enviadas com sucesso!");
+      alert(t("alert-answer-success"));
       console.log("Resultado:", resultado);
     } catch (error) {
-      console.error("Erro ao enviar respostas:", error);
-      alert("Erro ao enviar respostas, tenta novamente.");
+      console.error(t("alert-error-submitting-a"), error);
+      alert(t("alert-quiz-try-again"));
     }
   };
 
-  if (loading) return <p>A carregar quiz...</p>;
-  if (!quiz) return <p>Nenhum quiz criado.</p>;
+  if (loading) return <p>{t("register-loading")}</p>;
+  if (!quiz) return <p>{t("no-quiz-created")}</p>;
 
   return (
     <div className="quiz-container">
@@ -123,7 +125,7 @@ const QuizPage = ({sessionId: propSessionId}) => {
         disabled={!!correcoes}
         className={correcoes ? "btn-disabled" : "btn-submit"}
       >
-        {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
+        {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
       </button>
     </div>
   );

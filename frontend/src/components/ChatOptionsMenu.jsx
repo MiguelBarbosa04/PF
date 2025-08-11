@@ -1,19 +1,16 @@
 import React, { forwardRef } from "react";
 import "../assets/css/ChatOptionsMenu.css";
 import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { updateSession } from "../services/api.js";
-import axios from "axios";
 import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete, onQuizRequested }, ref) => {
-  const navigate = useNavigate();
   const TUTOR_AI = "Tutor";
   const papelAtual = localStorage.getItem("papel");
   const { t } = useLanguage();
 
   const handleEdit = async () => {
-    const novoTema = prompt("Novo nome para a sessão:", session.tema || "");
+    const novoTema = prompt(t("chatOptions-prompt"), session.tema || "");
     if (!novoTema || novoTema === session.tema) return;
 
     try {
@@ -22,12 +19,12 @@ const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDel
         onSessionUpdated(session.id, novoTema);
       }
     } catch (error) {
-      console.error("Erro ao editar sessão:", error);
+      console.error(t("chatOptions-error-edit"), error);
     }
   };
 
   const handleDelete = () => {
-    if (window.confirm("Tens a certeza que queres eliminar esta sessão?")) {
+    if (window.confirm(t("chatOptions-confirm-delete"))) {
       if (onDelete) onDelete(session.id);
     }
   };

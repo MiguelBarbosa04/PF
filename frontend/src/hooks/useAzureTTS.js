@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const useAzureTTS = (registerStop) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef(null);
   const lastTextRef = useRef("");
-
+  const { t } = useLanguage();
   const speak = async (text) => {
     if (isSpeaking && lastTextRef.current === text) {
       stop();
@@ -20,7 +21,7 @@ const useAzureTTS = (registerStop) => {
         body: JSON.stringify({ text }),
       });
 
-      if (!res.ok) throw new Error("Erro no TTS Azure");
+      if (!res.ok) throw new Error(t("useAzureTTS-error"));
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -38,7 +39,7 @@ const useAzureTTS = (registerStop) => {
         audioRef.current = null;
       };
     } catch (error) {
-      console.error("Erro ao reproduzir áudio:", error);
+      console.error(t("useAzureTTS-error-audio"), error);
       setIsSpeaking(false);
     }
   };

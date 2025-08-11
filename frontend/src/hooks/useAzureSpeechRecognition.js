@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 export function useAzureSpeechRecognition({ azureKey, azureRegion, onResult }) {
   const [isListening, setIsListening] = useState(false);
   const recognizerRef = useRef(null);
-
+  const { t } = useLanguage();
   const startListening = () => {
     if (recognizerRef.current) return; // já ativo
 
@@ -25,7 +26,7 @@ export function useAzureSpeechRecognition({ azureKey, azureRegion, onResult }) {
     recognizer.startContinuousRecognitionAsync(() => {
       setIsListening(true);
     }, (err) => {
-      console.error("Erro ao iniciar reconhecimento:", err);
+      console.error(t("useAzureSpeRec-error-start"), err);
     });
   };
 
@@ -36,7 +37,7 @@ export function useAzureSpeechRecognition({ azureKey, azureRegion, onResult }) {
       recognizerRef.current.close();
       recognizerRef.current = null;
     }, (err) => {
-      console.error("Erro ao parar reconhecimento:", err);
+      console.error(t("useAzureSpeRec-error-stop"), err);
     });
   };
 

@@ -3,6 +3,7 @@ import { corrigirRespostasQuiz, getQuizById } from "../services/api";
 import getTokenInfo from "./TokenInfo";
 import "../assets/css/Modal.css";
 import {FaRegTimesCircle} from "react-icons/fa";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   const [quiz, setQuiz] = useState(null);
@@ -10,6 +11,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   const [respostas, setRespostas] = useState({});
   const [correcoes, setCorrecoes] = useState(null);
   const user_id = getTokenInfo().id;
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -17,7 +19,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
         const quizData = await getQuizById(quizId);
         setQuiz(quizData);
       } catch (error) {
-        console.error("Erro ao carregar quiz:", error);
+        console.error(t("quiz-error-fetching"), error);
       } finally {
         setLoading(false);
       }
@@ -38,7 +40,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   const enviarRespostas = async () => {
     const todasRespondidas = quiz.perguntas.every((p) => respostas[p.id] != null);
     if (!todasRespondidas) {
-      alert("Responde a todas as perguntas!");
+      alert(t("alert-answer-all"));
       return;
     }
 
@@ -60,7 +62,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
       if (onRepetido) onRepetido();
 
     } catch (error) {
-      alert("Erro ao enviar respostas.");
+      alert(t("alert-error-submitting-a"));
     }
   };
 
@@ -68,7 +70,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
     return (
       <div className="modal-overlay">
         <div className="modal-content">
-          <p>A carregar...</p>
+          <p>{t("register-loading")}</p>
         </div>
       </div>
     );
@@ -77,7 +79,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
     return (
       <div className="modal-overlay">
         <div className="modal-content">
-          <p>Quiz não encontrado.</p>
+          <p>{t("quiz-not-found")}</p>
         </div>
       </div>
     );
@@ -145,7 +147,7 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
           className={correcoes ? "btn-disabled" : "btn-submit"}
           disabled={!!correcoes}
         >
-          {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
+          {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
         </button>
       </div>
     </div>

@@ -15,7 +15,7 @@ const UploadForm = ({ handleFileChange, handleGuardar, handleGuardarLLM,
         const llmR = await getLLM();
         setSelectedLLM(llmR.modelo);
       } catch (error) {
-        console.error("Erro ao carregar LLM:", error);
+        console.error(t("UploadForm-error-LLM"), error);
       }
     };
     fetchLLM();
