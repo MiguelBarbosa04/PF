@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import "../assets/css/HistoricoQuizzes.css"; // reaproveita CSS do histórico
+import QuizRepeatModal from "../components/QuizRepeatModal";
+import "../assets/css/HistoricoQuizzes.css";
 
 function QuizzesPublicos() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paginaAtual, setPaginaAtual] = useState(0);
+  const [quizParaFazer, setQuizParaFazer] = useState(null);
+ const url = import.meta.env.VITE_API_URL;
   const quizzesPorPagina = 5;
-  const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
-  const carregarQuizzes = () => {
+  useEffect(() => {
+    carregarQuizzes();
+  }, []);
+
+ const carregarQuizzes = () => {
     setLoading(true);
     fetch(`${url}/quizzes/quizzes/publicos`)
       .then((res) => {
@@ -23,13 +29,6 @@ function QuizzesPublicos() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    carregarQuizzes();
-  }, []);
-
-  const handleFazerQuiz = (quizId) => {
-    navigate(`/quiz/${quizId}`); // Redireciona para a página de fazer quiz
-  };
 
   const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
   const quizzesPaginaAtual = quizzes.slice(
@@ -61,7 +60,7 @@ function QuizzesPublicos() {
                   <div className="quiz-botoes">
                     <button
                       className="botao-ver"
-                      onClick={() => handleFazerQuiz(quiz.id)}
+                      onClick={() => setQuizParaFazer(quiz.id)}
                     >
                       Fazer Quiz
                     </button>
@@ -70,12 +69,26 @@ function QuizzesPublicos() {
               ))}
             </ul>
 
+            {/* 🔹 Modal só aparece se houver quiz selecionado */}
+            {quizParaFazer && (
+              <QuizRepeatModal
+                quizId={quizParaFazer}
+                onClose={() => setQuizParaFazer(null)}
+                onRepetido={() => {
+                  setQuizParaFazer(null);
+                  carregarQuizzes();
+                }}
+              />
+            )}
+
             {totalPaginas > 1 && (
               <div className="paginacao-wrapper">
                 <div className="paginacao-bloco">
                   <button
                     className="seta"
-                    onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
+                    onClick={() =>
+                      setPaginaAtual((prev) => Math.max(prev - 1, 0))
+                    }
                     disabled={paginaAtual === 0}
                   >
                     ◀
@@ -86,7 +99,9 @@ function QuizzesPublicos() {
                   <button
                     className="seta"
                     onClick={() =>
-                      setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas - 1))
+                      setPaginaAtual((prev) =>
+                        Math.min(prev + 1, totalPaginas - 1)
+                      )
                     }
                     disabled={paginaAtual === totalPaginas - 1}
                   >
