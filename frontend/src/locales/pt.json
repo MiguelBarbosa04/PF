@@ -125,5 +125,15 @@
   "chatOptions-error-edit": "Erro ao editar sessão:",
   "chatOptions-confirm-delete": "Tens a certeza que queres eliminar esta sessão?",
   "chatPage-error-quiz": "Erro ao gerar quiz:",
-  "chatPage-error-create-quiz": "Erro ao criar quiz. Tenta novamente."
+  "chatPage-error-create-quiz": "Erro ao criar quiz. Tenta novamente.",
+  "PerfilForm-error": "Erro ao carregar dados",
+  "PerfilForm-error-pass": "As passwords não coincidem",
+  "PerfilForm-success": "Perfil atualizado com sucesso!",
+  "RegisterForm-error-load": "Erro ao carregar opções:",
+  "RegisterForm-fill-field": "Por favor, preencha o campo",
+  "RegisterForm-error-register": "Erro no registo",
+  "RegisterForm-success-alert": "Registo concluído com sucesso",
+  "Sidebar-error-sessions": "Erro ao carregar sessões:",
+  "TokenInfo-error": "Erro ao obter informações do utilizador:",
+  "UploadForm-error-LLM": "Erro ao carregar LLM:"
 }
