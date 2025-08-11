@@ -11,6 +11,7 @@ import {
 import "../assets/css/ChatForm.css";
 import { FaArrowCircleRight, FaMicrophone } from "react-icons/fa";
 import { useAzureSpeechRecognition } from "../hooks/useAzureSpeechRecognition.js";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const ChatForm = ({ modo, setModo, onQuizRequested }) => {
   const { sessionId } = useParams();
@@ -26,6 +27,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
   const [isVoiceInput, setIsVoiceInput] = useState(false);
   const [lastSpokenMessageId, setLastSpokenMessageId] = useState(null);
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
+  const { t } = useLanguage();
 
   const { startListening, stopListening, isListening } = useAzureSpeechRecognition({
     azureKey: import.meta.env.VITE_AZURE_SPEECH_KEY,
@@ -139,7 +141,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
                refreshTrigger={refreshSidebar} onQuizRequested={onQuizRequested} />
       <div className="chat-main">
         {messages.length === 0 ? (
-          <h2 className="chat-welcome">No que posso ajudar?</h2>
+          <h2 className="chat-welcome">{t("chat-welcome")}</h2>
         ) : (
           <div className="chat-messages" ref={chatContainerRef}>
             {messages.map((msg) => (
@@ -157,7 +159,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
         <div className="chat-input-area">
           <textarea
             className="chat-input"
-            placeholder="Digite a sua pergunta/dúvida"
+            placeholder={t("chat-input-placeholder")}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={3}
@@ -176,7 +178,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
                 isListening ? stopListening() : startListening();
               }}
             >
-              {isListening ? "A ouvir..." : <FaMicrophone />}
+              {isListening ? (t("chat-voice-btn")) : <FaMicrophone />}
             </button>
             <button className="chat-send-button" onClick={handleEnviarMensagem}>
               <FaArrowCircleRight />
