@@ -3,6 +3,7 @@ import { corrigirRespostasQuiz, getQuizById } from "../services/api";
 import getTokenInfo from "../components/TokenInfo";
 import '../assets/css/QuizPage.css';
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const QuizRepeatPage = () => {
   const { id } = useParams();

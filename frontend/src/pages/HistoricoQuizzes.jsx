@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
 import Estatisticas from "../components/Estatisticas.jsx";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
 
@@ -20,9 +20,10 @@ function HistoricoQuizzes() {
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
-const handleBack = () => {
+  const handleBack = () => {
     navigate(-1);
   };
+
   const quizzesPaginaAtual = quizzes.slice(
     paginaAtual * quizzesPorPagina,
     (paginaAtual + 1) * quizzesPorPagina
@@ -57,6 +58,37 @@ const handleBack = () => {
   useEffect(() => {
     carregarQuizzes();
   }, [userId]);
+
+const atualizarPartilha = (quizId, novoValor) => {
+  const valorString = novoValor ? "true" : "false";
+  const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
+  console.log("URL completa do PUT:", fullUrl);
+
+  fetch(fullUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => {
+      console.log("Resposta status:", res.status);
+      if (!res.ok) {
+        throw new Error("Erro ao atualizar partilha");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Resposta JSON:", data);
+      setQuizzes((prev) =>
+        prev.map((q) =>
+          q.id === quizId ? { ...q, partilhado: novoValor } : q
+        )
+      );
+    })
+    .catch((err) => console.error("Erro ao atualizar partilha:", err));
+};
+
+
 
   return (
     <div className="historico-wrapper">
@@ -107,6 +139,16 @@ const handleBack = () => {
                     >
                       Repetir
                     </button>
+                    <label className="checkbox-partilhar">
+                      <input
+                        type="checkbox"
+                        checked={quiz.partilhado || false}
+                        onChange={(e) =>
+                          atualizarPartilha(quiz.id, e.target.checked)
+                        }
+                      />
+                      Partilhar
+                    </label>
                   </div>
                 </li>
               ))}
@@ -117,7 +159,9 @@ const handleBack = () => {
                 <div className="paginacao-bloco">
                   <button
                     className="seta"
-                    onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
+                    onClick={() =>
+                      setPaginaAtual((prev) => Math.max(prev - 1, 0))
+                    }
                     disabled={paginaAtual === 0}
                   >
                     ◀
