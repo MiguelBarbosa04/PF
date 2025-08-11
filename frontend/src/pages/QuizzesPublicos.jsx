@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import dayjs from "dayjs";
 import "../assets/css/QuizzesPublicos.css";
 
 function QuizzesPublicos() {
+
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_API_URL;
@@ -12,7 +13,7 @@ function QuizzesPublicos() {
 
   const carregarQuizzes = () => {
     setLoading(true);
-    fetch(`${url}/quizzes/publicos`)
+    fetch(`${url}/quizzes/quizzes/publicos`)
       .then((res) => {
         if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
         return res.json();

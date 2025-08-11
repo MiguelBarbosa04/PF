@@ -59,36 +59,34 @@ function HistoricoQuizzes() {
     carregarQuizzes();
   }, [userId]);
 
-const atualizarPartilha = (quizId, novoValor) => {
-  const valorString = novoValor ? "true" : "false";
-  const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
-  console.log("URL completa do PUT:", fullUrl);
+  const atualizarPartilha = (quizId, novoValor) => {
+    const valorString = novoValor ? "true" : "false";
+    const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
+    console.log("URL completa do PUT:", fullUrl);
 
-  fetch(fullUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      console.log("Resposta status:", res.status);
-      if (!res.ok) {
-        throw new Error("Erro ao atualizar partilha");
-      }
-      return res.json();
+    fetch(fullUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
-    .then((data) => {
-      console.log("Resposta JSON:", data);
-      setQuizzes((prev) =>
-        prev.map((q) =>
-          q.id === quizId ? { ...q, partilhado: novoValor } : q
-        )
-      );
-    })
-    .catch((err) => console.error("Erro ao atualizar partilha:", err));
-};
-
-
+      .then((res) => {
+        console.log("Resposta status:", res.status);
+        if (!res.ok) {
+          throw new Error("Erro ao atualizar partilha");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Resposta JSON:", data);
+        setQuizzes((prev) =>
+          prev.map((q) =>
+            q.id === quizId ? { ...q, partilhado: novoValor } : q
+          )
+        );
+      })
+      .catch((err) => console.error("Erro ao atualizar partilha:", err));
+  };
 
   return (
     <div className="historico-wrapper">
@@ -119,6 +117,13 @@ const atualizarPartilha = (quizId, novoValor) => {
           <p>Não foram encontrados quizzes.</p>
         ) : (
           <>
+            <button
+              className="botao-quizzes-publicos"
+              onClick={() => navigate("/quizzes/publicos")}
+            >
+              Ver Quizzes Públicos
+            </button>
+
             <ul className="quiz-list">
               {quizzesPaginaAtual.map((quiz) => (
                 <li key={quiz.id} className="quiz-item">

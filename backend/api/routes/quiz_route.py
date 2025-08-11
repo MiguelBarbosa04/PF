@@ -196,7 +196,7 @@ def duplicar_quiz(quiz_id: int, db: Session = Depends(get_db)):
     return novo_quiz
 
 
-@router.get("/publicos")
+@router.get("/quizzes/publicos")
 def listar_quizzes_publicos(db: Session = Depends(get_db)):
     quizzes = db.query(Quiz).filter(Quiz.partilhado == True).order_by(Quiz.data.desc()).all()
     return quizzes
