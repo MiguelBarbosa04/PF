@@ -84,3 +84,12 @@ class QuizHistoricoRead(BaseModel):
 
     class Config:
         orm_mode = True
+
+class QuizPublicoSchema(BaseModel):
+    id: int
+    titulo: str
+    partilhado: bool
+    data: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True

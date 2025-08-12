@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db, SessionLocal
 from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, \
-    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead
+    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead, QuizPublicoSchema
 from backend.repositories.quiz_repository import obter_respostas_quiz
 import backend.repositories.quiz_repository as quiz_repo
 from backend.repositories.global_settings_repository import obter_modelo_mais_recente
@@ -196,15 +198,14 @@ def duplicar_quiz(quiz_id: int, db: Session = Depends(get_db)):
     return novo_quiz
 
 
-@router.get("/quizzes/publicos")
+@router.get("/quizzes/publicos", response_model=List[QuizPublicoSchema])
 def listar_quizzes_publicos(db: Session = Depends(get_db)):
     quizzes = db.query(Quiz).filter(Quiz.partilhado == True).order_by(Quiz.data.desc()).all()
     return quizzes
 
 
-@router.put("/{quiz_id}/partilhar")
-def atualizar_partilha(quiz_id: int, partilhar: bool = Query(...), db: Session = Depends(get_db)):
-    print(f"Rota atualizar_partilha chamada com quiz_id={quiz_id} e partilhar={partilhar}")
+@router.put("/{quiz_id}/partilhar", response_model=QuizPublicoSchema)
+def atualizar_partilha(quiz_id: int, partilhar: bool = Query(..., description="Novo valor para o campo partilhado"), db: Session = Depends(get_db)):
     quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
@@ -212,4 +213,4 @@ def atualizar_partilha(quiz_id: int, partilhar: bool = Query(...), db: Session =
     quiz.partilhado = partilhar
     db.commit()
     db.refresh(quiz)
-    return {"message": "Estado de partilha atualizado", "partilhado": quiz.partilhado}
+    return quiz

@@ -20,6 +20,8 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+const [loadingIds, setLoadingIds] = React.useState(new Set());
+const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
   const handleBack = () => {
     navigate(-1);
@@ -30,7 +32,6 @@ function HistoricoQuizzes() {
     (paginaAtual + 1) * quizzesPorPagina
   );
 
-  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
   const carregarQuizzes = () => {
     if (!userId) {
@@ -60,34 +61,50 @@ function HistoricoQuizzes() {
     carregarQuizzes();
   }, [userId]);
 
-  const atualizarPartilha = (quizId, novoValor) => {
-    const valorString = novoValor ? "true" : "false";
-    const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
-    console.log("URL completa do PUT:", fullUrl);
 
-    fetch(fullUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+
+const atualizarPartilha = (quizId, novoValor) => {
+  // Atualiza o estado imediatamente (otimista)
+  setQuizzes(prev =>
+    prev.map(q =>
+      q.id === quizId ? { ...q, partilhado: novoValor } : q
+    )
+  );
+
+  const valorString = novoValor ? "true" : "false";
+  const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
+  console.log("URL completa do PUT:", fullUrl);
+
+  fetch(fullUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(res => {
+      console.log("Resposta status:", res.status);
+      if (!res.ok) throw new Error("Erro ao atualizar partilha");
+      return res.json();
     })
-      .then((res) => {
-        console.log("Resposta status:", res.status);
-        if (!res.ok) {
-          throw new Error("Erro ao atualizar partilha");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Resposta JSON:", data);
-        setQuizzes((prev) =>
-          prev.map((q) =>
-            q.id === quizId ? { ...q, partilhado: novoValor } : q
-          )
-        );
-      })
-      .catch((err) => console.error("Erro ao atualizar partilha:", err));
-  };
+    .then(data => {
+      console.log("Resposta JSON:", data);
+      // Garante que o estado final está igual ao que veio do servidor
+      setQuizzes(prev =>
+        prev.map(q => (q.id === quizId ? data : q))
+      );
+    })
+    .catch(err => {
+      console.error("Erro ao atualizar partilha:", err);
+      // Reverte caso dê erro
+      setQuizzes(prev =>
+        prev.map(q =>
+          q.id === quizId ? { ...q, partilhado: !novoValor } : q
+        )
+      );
+    });
+};
+
+
 
   return (
     <div className="historico-wrapper">
@@ -150,7 +167,7 @@ function HistoricoQuizzes() {
                     <label className="checkbox-partilhar">
                       <input
                         type="checkbox"
-                        checked={quiz.partilhado || false}
+                        checked={quiz.partilhado || false }
                         onChange={(e) =>
                           atualizarPartilha(quiz.id, e.target.checked)
                         }
