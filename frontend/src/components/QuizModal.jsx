@@ -5,7 +5,7 @@ import "../assets/css/Modal.css";
 import {FaRegTimesCircle} from "react-icons/fa";
 import {useLanguage} from "../locales/LanguageContext.jsx";
 
-const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
+const QuizModal = ({ quizId, onClose, onRepetido }) => {
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [respostas, setRespostas] = useState({});
@@ -154,4 +154,4 @@ const QuizRepeatModal = ({ quizId, onClose, onRepetido }) => {
   );
 };
 
-export default QuizRepeatModal;
+export default QuizModal;

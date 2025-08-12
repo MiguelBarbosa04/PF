@@ -1,4 +1,4 @@
-import QuizRepeatModal from "../components/QuizRepeatModal";
+import QuizModal from "../components/QuizModal.jsx";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -61,6 +61,47 @@ const handleBack = () => {
     carregarQuizzes();
   }, [userId]);
 
+  const atualizarPartilha = (quizId, novoValor) => {
+  // Atualiza o estado imediatamente (otimista)
+  setQuizzes(prev =>
+    prev.map(q =>
+      q.id === quizId ? { ...q, partilhado: novoValor } : q
+    )
+  );
+
+  const valorString = novoValor ? "true" : "false";
+  const fullUrl = `${url}/quizzes/${quizId}/partilhar?partilhar=${valorString}`;
+  console.log("URL completa do PUT:", fullUrl);
+
+  fetch(fullUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(res => {
+      console.log("Resposta status:", res.status);
+      if (!res.ok) throw new Error("Erro ao atualizar partilha");
+      return res.json();
+    })
+    .then(data => {
+      console.log("Resposta JSON:", data);
+      // Garante que o estado final está igual ao que veio do servidor
+      setQuizzes(prev =>
+        prev.map(q => (q.id === quizId ? data : q))
+      );
+    })
+    .catch(err => {
+      console.error("Erro ao atualizar partilha:", err);
+      // Reverte caso dê erro
+      setQuizzes(prev =>
+        prev.map(q =>
+          q.id === quizId ? { ...q, partilhado: !novoValor } : q
+        )
+      );
+    });
+};
+
   return (
     <div className="historico-wrapper">
       <button className="back-button" onClick={handleBack}>
@@ -97,34 +138,45 @@ const handleBack = () => {
                     <strong>{quiz.titulo}</strong>
                     <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
                   </div>
-                  <div className="quiz-botoes">
-                    <button
-                      className="botao-ver"
-                      onClick={() => setQuizSelecionado(quiz)}
-                    >
-                      {t("view-btn")}
-                    </button>
-                    <button
-                      className="botao-repetir"
-                      onClick={() => setQuizParaRepetir(quiz.id)}
-                    >
-                      {t("repeat-btn")}
-                    </button>
-                  </div>
+                    <div className="quiz-botoes">
+                        <button
+                            className="botao-ver"
+                            onClick={() => setQuizSelecionado(quiz)}
+                        >
+                            {t("view-btn")}
+                        </button>
+                        <button
+                            className="botao-repetir"
+                            onClick={() => setQuizParaRepetir(quiz.id)}
+                        >
+                            {t("repeat-btn")}
+                        </button>
+                        <label className="checkbox-partilhar">
+                            <input
+                                type="checkbox"
+                                style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left'}}
+                                checked={quiz.partilhado || false}
+                                onChange={(e) =>
+                                    atualizarPartilha(quiz.id, e.target.checked)
+                                }
+                            />
+                            Partilhar
+                        </label>
+                    </div>
                 </li>
               ))}
             </ul>
 
-            {totalPaginas > 1 && (
-              <div className="paginacao-wrapper">
-                <div className="paginacao-bloco">
-                  <button
-                    className="seta"
-                    onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
-                    disabled={paginaAtual === 0}
-                  >
-                    <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
-                  </button>
+              {totalPaginas > 1 && (
+                  <div className="paginacao-wrapper">
+                      <div className="paginacao-bloco">
+                          <button
+                              className="seta"
+                              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
+                              disabled={paginaAtual === 0}
+                          >
+                              <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
+                          </button>
                   <span className="pagina-atual">
                     {t("feedback-page")} {paginaAtual + 1} {t("feedback-of")} {totalPaginas}
                   </span>
@@ -146,7 +198,7 @@ const handleBack = () => {
         )}
 
         {quizParaRepetir && (
-          <QuizRepeatModal
+          <QuizModal
             quizId={quizParaRepetir}
             onClose={() => setQuizParaRepetir(null)}
             onRepetido={() => {
