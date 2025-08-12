@@ -5,10 +5,11 @@ import dayjs from "dayjs";
 import QuizDetalhes from "../components/QuizDetalhes";
 import "../assets/css/HistoricoQuizzes.css";
 import Estatisticas from "../components/Estatisticas.jsx";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
 import {useLanguage} from "../locales/LanguageContext.jsx";
+
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 function HistoricoQuizzes() {
@@ -21,17 +22,22 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
+const [loadingIds, setLoadingIds] = React.useState(new Set());
+const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
+
   const { t } = useLanguage();
 
-const handleBack = () => {
+
+  const handleBack = () => {
     navigate(-1);
   };
+
   const quizzesPaginaAtual = quizzes.slice(
     paginaAtual * quizzesPorPagina,
     (paginaAtual + 1) * quizzesPorPagina
   );
 
-  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
   const carregarQuizzes = () => {
     if (!userId) {
@@ -61,7 +67,13 @@ const handleBack = () => {
     carregarQuizzes();
   }, [userId]);
 
-  const atualizarPartilha = (quizId, novoValor) => {
+
+
+
+const atualizarPartilha = (quizId, novoValor) => {
+
+
+
   // Atualiza o estado imediatamente (otimista)
   setQuizzes(prev =>
     prev.map(q =>
@@ -111,14 +123,23 @@ const handleBack = () => {
         <IconMenu />
       </div>
       <div className="historico-container">
-        <h2>{t("quiz-history-title")}</h2>
+
+         <h2>{t("quiz-history-title")}</h2>
+         <div className="estatistica-botao-quizzes-publicos">
 
         {userId && (
           <div className="estatisticas-bloco">
             <Estatisticas userId={userId} />
           </div>
         )}
+        <button
+              className="botao-quizzes-publicos"
+              onClick={() => navigate("/quizzes/publicos")}
+            >
+              Ver Quizzes Públicos
+            </button>
 
+         </div>
         {loading ? (
           <p>{t("register-loading")}</p>
         ) : quizSelecionado ? (
@@ -131,6 +152,8 @@ const handleBack = () => {
           <p>{t("quizzes-not-found")}</p>
         ) : (
           <>
+
+
             <ul className="quiz-list">
               {quizzesPaginaAtual.map((quiz) => (
                 <li key={quiz.id} className="quiz-item">
@@ -138,6 +161,7 @@ const handleBack = () => {
                     <strong>{quiz.titulo}</strong>
                     <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
                   </div>
+
                     <div className="quiz-botoes">
                         <button
                             className="botao-ver"
@@ -163,6 +187,7 @@ const handleBack = () => {
                             Partilhar
                         </label>
                     </div>
+
                 </li>
               ))}
             </ul>

@@ -1,18 +1,19 @@
 from datetime import datetime
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.database.db import get_db
+from backend.database.db import get_db, SessionLocal
 from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, \
-    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead
+    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead, QuizPublicoSchema
 from backend.repositories.quiz_repository import obter_respostas_quiz
 import backend.repositories.quiz_repository as quiz_repo
 from backend.repositories.global_settings_repository import obter_modelo_mais_recente
-from backend.services.rag_service import gerar_quiz_ollama, gerar_quiz_gemini, gerar_quiz_com_rag
+from backend.services.rag_service import  gerar_quiz_com_rag
 from backend.database.models import Session as SessionModel, Quiz, RespostaUser, Pergunta, Opcao
 from sqlalchemy import desc
 from sqlalchemy.orm import joinedload
-
+from fastapi import Query
 router = APIRouter(prefix="/quizzes", tags=["Quizzes"])
 
 @router.post("/", response_model=QuizRead)
@@ -23,12 +24,9 @@ def criar_quiz(quiz_data: QuizCreate, db: Session = Depends(get_db)):
 def responder_pergunta(resposta: RespostaUserCreate, db: Session = Depends(get_db)):
     return quiz_repo.registar_resposta(db, resposta)
 
-
 @router.get("/historico/{user_id}", response_model=list[QuizHistoricoRead])
 def ver_historico_quizzes(user_id: int, db: Session = Depends(get_db)):
     return quiz_repo.listar_quizzes_por_user_historico(db, user_id)
-
-
 
 @router.get("/respostas/{user_id}", response_model=list[RespostaUserRead])
 def ver_respostas(user_id: int, db: Session = Depends(get_db)):
@@ -200,3 +198,19 @@ def duplicar_quiz(quiz_id: int, db: Session = Depends(get_db)):
     return novo_quiz
 
 
+@router.get("/quizzes/publicos", response_model=List[QuizPublicoSchema])
+def listar_quizzes_publicos(db: Session = Depends(get_db)):
+    quizzes = db.query(Quiz).filter(Quiz.partilhado == True).order_by(Quiz.data.desc()).all()
+    return quizzes
+
+
+@router.put("/{quiz_id}/partilhar", response_model=QuizPublicoSchema)
+def atualizar_partilha(quiz_id: int, partilhar: bool = Query(..., description="Novo valor para o campo partilhado"), db: Session = Depends(get_db)):
+    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz não encontrado")
+
+    quiz.partilhado = partilhar
+    db.commit()
+    db.refresh(quiz)
+    return quiz

@@ -1,0 +1,40 @@
+.quizzes-publicos-wrapper {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.quizzes-list {
+  list-style: none;
+  padding: 0;
+}
+
+.quiz-item-publico {
+  background-color: var(--color-white);
+  border-left: 5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color var(--transition-fast);
+}
+
+.quiz-info-publico {
+  display: flex;
+  flex-direction: column;
+}
+
+.botao-fazer {
+  background: #4cafef;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.botao-fazer:hover {
+  background: #3a9ad9;
+}

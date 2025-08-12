@@ -13,6 +13,7 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
   const user_id = getTokenInfo().id;
   const { t } = useLanguage();
 
+
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -40,7 +41,9 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
   const enviarRespostas = async () => {
     const todasRespondidas = quiz.perguntas.every((p) => respostas[p.id] != null);
     if (!todasRespondidas) {
+
       alert(t("alert-answer-all"));
+
       return;
     }
 
@@ -52,25 +55,36 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
 
     try {
       const resultado = await corrigirRespostasQuiz(quizId, payload);
+
       const correcoesMap = {};
       resultado.resultados.forEach((item) => {
         correcoesMap[item.pergunta_id] = item;
       });
       setCorrecoes(correcoesMap);
 
-      // Avisar o componente pai que o quiz foi repetido com sucesso
-      if (onRepetido) onRepetido();
 
+      // Não fecha o modal automaticamente
+      // onRepetido só será chamado ao fechar
     } catch (error) {
+      console.error(error);
       alert(t("alert-error-submitting-a"));
     }
   };
+
+  const handleClose = () => {
+    if (onRepetido) onRepetido();
+    onClose();
+    
+  };
+
 
   if (loading)
     return (
       <div className="modal-overlay">
         <div className="modal-content">
+
           <p>{t("register-loading")}</p>
+
         </div>
       </div>
     );
@@ -79,7 +93,9 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
     return (
       <div className="modal-overlay">
         <div className="modal-content">
+
           <p>{t("quiz-not-found")}</p>
+
         </div>
       </div>
     );
@@ -87,21 +103,25 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button style={{
-    position: "absolute",
-    width: "5rem",
-          height: "5rem",
-    background : "none",
-    top: "10px",
-    right: "10px",
-    color: "black",
-    border: "none",
-    padding: "4px 8px",
-    fontSize: "12px",
-    borderRadius: "4px",
-    cursor: "pointer"
-  } } onClick={onClose}>
-<FaRegTimesCircle style={{fontSize: "2rem", color : "black"}}/>
+        <button
+          style={{
+            position: "absolute",
+            width: "5rem",
+            height: "5rem",
+            background: "none",
+            top: "10px",
+            right: "10px",
+            color: "black",
+            border: "none",
+            padding: "4px 8px",
+            fontSize: "12px",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+          onClick={handleClose}
+        >
+          <FaRegTimesCircle style={{ fontSize: "2rem", color: "black" }} />
+
         </button>
 
         <h2 className="quiz-title">{quiz.titulo}</h2>
@@ -116,7 +136,10 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
                 const selecionada = respostas[pergunta.id] === opcao.id;
                 const correcao = correcoes?.[pergunta.id];
                 const correta = correcao?.resposta_correta === opcao.id;
-                const errada = correcao?.resposta_user === opcao.id && !correcao.correta;
+
+                const errada =
+                  correcao?.resposta_user === opcao.id && !correcao.correta;
+
 
                 return (
                   <li key={opcao.id}>
@@ -142,6 +165,24 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
           </div>
         ))}
 
+
+        {!correcoes && (
+          <button
+            onClick={enviarRespostas}
+            className="btn-submit"
+          >
+            Enviar Respostas
+          </button>
+        )}
+        {correcoes && (
+          <button
+            onClick={handleClose}
+            className="btn-submit"
+          >
+            Fechar Quiz
+          </button>
+        )}
+
         <button
           onClick={enviarRespostas}
           className={correcoes ? "btn-disabled" : "btn-submit"}
@@ -149,6 +190,7 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
         >
           {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
         </button>
+
       </div>
     </div>
   );

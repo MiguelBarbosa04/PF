@@ -14,6 +14,7 @@ import Feedback from "./pages/Feedback.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
 import HistoricoQuizzes from "./pages/HistoricoQuizzes.jsx";
 import QuizRepeatPage from "./pages/QuizRepeatPage.jsx";
+import QuizzesPublicos from "./pages/QuizzesPublicos";
 
 function App () {
 return (
@@ -33,8 +34,8 @@ return (
           <Route path='/quiz/:id' element={<PrivateRoute><QuizPage/></PrivateRoute>} />
           <Route path='/historico-quizzes/:userId' element={<PrivateRoute><HistoricoQuizzes/></PrivateRoute>} />
           <Route path='/quizzes/session/quiz/:sessionId' element={<PrivateRoute><QuizPage /></PrivateRoute>} />
-          <Route path="/quiz/:id/repeat" element={<PrivateRoute><QuizRepeatPage/></PrivateRoute>}
-/>
+          <Route path="/quiz/:id/repeat" element={<PrivateRoute><QuizRepeatPage/></PrivateRoute>}/>
+          <Route path="/quizzes/publicos" element={<QuizzesPublicos />} />
       </Routes>
          </>
   );}
