@@ -279,8 +279,53 @@ background-color: var(--color-primary);
   align-self: flex-end;
 }
 
+
 .estatistica-botao-quizzes-publicos{
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+/* Container do label */
+.checkbox-partilhar {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  gap: 6px;
+}
+
+/* Esconde a checkbox original */
+.checkbox-partilhar input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid #007bff; /* Azul da borda */
+  border-radius: 2px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Quando selecionada */
+.checkbox-partilhar input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Ícone de certo */
+.checkbox-partilhar input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 3px;
+  left: 6.3px;
+}
+
+/* Efeito hover */
+.checkbox-partilhar input[type="checkbox"]:hover {
+  border-color: #0056b3;
 }

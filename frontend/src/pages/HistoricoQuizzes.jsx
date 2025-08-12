@@ -163,7 +163,7 @@ const atualizarPartilha = (quizId, novoValor) => {
                       onClick={() => setQuizParaRepetir(quiz.id)}
                     >
                       Repetir
-                    </button>
+                    </button >
                     <label className="checkbox-partilhar">
                       <input
                         type="checkbox"
