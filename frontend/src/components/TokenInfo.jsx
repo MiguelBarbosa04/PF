@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {getCurrentUser} from "../services/api.js";
 import {useNavigate} from "react-router";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const generateInitials = (nome) => {
   if (!nome) return "";
@@ -16,6 +17,7 @@ const generateInitials = (nome) => {
 
 
 const TokenInfo = () => {
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
         id: "",
@@ -44,7 +46,7 @@ const TokenInfo = () => {
                 });
             }
         }catch (err){
-            console.error("Erro ao obter informações do utilizador: ", err);
+            console.error(t("TokenInfo-error"), err);
             if (err.status === 401){
                 localStorage.removeItem("token");
                 localStorage.removeItem("token_type");

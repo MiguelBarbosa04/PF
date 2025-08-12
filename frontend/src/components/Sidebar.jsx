@@ -54,7 +54,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
         setSessions(sessionsFiltradas);
       }
     } catch (error) {
-      console.error("Erro ao carregar sessões:", error);
+      console.error(t("Sidebar-error-sessions"), error);
     }
   };
 

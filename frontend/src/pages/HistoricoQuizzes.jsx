@@ -8,6 +8,8 @@ import Estatisticas from "../components/Estatisticas.jsx";
 import { useNavigate } from "react-router";
 import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
+import {useLanguage} from "../locales/LanguageContext.jsx";
+
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 function HistoricoQuizzes() {
@@ -20,8 +22,12 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
 const [loadingIds, setLoadingIds] = React.useState(new Set());
 const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
+
+  const { t } = useLanguage();
+
 
   const handleBack = () => {
     navigate(-1);
@@ -35,7 +41,7 @@ const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
   const carregarQuizzes = () => {
     if (!userId) {
-      console.warn("userId está undefined. Não foi feita a fetch.");
+      console.warn(t("quiz-history-error-fetch-user"));
       return;
     }
     setLoading(true);
@@ -53,7 +59,7 @@ const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
         );
         setQuizzes(dataOrdenada);
       })
-      .catch((err) => console.error("Erro ao carregar histórico:", err))
+      .catch((err) => console.error(t("quiz-history-error"), err))
       .finally(() => setLoading(false));
   };
 
@@ -63,7 +69,11 @@ const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
 
 
+
 const atualizarPartilha = (quizId, novoValor) => {
+
+
+
   // Atualiza o estado imediatamente (otimista)
   setQuizzes(prev =>
     prev.map(q =>
@@ -104,19 +114,19 @@ const atualizarPartilha = (quizId, novoValor) => {
     });
 };
 
-
-
   return (
     <div className="historico-wrapper">
       <button className="back-button" onClick={handleBack}>
-        Voltar
+        {t("back-btn")}
       </button>
       <div className="user-profile-wrapper">
         <IconMenu />
       </div>
       <div className="historico-container">
-        <h2>Histórico de Quizzes</h2>
+
+         <h2>{t("quiz-history-title")}</h2>
          <div className="estatistica-botao-quizzes-publicos">
+
         {userId && (
           <div className="estatisticas-bloco">
             <Estatisticas userId={userId} />
@@ -131,7 +141,7 @@ const atualizarPartilha = (quizId, novoValor) => {
 
          </div>
         {loading ? (
-          <p>A carregar...</p>
+          <p>{t("register-loading")}</p>
         ) : quizSelecionado ? (
           <QuizDetalhes
             quizId={quizSelecionado.id}
@@ -139,7 +149,7 @@ const atualizarPartilha = (quizId, novoValor) => {
             onVoltar={() => setQuizSelecionado(null)}
           />
         ) : quizzes.length === 0 ? (
-          <p>Não foram encontrados quizzes.</p>
+          <p>{t("quizzes-not-found")}</p>
         ) : (
           <>
 
@@ -151,49 +161,49 @@ const atualizarPartilha = (quizId, novoValor) => {
                     <strong>{quiz.titulo}</strong>
                     <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
                   </div>
-                  <div className="quiz-botoes">
-                    <button
-                      className="botao-ver"
-                      onClick={() => setQuizSelecionado(quiz)}
-                    >
-                      Ver
-                    </button>
-                    <button
-                      className="botao-repetir"
-                      onClick={() => setQuizParaRepetir(quiz.id)}
-                    >
-                      Repetir
-                    </button >
-                    <label className="checkbox-partilhar">
-                      <input
-                        type="checkbox"
-                        style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left' }}
-                        checked={quiz.partilhado || false }
-                        onChange={(e) =>
-                          atualizarPartilha(quiz.id, e.target.checked)
-                        }
-                      />
-                      Partilhar
-                    </label>
-                  </div>
+
+                    <div className="quiz-botoes">
+                        <button
+                            className="botao-ver"
+                            onClick={() => setQuizSelecionado(quiz)}
+                        >
+                            {t("view-btn")}
+                        </button>
+                        <button
+                            className="botao-repetir"
+                            onClick={() => setQuizParaRepetir(quiz.id)}
+                        >
+                            {t("repeat-btn")}
+                        </button>
+                        <label className="checkbox-partilhar">
+                            <input
+                                type="checkbox"
+                                style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left'}}
+                                checked={quiz.partilhado || false}
+                                onChange={(e) =>
+                                    atualizarPartilha(quiz.id, e.target.checked)
+                                }
+                            />
+                            Partilhar
+                        </label>
+                    </div>
+
                 </li>
               ))}
             </ul>
 
-            {totalPaginas > 1 && (
-              <div className="paginacao-wrapper">
-                <div className="paginacao-bloco">
-                  <button
-                    className="seta"
-                    onClick={() =>
-                      setPaginaAtual((prev) => Math.max(prev - 1, 0))
-                    }
-                    disabled={paginaAtual === 0}
-                  >
-                    <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
-                  </button>
+              {totalPaginas > 1 && (
+                  <div className="paginacao-wrapper">
+                      <div className="paginacao-bloco">
+                          <button
+                              className="seta"
+                              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 0))}
+                              disabled={paginaAtual === 0}
+                          >
+                              <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
+                          </button>
                   <span className="pagina-atual">
-                    Página {paginaAtual + 1} de {totalPaginas}
+                    {t("feedback-page")} {paginaAtual + 1} {t("feedback-of")} {totalPaginas}
                   </span>
                   <button
                     className="seta"

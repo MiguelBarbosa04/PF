@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../assets/css/QuizDetalhes.css";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 function QuizDetalhes({ quizId, userId, onVoltar }) {
   const [respostas, setRespostas] = useState([]);
   const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_API_URL;
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!quizId || !userId) return;
@@ -12,18 +14,18 @@ function QuizDetalhes({ quizId, userId, onVoltar }) {
     fetch(`${url}/quizzes/respostas/${quizId}/${userId}`)
       .then((res) => res.json())
       .then((data) => setRespostas(data))
-      .catch((err) => console.error("Erro ao buscar respostas:", err))
+      .catch((err) => console.error(t("quiz-error-fetching-a"), err))
       .finally(() => setLoading(false));
   }, [quizId, userId]);
 
-  if (loading) return <p>A carregar respostas...</p>;
+  if (loading) return <p>{t("register-loading")}</p>;
 
   return (
     <div className="quiz-detalhes">
      <div className="btn-container">
-  <button className="voltar-btn" onClick={onVoltar}>Voltar</button>
+  <button className="voltar-btn" onClick={onVoltar}>{t("back-btn")}</button>
 </div>
-      <h3>Detalhes do Quiz</h3>
+      <h3>{t("quiz-details")}</h3>
 
       {respostas.map((item, index) => (
         <div key={index} className="pergunta-container">

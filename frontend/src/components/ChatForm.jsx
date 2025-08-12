@@ -101,7 +101,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
       setRefreshSidebar((prev) => !prev);
       setIsVoiceInput(false);
     } catch (error) {
-      console.error("Erro ao enviar mensagem:", error);
+      console.error(t("chatForm-error-message"), error);
       alert(error.message);
     }
   };

@@ -3,6 +3,7 @@ import { corrigirRespostasQuiz, getQuizById } from "../services/api";
 import getTokenInfo from "../components/TokenInfo";
 import '../assets/css/QuizPage.css';
 import { useParams } from "react-router-dom";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 import axios from "axios";
 
 const QuizRepeatPage = () => {
@@ -13,6 +14,7 @@ const QuizRepeatPage = () => {
   const [respostas, setRespostas] = useState({});
   const [correcoes, setCorrecoes] = useState(null);
   const user_id = getTokenInfo().id;
+  const { t } = useLanguage();
 
 useEffect(() => {
   const fetchDuplicatedQuiz = async () => {
@@ -20,7 +22,7 @@ useEffect(() => {
       const response = await axios.post(`/quizzes/${quizId}/duplicar`);
       setQuiz(response.data);
     } catch (err) {
-      console.error("Erro ao duplicar quiz:", err);
+      console.error(t("quiz-error-duplicate"), err);
     } finally {
       setLoading(false);
     }
@@ -42,7 +44,7 @@ useEffect(() => {
   const enviarRespostas = async () => {
     const todasRespondidas = quiz.perguntas.every((p) => respostas[p.id] != null);
     if (!todasRespondidas) {
-      alert("Responde a todas as perguntas!");
+      alert(t("alert-answer-all"));
       return;
     }
 
@@ -60,12 +62,12 @@ useEffect(() => {
       });
       setCorrecoes(correcoesMap);
     } catch (error) {
-      alert("Erro ao enviar respostas.");
+      alert(t("alert-error-submitting-a"));
     }
   };
 
-  if (loading) return <p>A carregar...</p>;
-  if (!quiz) return <p>Quiz não encontrado.</p>;
+  if (loading) return <p>{t("register-loading")}</p>;
+  if (!quiz) return <p>{t("quiz-not-found")}</p>;
 
   return (
     <div className="quiz-container">
@@ -105,7 +107,7 @@ useEffect(() => {
         className={correcoes ? "btn-disabled" : "btn-submit"}
         disabled={!!correcoes}
       >
-        {correcoes ? "Respostas Enviadas" : "Enviar Respostas"}
+        {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
       </button>
     </div>
   );
