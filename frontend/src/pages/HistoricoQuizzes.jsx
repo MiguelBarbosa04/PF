@@ -167,6 +167,7 @@ const atualizarPartilha = (quizId, novoValor) => {
                     <label className="checkbox-partilhar">
                       <input
                         type="checkbox"
+                        style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left' }}
                         checked={quiz.partilhado || false }
                         onChange={(e) =>
                           atualizarPartilha(quiz.id, e.target.checked)
