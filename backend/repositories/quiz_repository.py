@@ -54,7 +54,8 @@ def listar_quizzes_por_user_historico(db: Session, user_id: int):
             Quiz.titulo,
             Quiz.descricao,
             Quiz.session_id,
-            func.max(RespostaUser.respondido_em).label("data_resposta")
+            func.max(RespostaUser.respondido_em).label("data_resposta"),
+            Quiz.partilhado
         )
         .join(Pergunta, Quiz.id == Pergunta.quiz_id)
         .join(RespostaUser, Pergunta.id == RespostaUser.pergunta_id)
@@ -68,7 +69,8 @@ def listar_quizzes_por_user_historico(db: Session, user_id: int):
         Quiz.titulo,
         Quiz.descricao,
         Quiz.session_id,
-        subquery.c.data_resposta.label("data")
+        subquery.c.data_resposta.label("data"),
+        Quiz.partilhado
     ).join(subquery, Quiz.id == subquery.c.quiz_id).all()
 
 
