@@ -352,10 +352,20 @@ background-color: var(--color-primary);
   width: 100%;
 }
 
-.search-icon {
+.search-icon-quiz {
   position: absolute;
   right: 10px;
-  top: 20%;
+  top: 38%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
+}
+
+.search-icon-quiz-public {
+  position: absolute;
+  right: 10px;
+  top: 38%;
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 14px;

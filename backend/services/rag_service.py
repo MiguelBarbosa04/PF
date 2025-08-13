@@ -183,7 +183,7 @@ Só podes responder com base nos documentos fornecidos abaixo.
 
 async def gerar_quiz_gemini(tema: str) -> dict:
     prompt = f"""
-    Gera um quiz com 5 perguntas de múltipla escolha sobre o tema: {tema}.
+    Gera um quiz com perguntas de múltipla escolha sobre o tema: {tema}.
     Retorna em JSON com perguntas, opções e qual é a correta:
     {{
         "titulo": "...",
@@ -199,6 +199,7 @@ async def gerar_quiz_gemini(tema: str) -> dict:
         ]
     }}
     Responde apenas com JSON puro. Sem introduções, comentários ou explicações adicionais.
+    Se as perguntas no chat tiverem em inglês faz o quiz em inglês.
     """
 
     headers = {

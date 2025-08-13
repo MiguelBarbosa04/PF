@@ -206,7 +206,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
           ))
         ) : (
           <div className="no-chats-msg">
-            <p>Sem chats encontrados.</p>
+            <p>{t("Sidebar-no-chats")}</p>
           </div>
         )}
       </div>

@@ -108,6 +108,7 @@
   "statistics-error-fetching": "Error fetching statistics:",
   "quiz-details": "Quiz Details",
   "quiz-not-found": "Quiz not found.",
+  "quiz-answers-sent": "Answers Sent",
   "send-answers-btn": "Submit Answers",
   "close-quiz-btn": "Close Quiz",
   "alert-answer-all": "Answer all the questions!",
@@ -158,5 +159,7 @@
   "public-quiz-title": "Public Quizzes",
   "public-q-loading": "Loading public quizzes...",
   "public-no-quiz": "There are no shared quizzes at the moment.",
-  "take-quiz-btn": "Take Quiz"
+  "take-quiz-btn": "Take Quiz",
+  "Sidebar-no-chats": "No chats found.",
+  "loading-topics": "Loading Topics"
 }
