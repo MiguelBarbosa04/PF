@@ -98,7 +98,7 @@
   "feedback-page": "Page",
   "feedback-of": "of",
   "quiz-history-title": "Quiz History",
-  "quizzes-not-found-not-found": "No quizzes found",
+  "quizzes-not-found": "No quizzes found",
   "quiz-history-error": "Error loading history:",
   "quiz-history-error-fetch-user": "userId is undefined. The fetch was not performed.",
   "view-btn": "View",
@@ -108,8 +108,8 @@
   "statistics-error-fetching": "Error fetching statistics:",
   "quiz-details": "Quiz Details",
   "quiz-not-found": "Quiz not found.",
-  "quiz-answers-sent": "Answers Sent",
-  "send-answers-btn": "Enviar Respostas",
+  "send-answers-btn": "Submit Answers",
+  "close-quiz-btn": "Close Quiz",
   "alert-answer-all": "Answer all the questions!",
   "alert-error-submitting-a": "Error submitting answers.",
   "no-quiz-created": "No quiz created.",
@@ -152,5 +152,11 @@
   "Upload-error": "Error uploading file:",
   "Upload-select-LLM": "Please select an LLM model.",
   "Upload-model-sucess": " Model updated successfully!",
-  "Upload-model-error": " Error saving model:"
+  "Upload-model-error": " Error saving model:",
+  "share-btn": "Share",
+  "public-quizzes-btn": "View Public Quizzes",
+  "public-quiz-title": "Public Quizzes",
+  "public-q-loading": "Loading public quizzes...",
+  "public-no-quiz": "There are no shared quizzes at the moment.",
+  "take-quiz-btn": "Take Quiz"
 }

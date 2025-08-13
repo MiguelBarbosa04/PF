@@ -21,9 +21,9 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingIds, setLoadingIds] = React.useState(new Set());
-
   const { t } = useLanguage();
 
   const handleSearchChange = (e) => {
@@ -40,6 +40,11 @@ function HistoricoQuizzes() {
     navigate(-1);
   };
 
+  const quizzesPaginaAtual = quizzes.slice(
+    paginaAtual * quizzesPorPagina,
+    (paginaAtual + 1) * quizzesPorPagina
+  );
+  
   const carregarQuizzes = () => {
     if (!userId) {
       console.warn(t("quiz-history-error-fetch-user"));
@@ -154,7 +159,7 @@ function HistoricoQuizzes() {
               className="botao-quizzes-publicos"
               onClick={() => navigate("/quizzes/publicos")}
             >
-              Ver Quizzes Públicos
+              {t("public-quizzes-btn")}
             </button>
           </div>
         </div>
@@ -179,35 +184,31 @@ function HistoricoQuizzes() {
                     <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
                   </div>
 
-                  <div className="quiz-botoes">
-                    <button
-                      className="botao-ver"
-                      onClick={() => setQuizSelecionado(quiz)}
-                    >
-                      {t("view-btn")}
-                    </button>
-                    <button
-                      className="botao-repetir"
-                      onClick={() => setQuizParaRepetir(quiz.id)}
-                    >
-                      {t("repeat-btn")}
-                    </button>
-                    <label className="checkbox-partilhar">
-                      <input
-                        type="checkbox"
-                        style={{
-                          marginTop: "6px",
-                          transform: "scale(0.7)",
-                          transformOrigin: "top left",
-                        }}
-                        checked={quiz.partilhado || false}
-                        onChange={(e) =>
-                          atualizarPartilha(quiz.id, e.target.checked)
-                        }
-                      />
-                      Partilhar
-                    </label>
-                  </div>
+                    <div className="quiz-botoes">
+                        <button
+                            className="botao-ver"
+                            onClick={() => setQuizSelecionado(quiz)}
+                        >
+                            {t("view-btn")}
+                        </button>
+                        <button
+                            className="botao-repetir"
+                            onClick={() => setQuizParaRepetir(quiz.id)}
+                        >
+                            {t("repeat-btn")}
+                        </button>
+                        <label className="checkbox-partilhar">
+                            <input
+                                type="checkbox"
+                                style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left'}}
+                                checked={quiz.partilhado || false}
+                                onChange={(e) =>
+                                    atualizarPartilha(quiz.id, e.target.checked)
+                                }
+                            />
+                            {t("share-btn")}
+                        </label>
+                    </div>
                 </li>
               ))}
             </ul>

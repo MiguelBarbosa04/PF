@@ -186,6 +186,7 @@
 .pagina-atual {
   font-size: 1rem;
   color: var(--color-text-heading);
+  width: 100%;
 }
 
 .paginacao-wrapper {

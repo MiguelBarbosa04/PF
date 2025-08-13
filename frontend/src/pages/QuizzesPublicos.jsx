@@ -18,7 +18,6 @@ function QuizzesPublicos() {
   const [searchTerm, setSearchTerm] = useState("");
   const { t } = useLanguage();
 
-
 const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
     setPaginaAtual(0);
@@ -29,23 +28,20 @@ const handleSearchChange = (e) => {
     setPaginaAtual(0);
   };
 
-  // Filtrar quizzes pelo título
-
  const quizzesFiltrados = quizzes.filter((quiz) =>
     quiz.titulo.toLowerCase().includes(searchTerm)
   );
 
-  // Paginação usando o array filtrado
   const totalPaginas = Math.ceil(quizzesFiltrados.length / quizzesPorPagina);
+  
   const quizzesPaginaAtual = quizzesFiltrados.slice(
     paginaAtual * quizzesPorPagina,
     (paginaAtual + 1) * quizzesPorPagina
   );
+  
   useEffect(() => {
     carregarQuizzes();
   }, []);
-
-
 
  const carregarQuizzes = () => {
     setLoading(true);
@@ -58,20 +54,18 @@ const handleSearchChange = (e) => {
       .catch((err) => console.error("Erro ao carregar quizzes públicos:", err))
       .finally(() => setLoading(false));
   };
-
  
   return (
     <div className="historico-wrapper">
 
       <button className="back-button" onClick={() => navigate(-1)}>
-        Voltar
+        {t("back-btn")}
       </button>
              <div className="user-profile-wrapper">
         <IconMenu />
       </div>
       <div className="historico-container">
-
-        <h2 >Quizzes Públicos</h2>
+        <h2 >{t("public-quiz-title")}</h2>
          <div className="search-quiz-botao-wrapper" style={{ width: '15%'}}>
             <div className="search-quiz">
               <input
@@ -93,9 +87,9 @@ const handleSearchChange = (e) => {
             </div>
                  </div>
         {loading ? (
-          <p>A carregar quizzes públicos...</p>
+          <p>{t("public-q-loading")}</p>
         ) : quizzes.length === 0 ? (
-          <p>Não existem quizzes partilhados no momento.</p>
+          <p>{t("public-no-quiz")}</p>
         ) : (
           <>
             <ul className="quiz-list">
@@ -110,7 +104,7 @@ const handleSearchChange = (e) => {
                       className="botao-ver"
                       onClick={() => setQuizParaFazer(quiz.id)}
                     >
-                      Fazer Quiz
+                        {t("take-quiz-btn")}
                     </button>
                   </div>
                 </li>
@@ -141,7 +135,7 @@ const handleSearchChange = (e) => {
                      <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                   <span className="pagina-atual">
-                    Página {paginaAtual + 1} de {totalPaginas}
+                    {t("feedback-page")} {paginaAtual + 1} {t("feedback-of")} {totalPaginas}
                   </span>
                   <button
                     className="seta"
