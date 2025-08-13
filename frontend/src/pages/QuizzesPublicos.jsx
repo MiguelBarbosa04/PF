@@ -76,11 +76,11 @@ const handleSearchChange = (e) => {
                 onChange={handleSearchChange}
               />
               {searchTerm ? (
-                <span className="search-icon clear-icon" onClick={handleClearSearch}>
+                <span className="search-icon-quiz-public clear-icon" onClick={handleClearSearch}>
                   <FaTimes />
                 </span>
               ) : (
-                <span className="search-icon">
+                <span className="search-icon-quiz-public">
                   <FaSearch />
                 </span>
               )}

@@ -39,11 +39,6 @@ function HistoricoQuizzes() {
   const handleBack = () => {
     navigate(-1);
   };
-
-  const quizzesPaginaAtual = quizzes.slice(
-    paginaAtual * quizzesPorPagina,
-    (paginaAtual + 1) * quizzesPorPagina
-  );
   
   const carregarQuizzes = () => {
     if (!userId) {
@@ -113,8 +108,6 @@ function HistoricoQuizzes() {
     (paginaAtual + 1) * quizzesPorPagina
   );
 
-  const totalPaginas = Math.ceil(quizzesFiltrados.length / quizzesPorPagina);
-
   return (
     <div className="historico-wrapper">
       <button className="back-button" onClick={handleBack}>
@@ -145,11 +138,11 @@ function HistoricoQuizzes() {
                 onChange={handleSearchChange}
               />
               {searchTerm ? (
-                <span className="search-icon clear-icon" onClick={handleClearSearch}>
+                <span className="search-icon-quiz clear-icon" onClick={handleClearSearch}>
                   <FaTimes />
                 </span>
               ) : (
-                <span className="search-icon">
+                <span className="search-icon-quiz">
                   <FaSearch />
                 </span>
               )}
