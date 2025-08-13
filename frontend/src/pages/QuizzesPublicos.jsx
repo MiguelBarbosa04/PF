@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import QuizModal from "../components/QuizModal.jsx";
 import "../assets/css/HistoricoQuizzes.css";
 import IconMenu from "../components/IconMenu.jsx";
-import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
+import {FaAngleLeft, FaAngleRight, FaSearch, FaTimes} from "react-icons/fa";
 import {useLanguage} from "../locales/LanguageContext.jsx";
 
 function QuizzesPublicos() {
@@ -15,9 +15,30 @@ function QuizzesPublicos() {
   const url = import.meta.env.VITE_API_URL;
   const quizzesPorPagina = 5;
   const navigate = useNavigate();
-
+  const [searchTerm, setSearchTerm] = useState("");
   const { t } = useLanguage();
 
+const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+    setPaginaAtual(0);
+  };
+
+ const handleClearSearch = () => {
+    setSearchTerm("");
+    setPaginaAtual(0);
+  };
+
+ const quizzesFiltrados = quizzes.filter((quiz) =>
+    quiz.titulo.toLowerCase().includes(searchTerm)
+  );
+
+  const totalPaginas = Math.ceil(quizzesFiltrados.length / quizzesPorPagina);
+  
+  const quizzesPaginaAtual = quizzesFiltrados.slice(
+    paginaAtual * quizzesPorPagina,
+    (paginaAtual + 1) * quizzesPorPagina
+  );
+  
   useEffect(() => {
     carregarQuizzes();
   }, []);
@@ -33,16 +54,10 @@ function QuizzesPublicos() {
       .catch((err) => console.error("Erro ao carregar quizzes públicos:", err))
       .finally(() => setLoading(false));
   };
-
-
-  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
-  const quizzesPaginaAtual = quizzes.slice(
-    paginaAtual * quizzesPorPagina,
-    (paginaAtual + 1) * quizzesPorPagina
-  );
-
+ 
   return (
     <div className="historico-wrapper">
+
       <button className="back-button" onClick={() => navigate(-1)}>
         {t("back-btn")}
       </button>
@@ -51,7 +66,26 @@ function QuizzesPublicos() {
       </div>
       <div className="historico-container">
         <h2 >{t("public-quiz-title")}</h2>
-
+         <div className="search-quiz-botao-wrapper" style={{ width: '15%'}}>
+            <div className="search-quiz">
+              <input
+                type="text"
+                placeholder={t("sidebar-search")}
+                className="sidebar-search-quiz"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              {searchTerm ? (
+                <span className="search-icon clear-icon" onClick={handleClearSearch}>
+                  <FaTimes />
+                </span>
+              ) : (
+                <span className="search-icon">
+                  <FaSearch />
+                </span>
+              )}
+            </div>
+                 </div>
         {loading ? (
           <p>{t("public-q-loading")}</p>
         ) : quizzes.length === 0 ? (
@@ -77,7 +111,6 @@ function QuizzesPublicos() {
               ))}
             </ul>
 
-            {/* 🔹 Modal só aparece se houver quiz selecionado */}
             {quizParaFazer && (
               <QuizModal
                 quizId={quizParaFazer}

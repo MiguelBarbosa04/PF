@@ -40,7 +40,7 @@ class QuizCreate(BaseModel):
     descricao: str
     session_id: int
     perguntas: list[PerguntaCreate]
-    partilhado: Optional[bool]
+    partilhado: bool = False
 
 class QuizGenerationRequest(BaseModel):
     session_id: int
