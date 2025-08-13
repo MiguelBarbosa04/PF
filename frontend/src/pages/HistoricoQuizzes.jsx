@@ -10,7 +10,7 @@ import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
 import {useLanguage} from "../locales/LanguageContext.jsx";
 
-import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
+import {FaAngleLeft, FaAngleRight, FaSearch, FaTimes} from "react-icons/fa";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -22,12 +22,19 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-
+  const [searchTerm, setSearchTerm] = useState("");
 const [loadingIds, setLoadingIds] = React.useState(new Set());
 const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
 
   const { t } = useLanguage();
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
 
   const handleBack = () => {
     navigate(-1);
@@ -116,6 +123,7 @@ const atualizarPartilha = (quizId, novoValor) => {
 
   return (
     <div className="historico-wrapper">
+
       <button className="back-button" onClick={handleBack}>
         {t("back-btn")}
       </button>
@@ -125,21 +133,42 @@ const atualizarPartilha = (quizId, novoValor) => {
       <div className="historico-container">
 
          <h2>{t("quiz-history-title")}</h2>
-         <div className="estatistica-botao-quizzes-publicos">
+ <div className="estatistica-botao-quizzes-publicos">
+  {userId && (
+    <div className="estatisticas-bloco">
+      <Estatisticas userId={userId} />
+    </div>
+  )}
 
-        {userId && (
-          <div className="estatisticas-bloco">
-            <Estatisticas userId={userId} />
-          </div>
-        )}
-        <button
-              className="botao-quizzes-publicos"
-              onClick={() => navigate("/quizzes/publicos")}
-            >
-              Ver Quizzes Públicos
-            </button>
+  <div className="search-quiz-botao-wrapper">
+    <div className="search-quiz">
+      <input
+        type="text"
+        placeholder={t("sidebar-search")}
+        className="sidebar-search-quiz"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+      {searchTerm ? (
+        <span className="search-icon clear-icon" onClick={handleClearSearch}>
+          <FaTimes />
+        </span>
+      ) : (
+        <span className="search-icon">
+          <FaSearch />
+        </span>
+      )}
+    </div>
 
-         </div>
+    <button
+      className="botao-quizzes-publicos"
+      onClick={() => navigate("/quizzes/publicos")}
+    >
+      Ver Quizzes Públicos
+    </button>
+  </div>
+</div>
+
         {loading ? (
           <p>{t("register-loading")}</p>
         ) : quizSelecionado ? (

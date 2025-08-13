@@ -48,7 +48,7 @@ async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = D
 
     quiz_data = await gerar_quiz_com_rag(tema, modelo=modelo)
 
-    quiz = quiz_repo.criar_quiz(db, QuizCreate(**quiz_data, session_id=session_id))
+    quiz = quiz_repo.criar_quiz(db, QuizCreate(**quiz_data, session_id=session_id, partilhado=False))
     return quiz
 
 @router.get("/session/{session_id}", response_model=QuizRead)

@@ -330,3 +330,37 @@ background-color: var(--color-primary);
 .checkbox-partilhar input[type="checkbox"]:hover {
   border-color: #0056b3;
 }
+
+.search-quiz-botao-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+    margin-top: 3.5rem;
+}
+
+.search-quiz {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.sidebar-search-quiz {
+  padding: 6px 35px 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;   /* encosta à direita */
+  top: 20%;      /* centraliza verticalmente */
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px; /* tamanho do ícone */
+  color: #888;     /* cor do ícone */
+}
+
+.search-icon:hover {
+  color: #000; /* muda a cor ao passar o mouse */
+}

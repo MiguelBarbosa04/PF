@@ -183,14 +183,6 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
           </button>
         )}
 
-        <button
-          onClick={enviarRespostas}
-          className={correcoes ? "btn-disabled" : "btn-submit"}
-          disabled={!!correcoes}
-        >
-          {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
-        </button>
-
       </div>
     </div>
   );
