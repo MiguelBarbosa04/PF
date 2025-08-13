@@ -353,14 +353,14 @@ background-color: var(--color-primary);
 
 .search-icon {
   position: absolute;
-  right: 10px;   /* encosta à direita */
-  top: 20%;      /* centraliza verticalmente */
+  right: 10px;
+  top: 20%;
   transform: translateY(-50%);
   cursor: pointer;
-  font-size: 14px; /* tamanho do ícone */
-  color: #888;     /* cor do ícone */
+  font-size: 14px;
+  color: #888;
 }
 
 .search-icon:hover {
-  color: #000; /* muda a cor ao passar o mouse */
+  color: #000;
 }

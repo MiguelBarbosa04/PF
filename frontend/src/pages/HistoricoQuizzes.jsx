@@ -28,7 +28,7 @@ function HistoricoQuizzes() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
-    setPaginaAtual(0); // sempre volta para a primeira página
+    setPaginaAtual(0);
   };
 
   const handleClearSearch = () => {

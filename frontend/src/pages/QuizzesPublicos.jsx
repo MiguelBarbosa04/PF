@@ -4,20 +4,33 @@ import dayjs from "dayjs";
 import QuizModal from "../components/QuizModal.jsx";
 import "../assets/css/HistoricoQuizzes.css";
 import IconMenu from "../components/IconMenu.jsx";
-import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
+import {FaAngleLeft, FaAngleRight, FaSearch, FaTimes} from "react-icons/fa";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 function QuizzesPublicos() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [quizParaFazer, setQuizParaFazer] = useState(null);
- const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL;
   const quizzesPorPagina = 5;
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const { t } = useLanguage();
 
   useEffect(() => {
     carregarQuizzes();
   }, []);
+
+    const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+    setPaginaAtual(0);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setPaginaAtual(0);
+  };
 
  const carregarQuizzes = () => {
     setLoading(true);
@@ -40,6 +53,7 @@ function QuizzesPublicos() {
 
   return (
     <div className="historico-wrapper">
+
       <button className="back-button" onClick={() => navigate(-1)}>
         Voltar
       </button>
@@ -47,8 +61,28 @@ function QuizzesPublicos() {
         <IconMenu />
       </div>
       <div className="historico-container">
-        <h2 >Quizzes Públicos</h2>
 
+        <h2 >Quizzes Públicos</h2>
+         <div className="search-quiz-botao-wrapper" style={{ width: '15%'}}>
+            <div className="search-quiz">
+              <input
+                type="text"
+                placeholder={t("sidebar-search")}
+                className="sidebar-search-quiz"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              {searchTerm ? (
+                <span className="search-icon clear-icon" onClick={handleClearSearch}>
+                  <FaTimes />
+                </span>
+              ) : (
+                <span className="search-icon">
+                  <FaSearch />
+                </span>
+              )}
+            </div>
+                 </div>
         {loading ? (
           <p>A carregar quizzes públicos...</p>
         ) : quizzes.length === 0 ? (
@@ -74,7 +108,6 @@ function QuizzesPublicos() {
               ))}
             </ul>
 
-            {/* 🔹 Modal só aparece se houver quiz selecionado */}
             {quizParaFazer && (
               <QuizModal
                 quizId={quizParaFazer}
