@@ -26,7 +26,7 @@ useEffect(() => {
       }));
       setTemas(dataComId);
     } catch (error) {
-      console.error("Erro ao buscar temas:", error);
+      console.error(t("EditarTema-error"), error);
     }
   }
   fetchTemas();
@@ -50,9 +50,7 @@ const handleSave = async (id) => {
     setEditId(null);
     setEditedNome('');
   } catch (error) {
-    console.log("Nome antigo:", temaAntigo.Nome);
-console.log("Novo nome:", editedNome);
-    console.error("Erro ao atualizar tema:", error);
+    console.error(t("EditarTema-error-edit"), error);
   }
 };
 
@@ -62,7 +60,7 @@ const handleCancel = () => {
 };
 
 const handleDelete = async (nome) => {
-  if (!window.confirm("Tem certeza que quer apagar este tema?")) return;
+  if (!window.confirm(t("EditarTema-delete-confirm"))) return;
 
   try {
     // Apaga tema no backend (inclui Chroma)
@@ -71,7 +69,7 @@ const handleDelete = async (nome) => {
     // Atualiza estado local React removendo o tema
     setTemas(temas.filter(tema => tema.Nome !== nome));
   } catch (error) {
-    console.error("Erro ao apagar tema:", error);
+    console.error(t("EditarTema-error-delete"), error);
   }
 };
 

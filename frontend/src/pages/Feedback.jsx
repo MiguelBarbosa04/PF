@@ -49,7 +49,7 @@ const FeedbackPage = () => {
         setModelos(mods);
         setModeloSelecionado(null);
       } catch (err) {
-        console.error("Erro ao carregar dados:", err);
+        console.error(t("PerfilForm-error"), err);
         setMensagens([]);
         setModelos([]);
       }
@@ -60,12 +60,6 @@ const FeedbackPage = () => {
   const handleBack = () => {
     navigate(-1);
   };
-
-  const sessionCounts = mensagens.reduce((acc, item) => {
-    const id = item.resposta.session_id;
-    acc[id] = (acc[id] || 0) + 1;
-    return acc;
-  }, {});
 
   const mensagensFiltradas = mensagens.filter(
     (item) => item.resposta.modelo === modeloSelecionado

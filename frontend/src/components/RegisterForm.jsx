@@ -35,7 +35,7 @@ const RegisterForm = () => {
         setFuncoes(await funcRes.json());
         setLinguagens(await lingRes.json());
       } catch (error) {
-        console.error("Erro ao carregar opções:", error);
+        console.error(t("RegisterForm-error-load"), error);
       }
     };
     fetchOptions();
@@ -54,7 +54,7 @@ const RegisterForm = () => {
 
     for (const key in formData) {
       if (!formData[key]) {
-        setError(`Por favor, preencha o campo "${key}"`);
+        setError(`${t("RegisterForm-fill-field")} "${key}"`);
         setSuccess('');
         return;
       }
@@ -73,12 +73,10 @@ const RegisterForm = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || "Erro no registo");
+        throw new Error(errorData.detail || t("RegisterForm-error-register"));
       }
 
-      const data = await response.json();
-      console.log("Utilizador registado:", data);
-      alert("Registo concluído com sucesso");
+      alert(t("RegisterForm-success-alert"));
 
       navigate("/login");
 

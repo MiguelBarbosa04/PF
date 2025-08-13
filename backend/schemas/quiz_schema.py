@@ -40,6 +40,7 @@ class QuizCreate(BaseModel):
     descricao: str
     session_id: int
     perguntas: list[PerguntaCreate]
+    partilhado: bool = False
 
 class QuizGenerationRequest(BaseModel):
     session_id: int
@@ -81,6 +82,16 @@ class QuizHistoricoRead(BaseModel):
     descricao: str
     session_id: int
     data: datetime  # <- virá de RespostaUser.respondido_em
+    partilhado: Optional[bool]
+
+    class Config:
+        orm_mode = True
+
+class QuizPublicoSchema(BaseModel):
+    id: int
+    titulo: str
+    partilhado: bool
+    data: Optional[datetime] = None
 
     class Config:
         orm_mode = True

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import UploadForm from "../components/UploadForm.jsx";
 import IconMenu from "../components/IconMenu.jsx";
 import {updateLLM, uploadPDF} from "../services/api.js";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 const Upload = () => {
 
@@ -11,6 +12,7 @@ const Upload = () => {
   const [file, setFile] = useState(null);
   const [tema, setTema] = useState('');
   const [selectedLLM, setSelectedLLM] = useState("");
+  const { t } = useLanguage();
 
   const handleFileChange = (event) => {
       const file = event.target.files[0];
@@ -21,7 +23,7 @@ const Upload = () => {
       e.preventDefault();
 
       if (!file) {
-        alert("Por favor selecione um ficheiro antes de guardar.");
+        alert(t("Upload-alert"));
         return;
       }
 
@@ -29,22 +31,22 @@ const Upload = () => {
         const data = await uploadPDF(file);
         alert(data.message);
       } catch (error) {
-        console.error("Erro ao fazer upload:", error);
+        console.error(t("Upload-error"), error);
         alert(error.message);
       }
     };
 
   const handleGuardarLLM = async () => {
     if (!selectedLLM) {
-      alert("Por favor selecione um modelo LLM.");
+      alert(t("Upload-select-LLM"));
       return;
     }
 
     try {
       await updateLLM(selectedLLM);
-      alert("Modelo atualizado com sucesso!");
+      alert(t("Upload-model-sucess"));
     } catch (error) {
-      console.error("Erro ao guardar modelo:", error);
+      console.error(t("Upload-model-error"), error);
       alert(error.message);
     }
   };

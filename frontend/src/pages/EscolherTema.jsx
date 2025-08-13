@@ -34,7 +34,7 @@ const EscolherTema = () => {
           setIsAdmin(true);
         }
       } catch (error) {
-        console.error("Erro ao verificar função do utilizador:", error);
+        console.error(t("EscolherTema-error-user"), error);
       }
     };
     fetchUser();
@@ -51,7 +51,7 @@ const EscolherTema = () => {
         }));
         setTemas(opcoes);
       } catch (error) {
-        console.error("Erro ao buscar temas:", error);
+        console.error(t("EditarTema-error"), error);
       } finally {
         setLoadingTemas(false);
       }
@@ -95,7 +95,7 @@ const EscolherTema = () => {
       localStorage.setItem("papel", papelParaEnviar || "");
       navigate("/chat");
     } catch (error) {
-      console.error("Erro ao criar sessão direta:", error);
+      console.error(t("EscolherTema-error-create-s"), error);
     }
   };
 

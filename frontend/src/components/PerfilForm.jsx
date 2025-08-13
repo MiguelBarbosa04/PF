@@ -56,7 +56,7 @@ const PerfilForm = () => {
             setFuncoes(funcoesFiltradas);
             setLinguagens(ling);
           } catch (err) {
-            setError("Erro ao carregar dados");
+            setError(t("PerfilForm-error"));
           }
         };
         fetchOptions();
@@ -74,7 +74,7 @@ const PerfilForm = () => {
       e.preventDefault();
 
       if (formData.password !== formData.confirmPassword) {
-        setError("As passwords não coincidem");
+        setError(t("PerfilForm-error-pass"));
         setSuccess("");
         return;
       }
@@ -91,7 +91,7 @@ const PerfilForm = () => {
         };
 
         await updateUser(userId, updatePayload);
-        setSuccess("Perfil atualizado com sucesso!");
+        setSuccess(t("PerfilForm-success"));
         setError("");
         alert(t("perfil-alert"));
         navigate(-1);

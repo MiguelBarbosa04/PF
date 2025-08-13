@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 function Estatisticas({ userId }) {
   const [mediaAcertos, setMediaAcertos] = useState(null);
   const [totalQuizzes, setTotalQuizzes] = useState(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!userId) return;
@@ -14,7 +16,7 @@ function Estatisticas({ userId }) {
         setMediaAcertos(res.data.media_percentagem_acertos);
       })
       .catch((err) => {
-        console.error("Erro ao buscar estatísticas:", err);
+        console.error(t("statistics-error-fetching"), err);
       });
   }, [userId]);
 
@@ -22,8 +24,8 @@ function Estatisticas({ userId }) {
 
   return (
     <div className="estatisticas-info">
-      <p><strong>Total de quizzes feitos:</strong> {totalQuizzes}</p>
-      <p><strong>Média de perguntas corretas:</strong> {mediaAcertos.toFixed(1)}%</p>
+      <p><strong>{t("statistics-total")}:</strong> {totalQuizzes}</p>
+      <p><strong>{t("statistics-avg")}:</strong> {mediaAcertos.toFixed(1)}%</p>
     </div>
   );
 }
