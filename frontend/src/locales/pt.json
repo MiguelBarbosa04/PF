@@ -108,8 +108,8 @@
   "statistics-error-fetching": "Erro ao buscar estatísticas:",
   "quiz-details": "Detalhes do Quiz",
   "quiz-not-found": "Quiz não encontrado.",
-  "quiz-answers-sent": "Respostas Enviadas",
   "send-answers-btn": "Enviar Respostas",
+  "close-quiz-btn": "Fechar Quiz",
   "alert-answer-all": "Responde a todas as perguntas!",
   "alert-error-submitting-a": "Erro ao enviar respostas.",
   "no-quiz-created": "Nenhum quiz criado.",
@@ -152,5 +152,11 @@
   "Upload-error": "Erro ao fazer upload:",
   "Upload-select-LLM": "Por favor selecione um modelo LLM.",
   "Upload-model-sucess": "Modelo atualizado com sucesso!",
-  "Upload-model-error": "Erro ao guardar modelo:"
+  "Upload-model-error": "Erro ao guardar modelo:",
+  "share-btn": "Partilhar",
+  "public-quizzes-btn": "Ver Quizzes Públicos",
+  "public-quiz-title": "Quizzes Públicos",
+  "public-q-loading": "A carregar quizzes públicos...",
+  "public-no-quiz": "Não existem quizzes partilhados no momento.",
+  "take-quiz-btn": "Fazer Quiz"
 }

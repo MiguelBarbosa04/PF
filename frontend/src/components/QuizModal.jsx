@@ -171,7 +171,7 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
             onClick={enviarRespostas}
             className="btn-submit"
           >
-            Enviar Respostas
+            {t("send-answers-btn")}
           </button>
         )}
         {correcoes && (
@@ -179,17 +179,9 @@ const QuizModal = ({ quizId, onClose, onRepetido }) => {
             onClick={handleClose}
             className="btn-submit"
           >
-            Fechar Quiz
+            {t("close-quiz-btn")}
           </button>
         )}
-
-        <button
-          onClick={enviarRespostas}
-          className={correcoes ? "btn-disabled" : "btn-submit"}
-          disabled={!!correcoes}
-        >
-          {correcoes ? t("quiz-answers-sent") : t("send-answers-btn")}
-        </button>
 
       </div>
     </div>

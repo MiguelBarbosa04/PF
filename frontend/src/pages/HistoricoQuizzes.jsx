@@ -22,12 +22,9 @@ function HistoricoQuizzes() {
   const quizzesPorPagina = 5;
   const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-
-const [loadingIds, setLoadingIds] = React.useState(new Set());
-const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
-
+  const [loadingIds, setLoadingIds] = React.useState(new Set());
+  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
   const { t } = useLanguage();
-
 
   const handleBack = () => {
     navigate(-1);
@@ -37,7 +34,6 @@ const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
     paginaAtual * quizzesPorPagina,
     (paginaAtual + 1) * quizzesPorPagina
   );
-
 
   const carregarQuizzes = () => {
     if (!userId) {
@@ -136,7 +132,7 @@ const atualizarPartilha = (quizId, novoValor) => {
               className="botao-quizzes-publicos"
               onClick={() => navigate("/quizzes/publicos")}
             >
-              Ver Quizzes Públicos
+              {t("public-quizzes-btn")}
             </button>
 
          </div>
@@ -184,7 +180,7 @@ const atualizarPartilha = (quizId, novoValor) => {
                                     atualizarPartilha(quiz.id, e.target.checked)
                                 }
                             />
-                            Partilhar
+                            {t("share-btn")}
                         </label>
                     </div>
 

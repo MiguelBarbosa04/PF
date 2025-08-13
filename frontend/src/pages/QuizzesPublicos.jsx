@@ -5,15 +5,17 @@ import QuizModal from "../components/QuizModal.jsx";
 import "../assets/css/HistoricoQuizzes.css";
 import IconMenu from "../components/IconMenu.jsx";
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
+import {useLanguage} from "../locales/LanguageContext.jsx";
 
 function QuizzesPublicos() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [quizParaFazer, setQuizParaFazer] = useState(null);
- const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL;
   const quizzesPorPagina = 5;
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     carregarQuizzes();
@@ -41,18 +43,18 @@ function QuizzesPublicos() {
   return (
     <div className="historico-wrapper">
       <button className="back-button" onClick={() => navigate(-1)}>
-        Voltar
+        {t("back-btn")}
       </button>
              <div className="user-profile-wrapper">
         <IconMenu />
       </div>
       <div className="historico-container">
-        <h2 >Quizzes Públicos</h2>
+        <h2 >{t("public-quiz-title")}</h2>
 
         {loading ? (
-          <p>A carregar quizzes públicos...</p>
+          <p>{t("public-q-loading")}</p>
         ) : quizzes.length === 0 ? (
-          <p>Não existem quizzes partilhados no momento.</p>
+          <p>{t("public-no-quiz")}</p>
         ) : (
           <>
             <ul className="quiz-list">
@@ -67,7 +69,7 @@ function QuizzesPublicos() {
                       className="botao-ver"
                       onClick={() => setQuizParaFazer(quiz.id)}
                     >
-                      Fazer Quiz
+                        {t("take-quiz-btn")}
                     </button>
                   </div>
                 </li>
@@ -99,7 +101,7 @@ function QuizzesPublicos() {
                      <FaAngleLeft style={{paddingTop: '3px', fontSize: '20px'}}/>
                   </button>
                   <span className="pagina-atual">
-                    Página {paginaAtual + 1} de {totalPaginas}
+                    {t("feedback-page")} {paginaAtual + 1} {t("feedback-of")} {totalPaginas}
                   </span>
                   <button
                     className="seta"
