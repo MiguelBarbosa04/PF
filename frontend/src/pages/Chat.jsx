@@ -5,6 +5,7 @@ import QuizPage from './QuizPage.jsx';
 import axios from 'axios';
 import {FaRegTimesCircle} from "react-icons/fa";
 import {useLanguage} from "../locales/LanguageContext.jsx";
+import "../assets/css/Chat.css";
 
 Modal.setAppElement('#root'); // garante acessibilidade
 
@@ -12,25 +13,34 @@ const Chat = () => {
   const [modo, setModo] = useState("exploratório");
   const [quizSessionId, setQuizSessionId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
 
   const abrirQuizModal = async (sessionId) => {
     try {
+      setLoadingQuiz(true);
       const response = await axios.post("http://localhost:8000/quizzes/gerar_quiz", {
-        session_id: sessionId
+        session_id: sessionId,
+        lang
       });
       setQuizSessionId(response.data.session_id);
       setModalAberto(true);
     } catch (error) {
       console.error(t("chatPage-error-quiz"), error);
       alert(t("chatPage-error-create-quiz"));
+    }finally {
+      setLoadingQuiz(false); // para o loading
     }
   };
 
   return (
     <div style={{ fontFamily: 'Arial' }}>
       <ChatForm modo={modo} setModo={setModo} onQuizRequested={abrirQuizModal} />
-
+      {loadingQuiz && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
       <Modal
         isOpen={modalAberto}
         onRequestClose={() => setModalAberto(false)}

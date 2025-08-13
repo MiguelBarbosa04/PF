@@ -44,6 +44,7 @@ class QuizCreate(BaseModel):
 
 class QuizGenerationRequest(BaseModel):
     session_id: int
+    lang: str
 
 
 class QuizRead(QuizCreate):

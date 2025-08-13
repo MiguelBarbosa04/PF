@@ -103,7 +103,7 @@
   "quiz-history-error-fetch-user": "userId is undefined. The fetch was not performed.",
   "view-btn": "View",
   "repeat-btn": "Repeat",
-  "statistics-total": "Total quizzes completed",
+  "statistics-total": "Total completed quizzes",
   "statistics-avg": " Average correct answers",
   "statistics-error-fetching": "Error fetching statistics:",
   "quiz-details": "Quiz Details",

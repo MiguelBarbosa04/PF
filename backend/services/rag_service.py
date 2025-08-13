@@ -181,9 +181,11 @@ Só podes responder com base nos documentos fornecidos abaixo.
 
 
 
-async def gerar_quiz_gemini(tema: str) -> dict:
+async def gerar_quiz_gemini(tema: str, idioma: str) -> dict:
+    idioma_prompt = "português" if idioma == "pt" else "inglês"
     prompt = f"""
     Gera um quiz com perguntas de múltipla escolha sobre o tema: {tema}.
+    Todo o quiz deve estar em {idioma_prompt}.
     Retorna em JSON com perguntas, opções e qual é a correta:
     {{
         "titulo": "...",
@@ -234,9 +236,11 @@ async def gerar_quiz_gemini(tema: str) -> dict:
             print("🔴 Conteúdo bruto:\n", data)
             raise ValueError("Não foi possível gerar quiz com Gemini.")
 
-async def gerar_quiz_ollama(tema: str) -> dict:
+async def gerar_quiz_ollama(tema: str, idioma: str) -> dict:
+    idioma_prompt = "português" if idioma == "pt" else "inglês"
     prompt = f"""
-    Gera um quiz com 5 perguntas de múltipla escolha sobre o tema: {tema}.
+      Gera um quiz com perguntas de múltipla escolha sobre o tema: {tema}.
+      Todo o quiz deve estar em {idioma_prompt}.
     Retorna em formato JSON com esta estrutura:
     {{
         "titulo": "Título do quiz",
@@ -289,10 +293,10 @@ async def gerar_quiz_ollama(tema: str) -> dict:
         raise ValueError("Não foi possível extrair JSON da resposta do Ollama.")
 
 
-async def gerar_quiz_com_rag(tema: str, modelo: str = "gemini") -> dict:
+async def gerar_quiz_com_rag(tema: str, modelo: str = "gemini", idioma: str = "pt") -> dict:
     if modelo == "gemini":
-        return await gerar_quiz_gemini(tema)
+        return await gerar_quiz_gemini(tema, idioma)
     elif modelo == "mistral":
-        return await gerar_quiz_ollama(tema)
+        return await gerar_quiz_ollama(tema, idioma)
     else:
         raise ValueError(f"Modelo desconhecido: {modelo}")

@@ -4,12 +4,13 @@ import { FaEdit, FaQuestionCircle, FaTrash } from "react-icons/fa";
 import { updateSession } from "../services/api.js";
 import {useLanguage} from "../locales/LanguageContext.jsx";
 
-const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDelete, onQuizRequested }, ref) => {
+const ChatOptionsMenu = forwardRef(({ session, userData, onCloseMenu, onSessionUpdated, onDelete, onQuizRequested }, ref) => {
   const TUTOR_AI = "Tutor";
   const papelAtual = localStorage.getItem("papel");
   const { t } = useLanguage();
 
   const handleEdit = async () => {
+    if (onCloseMenu) onCloseMenu();
     const novoTema = prompt(t("chatOptions-prompt"), session.tema || "");
     if (!novoTema || novoTema === session.tema) return;
 
@@ -27,6 +28,7 @@ const ChatOptionsMenu = forwardRef(({ session, userData, onSessionUpdated, onDel
     if (window.confirm(t("chatOptions-confirm-delete"))) {
       if (onDelete) onDelete(session.id);
     }
+    if (onCloseMenu) onCloseMenu();
   };
 
 
@@ -34,6 +36,7 @@ const handleQuiz = async () => {
   if (onQuizRequested) {
     onQuizRequested(session.id);
   }
+  if (onCloseMenu) onCloseMenu();
 };
 
 
