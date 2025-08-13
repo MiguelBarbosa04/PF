@@ -98,7 +98,7 @@
   "feedback-page": "Page",
   "feedback-of": "of",
   "quiz-history-title": "Quiz History",
-  "quizzes-not-found-not-found": "No quizzes found",
+  "quizzes-not-found": "No quizzes found",
   "quiz-history-error": "Error loading history:",
   "quiz-history-error-fetch-user": "userId is undefined. The fetch was not performed.",
   "view-btn": "View",

@@ -107,11 +107,14 @@ async def generate_rag_response(
 
     # Regras de restrição (com reforço claro)
     regras = (
+        "NUNCA escrevas prefixos como 'PERGUNTA:', 'RESPOSTA:', 'Question:', 'Answer:', "
+        "'Resposta:', 'Pergunta:', 'ANSWER:', 'ANS:', 'R:'. "
+        "Começa sempre diretamente com a resposta, sem qualquer palavra antes."
         "ATENÇÃO: Não deves usar conhecimento externo. "
-        "Não inventes informações. "
-        "ATENÇÃO: Quando responderes, não repitas os prefixos \"PERGUNTA:\" ou \"RESPOSTA:\". Dá só a resposta limpa."
+        "Não inventes informações. "  
         "Se a resposta não estiver claramente nos documentos abaixo, responde apenas com: "
         "\"Essa informação não está disponível nos documentos fornecidos.\""
+        "Se fizerem a pergunta em inglês responde em inglês"
     )
 
     estilo_texto = f"{estilo_base}\n\n{estilo_modo}\n\n{regras}"

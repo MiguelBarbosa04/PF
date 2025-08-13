@@ -15,6 +15,7 @@ function QuizzesPublicos() {
   const url = import.meta.env.VITE_API_URL;
   const quizzesPorPagina = 5;
   const navigate = useNavigate();
+
   const { t } = useLanguage();
 
   useEffect(() => {
