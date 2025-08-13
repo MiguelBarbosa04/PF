@@ -12,15 +12,17 @@ const Chat = () => {
   const [modo, setModo] = useState("exploratório");
   const [quizSessionId, setQuizSessionId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const abrirQuizModal = async (sessionId) => {
     try {
       const response = await axios.post("http://localhost:8000/quizzes/gerar_quiz", {
-        session_id: sessionId
+        session_id: sessionId,
+        lang
       });
       setQuizSessionId(response.data.session_id);
       setModalAberto(true);
+      console.log("LINGAUGERMEMMEMEMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ", response);
     } catch (error) {
       console.error(t("chatPage-error-quiz"), error);
       alert(t("chatPage-error-create-quiz"));

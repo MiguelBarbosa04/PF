@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db, SessionLocal
@@ -35,6 +34,7 @@ def ver_respostas(user_id: int, db: Session = Depends(get_db)):
 @router.post("/gerar_quiz", response_model=QuizRead)
 async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = Depends(get_db)):
     session_id = payload.session_id
+    lang = payload.lang  # 👈 pega idioma enviado
 
     session = db.query(SessionModel).filter_by(id=session_id).first()
     if not session:
@@ -44,12 +44,17 @@ async def gerar_quiz_para_sessao(payload: QuizGenerationRequest, db: Session = D
     if not tema:
         raise HTTPException(status_code=400, detail="Sessão não tem tema definido.")
 
-    modelo = obter_modelo_mais_recente(db)  # retorna "gemini" ou "mistral"
+    modelo = obter_modelo_mais_recente(db)  # "gemini" ou "mistral"
 
-    quiz_data = await gerar_quiz_com_rag(tema, modelo=modelo)
+    # 👇 agora enviamos idioma para o gerador
+    quiz_data = await gerar_quiz_com_rag(tema, modelo=modelo, idioma=lang)
 
-    quiz = quiz_repo.criar_quiz(db, QuizCreate(**quiz_data, session_id=session_id, partilhado=False))
+    quiz = quiz_repo.criar_quiz(
+        db,
+        QuizCreate(**quiz_data, session_id=session_id, partilhado=False)
+    )
     return quiz
+
 
 @router.get("/session/{session_id}", response_model=QuizRead)
 def get_quiz_by_session(session_id: int, db: Session = Depends(get_db)):
