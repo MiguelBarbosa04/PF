@@ -18,19 +18,34 @@ function QuizzesPublicos() {
   const [searchTerm, setSearchTerm] = useState("");
   const { t } = useLanguage();
 
-  useEffect(() => {
-    carregarQuizzes();
-  }, []);
 
-    const handleSearchChange = (e) => {
+const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
     setPaginaAtual(0);
   };
 
-  const handleClearSearch = () => {
+ const handleClearSearch = () => {
     setSearchTerm("");
     setPaginaAtual(0);
   };
+
+  // Filtrar quizzes pelo título
+
+ const quizzesFiltrados = quizzes.filter((quiz) =>
+    quiz.titulo.toLowerCase().includes(searchTerm)
+  );
+
+  // Paginação usando o array filtrado
+  const totalPaginas = Math.ceil(quizzesFiltrados.length / quizzesPorPagina);
+  const quizzesPaginaAtual = quizzesFiltrados.slice(
+    paginaAtual * quizzesPorPagina,
+    (paginaAtual + 1) * quizzesPorPagina
+  );
+  useEffect(() => {
+    carregarQuizzes();
+  }, []);
+
+
 
  const carregarQuizzes = () => {
     setLoading(true);
@@ -44,13 +59,7 @@ function QuizzesPublicos() {
       .finally(() => setLoading(false));
   };
 
-
-  const totalPaginas = Math.ceil(quizzes.length / quizzesPorPagina);
-  const quizzesPaginaAtual = quizzes.slice(
-    paginaAtual * quizzesPorPagina,
-    (paginaAtual + 1) * quizzesPorPagina
-  );
-
+ 
   return (
     <div className="historico-wrapper">
 
