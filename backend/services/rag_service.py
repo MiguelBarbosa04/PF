@@ -20,7 +20,7 @@ def limpar_json_markdown(texto: str) -> str:
     """Remove blocos de markdown tipo ```json ... ```"""
     return re.sub(r"^```json\s*|\s*```$", "", texto.strip(), flags=re.IGNORECASE)
 
-def query_prioritaria_por_source(collection, user_query: str, n_results: int = 4, limiar_distancia: float = 0.1):
+def query_prioritaria_por_source(collection, user_query: str, n_results: int = 10, limiar_distancia: float = 0.1):
     # Query aos pares 5 estrelas
     resultados_5estrelas = collection.query(
         query_texts=[user_query],
@@ -59,7 +59,7 @@ async def generate_rag_response(
     # retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     collection = get_chroma_collection()
-    results = query_prioritaria_por_source(collection, user_query, n_results=4, limiar_distancia=0.1)
+    results = query_prioritaria_por_source(collection, user_query, n_results=10, limiar_distancia=0.1)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     if not retrieved_docs:
