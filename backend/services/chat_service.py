@@ -131,7 +131,7 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
     # Se for o utilizador, gerar resposta com RAG
     if request.remetente == "user":
         current_user = db.query(Users).filter(Users.id == user_id).first()
-        if request.tema == None:
+        if request.tema is None:
             resposta = await generate_rag_response(request.conteudo, db, current_user, tema=tema_inferido, modo=request.modo, papel=request.papel)
         else:
             resposta = await generate_rag_response(request.conteudo, db, current_user, tema=request.tema, modo=request.modo, papel=request.papel)

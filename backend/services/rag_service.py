@@ -69,7 +69,7 @@ def query_prioritaria_por_source(collection, user_query: str, tema: str, n_resul
         where={
             "$and": [
                 {"source": "feedback_5_estrelas"},
-                {"filename": "Manual técnico"}
+                {"filename": tema}
             ]
         },
         include=["documents", "distances"],
@@ -173,7 +173,7 @@ async def generate_rag_response(
 ) -> str:
     print("Modo recebido:", modo)
     print("PAPEL: ", papel)
-
+    print(tema)
     linguagem_detectada = detectar_idioma(user_query)
 
     # Recuperação
