@@ -134,6 +134,29 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
     ]
     return "\n\n".join(blocos).strip()
 
+def formatar_instrucao_em_lista(conteudo: str) -> str:
+    """
+    Formata conteúdo textual em passos numerados, suportando:
+    - Números: 1. passo
+    - Asteriscos: * passo
+    - Hífens: - passo
+    """
+    # Primeiro tenta detetar passos numerados
+    passos = re.split(r"(?:^|\n)\s*\d+\.\s+", conteudo)
+    if len(passos) <= 1:
+        # Se não houver vários passos numerados, tenta asteriscos ou hífens
+        passos = re.split(r"(?:^|\n)\s*[\*\-]\s+", conteudo)
+        passos = [p.strip() for p in passos if p.strip()]
+        if len(passos) <= 1:
+            # Se ainda não houver vários passos, devolve original
+            return conteudo
+
+    resultado_formatado = "Instruções passo a passo:\n\n"
+    for i, passo in enumerate(passos, 1):
+        resultado_formatado += f"Passo {i}: {passo}\n\n"
+
+    return resultado_formatado
+
 
 async def generate_rag_response(
     user_query: str,
@@ -205,8 +228,6 @@ async def generate_rag_response(
 
     resposta = ""
 
-    print(system_prompt)
-
     try:
         async with httpx.AsyncClient(timeout=60) as client:
             if modelo in ["mistral", "llama3"]:
@@ -264,6 +285,9 @@ async def generate_rag_response(
         return f"Falha HTTP do modelo: {e}"
     except Exception as e:
         return f"Não foi possível gerar resposta. Erro: {e}"
+
+    if papel == "Tutor" and modo == "instrucional":
+        resposta = formatar_instrucao_em_lista(resposta)
 
     return resposta.strip() if resposta else "Não foi possível gerar resposta."
 
