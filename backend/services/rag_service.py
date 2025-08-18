@@ -282,9 +282,11 @@ async def generate_rag_response(
                 ).strip()
 
     except httpx.HTTPStatusError as e:
-        return f"Falha HTTP do modelo: {e}"
+        #return f"Falha HTTP do modelo: {e}"
+        return "Não foi possível gerar a resposta no momento. Por favor, tente novamente mais tarde."
     except Exception as e:
-        return f"Não foi possível gerar resposta. Erro: {e}"
+        #return f"Não foi possível gerar resposta. Erro: {e}"
+        return "Ocorreu um erro ao gerar a resposta. Por favor, tente novamente."
 
     if papel == "Tutor" and modo == "instrucional":
         resposta = formatar_instrucao_em_lista(resposta)
