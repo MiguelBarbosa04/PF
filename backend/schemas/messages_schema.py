@@ -11,6 +11,7 @@ class ChatRequest(BaseModel):
     avaliacao: Optional[int] = None
     papel: Optional[str] = None
     modo: Optional[str] = "exploratório"
+    tema: Optional[str] = None
 
 class MessageRead(ChatRequest):
     id: int

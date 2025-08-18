@@ -58,15 +58,20 @@ def preparar_documentos_para_prompt(docs: List[str], max_docs: int = 8, max_char
     return docs
 
 
-def query_prioritaria_por_source(collection, user_query: str, n_results: int = 10, limiar_distancia: float = 0.1) -> Dict[str, Any]:
-    """Prioriza documentos com source==feedback_5_estrelas. Se houver algum muito próximo
-    (distância < limiar), retorna apenas esses; caso contrário, combina com query geral
+def query_prioritaria_por_source(collection, user_query: str, tema: str, n_results: int = 10, limiar_distancia: float = 0.1):
+    """Prioriza documentos com source==feedback_5_estrelas.
+    caso contrário, combina com query geral
     removendo duplicados e respeitando a ordem de relevância.
     """
     res_5 = collection.query(
         query_texts=[user_query],
         n_results=n_results,
-        where={"source": "feedback_5_estrelas"},
+        where={
+            "$and": [
+                {"source": "feedback_5_estrelas"},
+                {"filename": "Manual técnico"}
+            ]
+        },
         include=["documents", "distances"],
     )
     docs_5 = res_5.get("documents", [[]])[0]
@@ -75,20 +80,20 @@ def query_prioritaria_por_source(collection, user_query: str, n_results: int = 1
     if dist_5 and len(dist_5) > 0 and min(dist_5) < limiar_distancia:
         return res_5
 
-    res_geral = collection.query(
+    res_tema = collection.query(
         query_texts=[user_query],
         n_results=n_results,
+        where={"filename": tema},
         include=["documents", "distances"],
     )
-
-    docs_gerais = res_geral.get("documents", [[]])[0]
-    dist_gerais = res_geral.get("distances", [[]])[0]
+    docs_tema = res_tema.get("documents", [[]])[0]
+    dist_tema = res_tema.get("distances", [[]])[0]
 
     vistos = set()
     documentos: List[str] = []
     distancias: List[float] = []
 
-    for doc, dist in list(zip(docs_5, dist_5)) + list(zip(docs_gerais, dist_gerais)):
+    for doc, dist in list(zip(docs_5, dist_5)) + list(zip(docs_tema, dist_tema)):
         if doc not in vistos:
             vistos.add(doc)
             documentos.append(doc)
@@ -162,6 +167,7 @@ async def generate_rag_response(
     user_query: str,
     db: DBSession,
     current_user: Users,
+    tema: str,
     modo: str = "exploratório",
     papel: str = "Agente",
 ) -> str:
@@ -172,7 +178,7 @@ async def generate_rag_response(
 
     # Recuperação
     collection = get_chroma_collection()
-    results = query_prioritaria_por_source(collection, user_query, n_results=12, limiar_distancia=0.1)
+    results = query_prioritaria_por_source(collection, user_query=user_query, tema=tema, n_results=12, limiar_distancia=0.1)
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     if not retrieved_docs:

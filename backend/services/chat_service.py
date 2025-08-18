@@ -89,9 +89,10 @@ async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
 # async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
 async def generate_chat_response(db: DBSession, request: ChatRequest,
                                      user_id: Optional[int] = None,
-                                     papel: Optional[str] = None
+                                     papel: Optional[str] = None,
                                      ) -> Tuple[Messages, int]:
     nova_session = request.session_id
+    tema_inferido = ""
 
     # Criar nova sessão se não tiver session_id
     if not request.session_id:
@@ -130,7 +131,10 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
     # Se for o utilizador, gerar resposta com RAG
     if request.remetente == "user":
         current_user = db.query(Users).filter(Users.id == user_id).first()
-        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo, papel=request.papel)
+        if request.tema == None:
+            resposta = await generate_rag_response(request.conteudo, db, current_user, tema=tema_inferido, modo=request.modo, papel=request.papel)
+        else:
+            resposta = await generate_rag_response(request.conteudo, db, current_user, tema=request.tema, modo=request.modo, papel=request.papel)
 
         # Obter o modelo usado para gravar na BD
         settings = get_global_settings(db)
