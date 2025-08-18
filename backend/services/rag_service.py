@@ -151,9 +151,9 @@ def formatar_instrucao_em_lista(conteudo: str) -> str:
             # Se ainda não houver vários passos, devolve original
             return conteudo
 
-    resultado_formatado = "Instruções passo a passo:\n\n"
+    resultado_formatado = "Instruções passo a passo:"
     for i, passo in enumerate(passos, 1):
-        resultado_formatado += f"Passo {i}: {passo}\n\n"
+        resultado_formatado += f"Passo {i}: {passo}"
 
     return resultado_formatado
 
