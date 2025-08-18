@@ -164,6 +164,9 @@ async def generate_rag_response(
 
     # Estilo com base na linguagem do utilizador
     linguagem = getattr(current_user, "ling_preferida", "Formal") or "Formal"
+    funcao = getattr(current_user, "funcao", "Operador") or "Operador"
+    experiencia = getattr(current_user, "experiencia", "Intermédio") or "Intermédio"
+
     if linguagem == "Informal":
         estilo_base = (
             "Usa um tom informal e descontraído, como se estivesses a conversar com um colega. "
@@ -177,7 +180,32 @@ async def generate_rag_response(
 
     system_prompt = construir_system_prompt(estilo_base, linguagem, linguagem_detectada, documentos, user_query, papel, modo)
 
+    system_prompt += f"\n\n--- Perfil do Utilizador ---\n"
+    system_prompt += f"Função: {funcao}\n"
+    system_prompt += f"Nível de experiência: {experiencia}\n"
+
+    if funcao == 3:
+        if experiencia == 1:
+            system_prompt += "Adapta a explicação para alguém com pouca experiência técnica. Inclui passos detalhados e linguagem acessível."
+        elif experiencia == 3:
+            system_prompt += "Responde de forma direta e técnica, omitindo explicações básicas."
+        else:
+            system_prompt += "Mantém um equilíbrio entre explicação e concisão."
+
+    elif funcao == 7:
+        if experiencia == 1:
+            system_prompt += "Usa linguagem simples e clara. Evita jargões técnicos sempre que possível"
+        elif experiencia == 3:
+            system_prompt += "Responde de forma objetiva, assumindo conhecimento prévio."
+        else:
+            system_prompt += "Explica com clareza, mas sem exagerar nos detalhes."
+
+    else:  # Operador ou outro
+        system_prompt += "Adapta a explicação consoante a experiência do utilizador indicada acima."
+
     resposta = ""
+
+    print(system_prompt)
 
     try:
         async with httpx.AsyncClient(timeout=60) as client:
