@@ -88,6 +88,7 @@ const EscolherTema = () => {
         papel: papelParaEnviar,
         tema: temaParaEnviar,
         inicio: new Date().toISOString(),
+        tema_inferido_auto: false
       });
 
       localStorage.setItem("sessionId", session.id);

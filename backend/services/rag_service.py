@@ -170,15 +170,22 @@ async def generate_rag_response(
     tema: str,
     modo: str = "exploratório",
     papel: str = "Agente",
+    tema_inferido_auto: bool = False
 ) -> str:
     print("Modo recebido:", modo)
     print("PAPEL: ", papel)
-    print(tema)
+    print("TEMA", tema)
+    print("INFERDIO: ", tema_inferido_auto)
     linguagem_detectada = detectar_idioma(user_query)
 
     # Recuperação
     collection = get_chroma_collection()
-    results = query_prioritaria_por_source(collection, user_query=user_query, tema=tema, n_results=12, limiar_distancia=0.1)
+
+    if tema_inferido_auto:
+        results = collection.query(query_texts=[user_query], n_results=12, include=["documents", "distances"],)
+    else:
+        results = query_prioritaria_por_source(collection, user_query=user_query, tema=tema, n_results=12, limiar_distancia=0.1)
+
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     if not retrieved_docs:

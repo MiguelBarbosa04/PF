@@ -45,7 +45,7 @@ class Session(Base):
     papel = Column(String(10), nullable=False)  # 'Agente' ou 'Tutor'
     tema = Column(String(100), nullable=True)
     inicio = Column(TIMESTAMP, nullable=False)
-
+    tema_inferido_auto = Column(Boolean, nullable=False)
     user = relationship("Users", back_populates="sessions")
     messages = relationship("Messages", back_populates="session", cascade="all, delete-orphan")
 
