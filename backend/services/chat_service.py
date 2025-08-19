@@ -10,7 +10,7 @@ from backend.repositories.global_settings_repository import get_global_settings
 from backend.schemas.sessions_schema import SessionCreate
 from backend.repositories.sessions_repository import create_session
 from backend.schemas.messages_schema import ChatRequest
-from backend.database.models import Messages, Users
+from backend.database.models import Messages, Users, Session as Sessions
 from backend.services.rag_service import generate_rag_response
 from dotenv import load_dotenv
 load_dotenv()
@@ -89,9 +89,10 @@ async def inferir_tema_com_llm(conteudo: str, db: DBSession) -> str:
 # async def generate_chat_response(db: DBSession, request: ChatRequest) -> str:
 async def generate_chat_response(db: DBSession, request: ChatRequest,
                                      user_id: Optional[int] = None,
-                                     papel: Optional[str] = None
+                                     papel: Optional[str] = None,
                                      ) -> Tuple[Messages, int]:
     nova_session = request.session_id
+    tema_inferido = ""
 
     # Criar nova sessão se não tiver session_id
     if not request.session_id:
@@ -105,7 +106,8 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
             user_id=user_id,
             papel=papel,
             tema=tema_inferido,
-            inicio=request.criado_em
+            inicio=request.criado_em,
+            tema_inferido_auto = True
         )
         session_obj = create_session(db, nova_sessao)
         request.session_id = session_obj.id
@@ -130,7 +132,14 @@ async def generate_chat_response(db: DBSession, request: ChatRequest,
     # Se for o utilizador, gerar resposta com RAG
     if request.remetente == "user":
         current_user = db.query(Users).filter(Users.id == user_id).first()
-        resposta = await generate_rag_response(request.conteudo, db, current_user, modo=request.modo, papel=request.papel)
+
+        sessao = db.query(Sessions).filter(Sessions.id == request.session_id).first()
+        tema_foi_inferido = False
+        if sessao:
+            tema_foi_inferido = bool(getattr(sessao, "tema_inferido_auto", False))
+
+        resposta = await generate_rag_response(request.conteudo, db, current_user, tema=request.tema,
+                                               modo=request.modo, papel=request.papel, tema_inferido_auto=tema_foi_inferido)
 
         # Obter o modelo usado para gravar na BD
         settings = get_global_settings(db)

@@ -88,12 +88,13 @@ const EscolherTema = () => {
         papel: papelParaEnviar,
         tema: temaParaEnviar,
         inicio: new Date().toISOString(),
+        tema_inferido_auto: false
       });
 
       localStorage.setItem("sessionId", session.id);
       localStorage.setItem("tema", temaParaEnviar || "");
       localStorage.setItem("papel", papelParaEnviar || "");
-      navigate("/chat");
+      navigate(`/chat/${session.id}`);
     } catch (error) {
       console.error(t("EscolherTema-error-create-s"), error);
     }

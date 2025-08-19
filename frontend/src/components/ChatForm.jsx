@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
 import Sidebar from "../components/Sidebar";
 import ChatMessage from "./ChatMessage.jsx";
-import ChatOptionsMenu from "../components/ChatOptionsMenu.jsx"; // ✅ IMPORTA
 import {
-  getMessagesBySession,
+  getMessagesBySession, getSessionById,
   rateMessage,
   sendMessage,
 } from "../services/api.js";
@@ -28,7 +27,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
   const [lastSpokenMessageId, setLastSpokenMessageId] = useState(null);
   const [ttsProvider, setTtsProvider] = useState(localStorage.getItem("ttsProvider") || "azure");
   const { t } = useLanguage();
-
+  const [sessaoAtual, setSessaoAtual] = useState(null);
   const { startListening, stopListening, isListening } = useAzureSpeechRecognition({
     azureKey: import.meta.env.VITE_AZURE_SPEECH_KEY,
     azureRegion: import.meta.env.VITE_AZURE_SPEECH_REGION,
@@ -53,6 +52,24 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
   }, [sessionId]);
 
   useEffect(() => {
+    const fetchSessaoAtual = async () => {
+      if (!sessionId) {
+        setSessaoAtual(null);
+        return;
+      }
+
+      try {
+        const sessao = await getSessionById(sessionId);
+        setSessaoAtual(sessao);
+      } catch (error) {
+        console.error("Erro ao buscar sessão:", error);
+      }
+    };
+
+    fetchSessaoAtual();
+  }, [sessionId]);
+
+  useEffect(() => {
     window.speechSynthesis.cancel();
   }, [location.pathname]);
 
@@ -67,6 +84,7 @@ const ChatForm = ({ modo, setModo, onQuizRequested }) => {
       criado_em: new Date().toISOString(),
       avaliacao: null,
       modo,
+      tema: sessaoAtual?.tema || null,
       papel: papelSelecionado,
     };
 

@@ -45,9 +45,25 @@ const ChatMessage = ({ msg, onRate, stopAll, addStopFn, isVoiceInput = false, tt
     }
   };
 
+  function markdownParaHTML(text) {
+    // Título
+    text = text.replace(
+      /Instruções passo a passo:/,
+      '<h3>Instruções passo a passo:</h3>'
+    );
+
+    // Detecta "Passo X:" e aplica negrito
+    text = text.replace(/(Passo \d+:)/g, '<b>$1</b>');
+
+    // Adiciona <br/> antes de cada "Passo X:" para simular quebra de linha
+    text = text.replace(/<b>Passo \d+:<\/b>/g, (match) => `<br/><br/>${match}`);
+
+    return text;
+  }
+
   return (
     <div className={`chat-message ${isBot ? "bot" : "user"}`}>
-      <div>{msg.conteudo}</div>
+      <div dangerouslySetInnerHTML={{ __html: markdownParaHTML(msg.conteudo) }}/>
       {isBot && (
         <div className="chat-feed">
           <div className="chat-feed-left">

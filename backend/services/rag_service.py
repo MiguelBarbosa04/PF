@@ -58,15 +58,20 @@ def preparar_documentos_para_prompt(docs: List[str], max_docs: int = 8, max_char
     return docs
 
 
-def query_prioritaria_por_source(collection, user_query: str, n_results: int = 10, limiar_distancia: float = 0.1) -> Dict[str, Any]:
-    """Prioriza documentos com source==feedback_5_estrelas. Se houver algum muito próximo
-    (distância < limiar), retorna apenas esses; caso contrário, combina com query geral
+def query_prioritaria_por_source(collection, user_query: str, tema: str, n_results: int = 10, limiar_distancia: float = 0.1):
+    """Prioriza documentos com source==feedback_5_estrelas.
+    caso contrário, combina com query geral
     removendo duplicados e respeitando a ordem de relevância.
     """
     res_5 = collection.query(
         query_texts=[user_query],
         n_results=n_results,
-        where={"source": "feedback_5_estrelas"},
+        where={
+            "$and": [
+                {"source": "feedback_5_estrelas"},
+                {"filename": tema}
+            ]
+        },
         include=["documents", "distances"],
     )
     docs_5 = res_5.get("documents", [[]])[0]
@@ -75,20 +80,20 @@ def query_prioritaria_por_source(collection, user_query: str, n_results: int = 1
     if dist_5 and len(dist_5) > 0 and min(dist_5) < limiar_distancia:
         return res_5
 
-    res_geral = collection.query(
+    res_tema = collection.query(
         query_texts=[user_query],
         n_results=n_results,
+        where={"filename": tema},
         include=["documents", "distances"],
     )
-
-    docs_gerais = res_geral.get("documents", [[]])[0]
-    dist_gerais = res_geral.get("distances", [[]])[0]
+    docs_tema = res_tema.get("documents", [[]])[0]
+    dist_tema = res_tema.get("distances", [[]])[0]
 
     vistos = set()
     documentos: List[str] = []
     distancias: List[float] = []
 
-    for doc, dist in list(zip(docs_5, dist_5)) + list(zip(docs_gerais, dist_gerais)):
+    for doc, dist in list(zip(docs_5, dist_5)) + list(zip(docs_tema, dist_tema)):
         if doc not in vistos:
             vistos.add(doc)
             documentos.append(doc)
@@ -115,11 +120,13 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
     regras = (
         f"Responde sempre no idioma {linguagem_detetada}.\n"
         f"O tom de escrita deve ser {linguagem_tom}.\n"
-        "Se a informação não estiver clara nos documentos, responde: \"Essa informação não está disponível nos documentos fornecidos.\"\n"
-        "Não inventes factos. Não uses conhecimento externo.\n"
-        "NUNCA escrevas prefixos como 'PERGUNTA:', 'RESPOSTA:', 'Question:', 'Answer:', "
+        "Use **exclusivamente** os documentos fornecidos abaixo.\n"
+        "Se a informação necessária não estiver nos documentos, responda exatamente:\n"
+        "'Essa informação não está disponível nos documentos fornecidos.'\n"
+        "Não invente fatos, não utilize conhecimento prévio ou externo.\n"
+        "NUNCA escreva prefixos como 'PERGUNTA:', 'RESPOSTA:', 'Question:', 'Answer:', "
         "'Resposta:', 'Pergunta:', 'ANSWER:', 'ANS:', 'R:'. "
-        "Começa sempre diretamente com a resposta, sem qualquer palavra antes."
+        "Comece sempre diretamente com a resposta, sem qualquer palavra antes."
     )
 
     blocos = [
@@ -131,25 +138,57 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
         "\n".join(documentos),
         "--- Pergunta ---",
         user_query.strip(),
+        "\nResponda **somente** com base nos documentos acima."
     ]
     return "\n\n".join(blocos).strip()
+
+def formatar_instrucao_em_lista(conteudo: str) -> str:
+    """
+    Formata conteúdo textual em passos numerados, suportando:
+    - Números: 1. passo
+    - Asteriscos: * passo
+    - Hífens: - passo
+    """
+    # Primeiro tenta detetar passos numerados
+    passos = re.split(r"(?:^|\n)\s*\d+\.\s+", conteudo)
+    if len(passos) <= 1:
+        # Se não houver vários passos numerados, tenta asteriscos ou hífens
+        passos = re.split(r"(?:^|\n)\s*[\*\-]\s+", conteudo)
+        passos = [p.strip() for p in passos if p.strip()]
+        if len(passos) <= 1:
+            # Se ainda não houver vários passos, devolve original
+            return conteudo
+
+    resultado_formatado = "Instruções passo a passo:"
+    for i, passo in enumerate(passos, 1):
+        resultado_formatado += f"Passo {i}: {passo}"
+
+    return resultado_formatado
 
 
 async def generate_rag_response(
     user_query: str,
     db: DBSession,
     current_user: Users,
+    tema: str,
     modo: str = "exploratório",
     papel: str = "Agente",
+    tema_inferido_auto: bool = False
 ) -> str:
     print("Modo recebido:", modo)
     print("PAPEL: ", papel)
-
+    print("TEMA", tema)
+    print("INFERDIO: ", tema_inferido_auto)
     linguagem_detectada = detectar_idioma(user_query)
 
     # Recuperação
     collection = get_chroma_collection()
-    results = query_prioritaria_por_source(collection, user_query, n_results=12, limiar_distancia=0.1)
+
+    if tema_inferido_auto:
+        results = collection.query(query_texts=[user_query], n_results=12, include=["documents", "distances"],)
+    else:
+        results = query_prioritaria_por_source(collection, user_query=user_query, tema=tema, n_results=12, limiar_distancia=0.1)
+
     retrieved_docs = results.get("documents", [[]])[0] if results else []
 
     if not retrieved_docs:
@@ -164,6 +203,9 @@ async def generate_rag_response(
 
     # Estilo com base na linguagem do utilizador
     linguagem = getattr(current_user, "ling_preferida", "Formal") or "Formal"
+    funcao = getattr(current_user, "funcao", "Operador") or "Operador"
+    experiencia = getattr(current_user, "experiencia", "Intermédio") or "Intermédio"
+
     if linguagem == "Informal":
         estilo_base = (
             "Usa um tom informal e descontraído, como se estivesses a conversar com um colega. "
@@ -177,6 +219,35 @@ async def generate_rag_response(
 
     system_prompt = construir_system_prompt(estilo_base, linguagem, linguagem_detectada, documentos, user_query, papel, modo)
 
+    if funcao == 3:
+        if experiencia == 1:
+            system_prompt += "Adapta a explicação para alguém com pouca experiência técnica. Inclui passos detalhados e linguagem acessível."
+        elif experiencia == 3:
+            system_prompt += "Responde de forma direta e técnica, omitindo explicações básicas."
+        else:
+            system_prompt += "Mantém um equilíbrio entre explicação e concisão."
+
+    elif funcao == 7:
+        if experiencia == 1:
+            system_prompt += "Usa linguagem simples e clara. Evita jargões técnicos sempre que possível"
+        elif experiencia == 3:
+            system_prompt += "Responde de forma objetiva, assumindo conhecimento prévio."
+        else:
+            system_prompt += "Explica com clareza, mas sem exagerar nos detalhes."
+
+    else:  # Operador ou outro
+        system_prompt += "Adapta a explicação consoante a experiência do utilizador indicada acima."
+
+    if modelo in ["mistral", "llama3"]:
+        user_message = f"{user_query.strip()}\n\n--- DOCUMENTOS DISPONÍVEIS ---\n"
+        for i, doc in enumerate(documentos, 1):
+            user_message += f"[Documento {i}]: {doc}\n"
+        user_message += (
+            "\nResponde **somente** com base nos documentos acima. "
+            "Se a informação não estiver nos documentos, responde exatamente: "
+            "'Essa informação não está disponível nos documentos fornecidos.'"
+        )
+
     resposta = ""
 
     try:
@@ -187,9 +258,9 @@ async def generate_rag_response(
                     "model": modelo,
                     "messages": [
                         {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_query.strip()},
+                        {"role": "user", "content": user_message},
                     ],
-                    "temperature": 0.3,
+                    "temperature": 0,
                     "stream": True,
                 }
                 async with client.stream("POST", url, json=payload) as r:
@@ -233,9 +304,14 @@ async def generate_rag_response(
                 ).strip()
 
     except httpx.HTTPStatusError as e:
-        return f"Falha HTTP do modelo: {e}"
+        #return f"Falha HTTP do modelo: {e}"
+        return "Não foi possível gerar a resposta no momento. Por favor, tente novamente mais tarde."
     except Exception as e:
-        return f"Não foi possível gerar resposta. Erro: {e}"
+        #return f"Não foi possível gerar resposta. Erro: {e}"
+        return "Ocorreu um erro ao gerar a resposta. Por favor, tente novamente."
+
+    if papel == "Tutor" and modo == "instrucional":
+        resposta = formatar_instrucao_em_lista(resposta)
 
     return resposta.strip() if resposta else "Não foi possível gerar resposta."
 
