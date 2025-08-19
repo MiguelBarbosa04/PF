@@ -94,7 +94,7 @@ const EscolherTema = () => {
       localStorage.setItem("sessionId", session.id);
       localStorage.setItem("tema", temaParaEnviar || "");
       localStorage.setItem("papel", papelParaEnviar || "");
-      navigate("/chat");
+      navigate(`/chat/${session.id}`);
     } catch (error) {
       console.error(t("EscolherTema-error-create-s"), error);
     }
