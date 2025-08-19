@@ -84,6 +84,8 @@ class QuizHistoricoRead(BaseModel):
     session_id: int
     data: datetime  # <- virá de RespostaUser.respondido_em
     partilhado: Optional[bool]
+    criador_id: int
+    criador_nome: str
 
     class Config:
         orm_mode = True
