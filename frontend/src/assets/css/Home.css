@@ -12,8 +12,8 @@ body, html {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #0d3a91, #D7ECF4);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary-hover), var(--color-bg));
+  color: var(--color-white);
   text-align: center;
 }
 
@@ -34,7 +34,7 @@ body, html {
 
 .splash-subtitle {
   font-size: 1.1rem;
-  color: #e0e0e0;
+  color: var(--color-white);
 }
 
 @keyframes fadeIn {
