@@ -146,7 +146,7 @@ html, body {
 
 .btn-disabled {
   padding: 10px 20px;
-  background-color:  var(--color-white);
+  background-color:  var(--color-divider);
   color: var(--color-options);
   border: none;
   border-radius: 6px;
