@@ -120,11 +120,13 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
     regras = (
         f"Responde sempre no idioma {linguagem_detetada}.\n"
         f"O tom de escrita deve ser {linguagem_tom}.\n"
-        "Se a informação não estiver clara nos documentos, responde: \"Essa informação não está disponível nos documentos fornecidos.\"\n"
-        "Não inventes factos. Não uses conhecimento externo.\n"
-        "NUNCA escrevas prefixos como 'PERGUNTA:', 'RESPOSTA:', 'Question:', 'Answer:', "
+        "Use **exclusivamente** os documentos fornecidos abaixo.\n"
+        "Se a informação necessária não estiver nos documentos, responda exatamente:\n"
+        "'Essa informação não está disponível nos documentos fornecidos.'\n"
+        "Não invente fatos, não utilize conhecimento prévio ou externo.\n"
+        "NUNCA escreva prefixos como 'PERGUNTA:', 'RESPOSTA:', 'Question:', 'Answer:', "
         "'Resposta:', 'Pergunta:', 'ANSWER:', 'ANS:', 'R:'. "
-        "Começa sempre diretamente com a resposta, sem qualquer palavra antes."
+        "Comece sempre diretamente com a resposta, sem qualquer palavra antes."
     )
 
     blocos = [
@@ -136,6 +138,7 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
         "\n".join(documentos),
         "--- Pergunta ---",
         user_query.strip(),
+        "\nResponda **somente** com base nos documentos acima."
     ]
     return "\n\n".join(blocos).strip()
 
@@ -216,10 +219,6 @@ async def generate_rag_response(
 
     system_prompt = construir_system_prompt(estilo_base, linguagem, linguagem_detectada, documentos, user_query, papel, modo)
 
-    system_prompt += f"\n\n--- Perfil do Utilizador ---\n"
-    system_prompt += f"Função: {funcao}\n"
-    system_prompt += f"Nível de experiência: {experiencia}\n"
-
     if funcao == 3:
         if experiencia == 1:
             system_prompt += "Adapta a explicação para alguém com pouca experiência técnica. Inclui passos detalhados e linguagem acessível."
@@ -239,6 +238,16 @@ async def generate_rag_response(
     else:  # Operador ou outro
         system_prompt += "Adapta a explicação consoante a experiência do utilizador indicada acima."
 
+    if modelo in ["mistral", "llama3"]:
+        user_message = f"{user_query.strip()}\n\n--- DOCUMENTOS DISPONÍVEIS ---\n"
+        for i, doc in enumerate(documentos, 1):
+            user_message += f"[Documento {i}]: {doc}\n"
+        user_message += (
+            "\nResponde **somente** com base nos documentos acima. "
+            "Se a informação não estiver nos documentos, responde exatamente: "
+            "'Essa informação não está disponível nos documentos fornecidos.'"
+        )
+
     resposta = ""
 
     try:
@@ -249,9 +258,9 @@ async def generate_rag_response(
                     "model": modelo,
                     "messages": [
                         {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_query.strip()},
+                        {"role": "user", "content": user_message},
                     ],
-                    "temperature": 0.3,
+                    "temperature": 0,
                     "stream": True,
                 }
                 async with client.stream("POST", url, json=payload) as r:
