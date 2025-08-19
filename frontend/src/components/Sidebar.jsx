@@ -176,6 +176,7 @@ const Sidebar = ({modo, setModo, refreshTrigger, onQuizRequested}) => {
                   ref={menuRef}
                   session={session}
                   userData={userData}
+                  onCloseMenu={() => setActiveMenuId(null)}
                   onQuizRequested={onQuizRequested}
                   onSessionUpdated={(id, novoTema) => {
                     setSessions((prev) =>

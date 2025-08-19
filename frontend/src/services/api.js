@@ -212,6 +212,14 @@ export const getSessionsByUserOrdered = async (userId) => {
   return await response.json();
 };
 
+export const getSessionById = async (sessionId) => {
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar sessão por ID");
+  }
+  return await response.json();
+};
+
 export const uploadPDF = async (file) => {
   const formData = new FormData();
   formData.append("file", file);

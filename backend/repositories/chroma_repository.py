@@ -1,3 +1,5 @@
+from fileinput import filename
+
 from fastapi.responses import JSONResponse
 from backend.services.chroma_service import collection
 import uuid
@@ -32,7 +34,7 @@ def existe_pergunta_na_chroma(pergunta: str) -> bool:
                 return True
     return False
 
-def indexar_qa_pergunta_resposta(pergunta: str, resposta: str, modelo: str = None):
+def indexar_qa_pergunta_resposta(pergunta: str, resposta: str, filename: str = None, modelo: str = None):
     """
     Indexa um par pergunta–resposta diretamente na base vetorial.
     """
@@ -41,6 +43,9 @@ def indexar_qa_pergunta_resposta(pergunta: str, resposta: str, modelo: str = Non
     metadata = {"source": "feedback_5_estrelas", "pergunta": pergunta_normalizada}
     if modelo:
         metadata["modelo"] = modelo
+
+    if filename:
+        metadata["filename"] = filename
 
     # Antes de inserir, verificar se já existe na base
     if not existe_pergunta_na_chroma(pergunta):

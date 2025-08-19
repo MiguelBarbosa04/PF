@@ -140,6 +140,7 @@ html, body {
   border-radius: 16px 16px 16px 0;
   background-color: var(--color-card-white);
   box-shadow: var(--shadow-light);
+  white-space: pre-wrap;
 }
 
 .chat-feed {

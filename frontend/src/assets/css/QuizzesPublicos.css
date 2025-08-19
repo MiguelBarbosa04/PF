@@ -31,7 +31,7 @@
   border: none;
   padding: 8px 14px;
   border-radius: 5px;
-  color: white;
+  color: var(--color-white);
   cursor: pointer;
 }
 
