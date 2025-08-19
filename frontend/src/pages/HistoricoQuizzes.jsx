@@ -82,11 +82,14 @@ function HistoricoQuizzes() {
         if (!res.ok) throw new Error("Erro ao atualizar partilha");
         return res.json();
       })
-      .then((data) => {
-        setQuizzes((prev) =>
-          prev.map((q) => (q.id === quizId ? data : q))
-        );
-      })
+          .then((data) => {
+      setQuizzes((prev) =>
+        prev.map((q) =>
+          q.id === quizId ? { ...q, ...data } : q
+        )
+      );
+    })
+
       .catch((err) => {
         console.error("Erro ao atualizar partilha:", err);
         setQuizzes((prev) =>
@@ -190,18 +193,24 @@ function HistoricoQuizzes() {
                         >
                             {t("repeat-btn")}
                         </button>
-                        <label className="checkbox-partilhar">
-                            <input
-                                type="checkbox"
-                                style={{marginTop: '6px', transform: 'scale(0.7)', transformOrigin: 'top left'}}
-                                checked={quiz.partilhado || false}
-                                onChange={(e) =>
-                                    atualizarPartilha(quiz.id, e.target.checked)
-                                }
-                            />
-                            {t("share-btn")}
-                        </label>
-                    </div>
+                  {parseInt(userId) === quiz.criador_id && (
+                <label className="checkbox-partilhar">
+                  <input
+                    type="checkbox"
+                    style={{
+                      marginTop: "6px",
+                      transform: "scale(0.7)",
+                      transformOrigin: "top left",
+                    }}
+                    checked={quiz.partilhado || false}
+                    onChange={(e) =>
+                      atualizarPartilha(quiz.id, e.target.checked)
+                    }
+                  />
+                  {t("share-btn")}
+                </label>
+              )}
+            </div>
                 </li>
               ))}
             </ul>

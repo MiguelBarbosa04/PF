@@ -305,7 +305,7 @@ background-color: var(--color-primary);
   margin: 0;
   border: 1.5px solid #007bff; /* Azul da borda */
   border-radius: 2px;
-  background-color: white;
+  background-color: var(--color-white);
   cursor: pointer;
   position: relative;
   transition: background-color 0.2s, border-color 0.2s;
@@ -320,7 +320,7 @@ background-color: var(--color-primary);
 /* Ícone de certo */
 .checkbox-partilhar input[type="checkbox"]:checked::after {
   content: "✔";
-  color: white;
+  color: var(--color-white);
   font-size: 12px;
   position: absolute;
   top: 3px;
@@ -373,5 +373,5 @@ background-color: var(--color-primary);
 }
 
 .search-icon:hover {
-  color: #000;
+  color: var(--color-black);
 }

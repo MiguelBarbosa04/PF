@@ -12,7 +12,7 @@ html, body {
  max-width: 800px;
   margin: 8px auto;
   padding: 30px;
-  background-color: #fdfdfd;
+  background-color: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,20 +22,20 @@ html, body {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--color-dark-button);
 }
 
 .quiz-description {
   font-size: 16px;
-  color: #666;
+  color: var(--color-dark-button-hover);
   margin-bottom: 30px;
 }
 
 .pergunta {
   margin-bottom: 25px;
   padding: 15px;
-  border-left: 4px solid #007bff;
-  background-color: #f5faff;
+  border-left: 4px solid var(--color-new-chat-btn);
+  background-color:  var(--color-white);
   border-radius: 8px;
 }
 
@@ -51,7 +51,7 @@ html, body {
 
 .opcoes li {
   margin-bottom: 8px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-white);
   padding-bottom: 8px;
 }
 
@@ -95,9 +95,9 @@ html, body {
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  border: 2px solid #007bff;
+  border: 2px solid var(--color-new-chat-btn);
   border-radius: 50%;
-  background-color: white;
+  background-color:  var(--color-white);
   box-sizing: border-box;
   pointer-events: none;
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -111,29 +111,29 @@ html, body {
   transform: translateY(-50%);
   width: 15px;
   height: 15px;
-  background-color: #007bff;
+  background-color: var(--color-new-chat-btn);
   border-radius: 50%;
 }
 
 .opcao-cartao.correta {
-  background-color: #28a745;
-  color: white;
-  border: 2px solid #1e7e34;
+  background-color: var(--color-correct);
+  color:  var(--color-white);
+  border: 2px solid var(--color-correct-escolhida);
   font-weight: bold;
 }
 
 
 .opcao-cartao.errada {
-  background-color: #dc3545;
-  color: white;
-  border: 2px solid #b21f2d;
+  background-color: var(--color-error);
+  color:  var(--color-white);
+  border: 2px solid var(--color-delete);
   font-weight: bold;
 }
 
 .btn-submit {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color:  var(--color-new-chat-btn);
+  color:  var(--color-white);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -141,13 +141,13 @@ html, body {
 }
 
 .btn-submit:hover {
-  background-color: #0056b3;
+  background-color: var(--color-primary-hover);
 }
 
 .btn-disabled {
   padding: 10px 20px;
-  background-color: #ccc;
-  color: #666;
+  background-color:  var(--color-white);
+  color: var(--color-options);
   border: none;
   border-radius: 6px;
   cursor: not-allowed;

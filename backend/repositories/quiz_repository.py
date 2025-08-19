@@ -1,7 +1,8 @@
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from backend.database.models import Quiz, Pergunta, Opcao, RespostaUser
+from backend.database.models import Quiz, Pergunta, Opcao, RespostaUser, Users
+from backend.database.models import Session as Sessions
 from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate
 
 def criar_quiz(db: Session, quiz_data: QuizCreate):
@@ -64,14 +65,22 @@ def listar_quizzes_por_user_historico(db: Session, user_id: int):
         .subquery()
     )
 
-    return db.query(
-        Quiz.id,
-        Quiz.titulo,
-        Quiz.descricao,
-        Quiz.session_id,
-        subquery.c.data_resposta.label("data"),
-        Quiz.partilhado
-    ).join(subquery, Quiz.id == subquery.c.quiz_id).all()
+    return (
+        db.query(
+            Quiz.id,
+            Quiz.titulo,
+            Quiz.descricao,
+            Quiz.session_id,
+            subquery.c.data_resposta.label("data"),
+            Quiz.partilhado,
+            Users.id.label("criador_id"),
+            Users.nome.label("criador_nome")
+        )
+        .join(subquery, Quiz.id == subquery.c.quiz_id)
+        .join(Sessions, Quiz.session_id == Sessions.id)
+        .join(Users, Sessions.user_id == Users.id)
+        .all()
+    )
 
 
 
