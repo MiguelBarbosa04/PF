@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom"; // <-- recomendo 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import "../assets/css/Welcome.css";
 import "../assets/css/IconMenuWrapper.css";
-import { FaRobot } from "react-icons/fa";
 import IconMenu from "../components/IconMenu.jsx";
 import TokenInfo from "../components/TokenInfo.jsx";
 import {useLanguage} from "../locales/LanguageContext.jsx";
+import {RiRobot3Fill} from "react-icons/ri";
 
 const Welcome = () => {
   const { t } = useLanguage();
@@ -56,7 +56,7 @@ const Welcome = () => {
             onClick={() => handleEscolhaPapel(role.key)}
             aria-label={`Entrar como ${t(role.labelKey)}`}
           >
-            <FaRobot className="role-card-icon" />
+            <RiRobot3Fill className="role-card-icon" />
             <h2 className="role-card-title">{t(role.label)}</h2>
             <p className="role-card-desc">{t(role.description)}</p>
             <span className="role-card-cta">{t("enter-btn")}</span>
