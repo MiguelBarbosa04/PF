@@ -5,7 +5,8 @@ import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
 import TokenInfo from "../components/TokenInfo.jsx";
 import {useLanguage} from "../locales/LanguageContext.jsx";
-import {RiRobot3Fill} from "react-icons/ri";
+import {RiRobot3Line} from "react-icons/ri";
+import { GrRobot } from "react-icons/gr";
 
 const Welcome = () => {
   const { t } = useLanguage();
@@ -16,12 +17,14 @@ const Welcome = () => {
         label: "agent-label",
         description:
           "agent-desc",
+        icon: <RiRobot3Line className="role-card-icon" />,
       },
       {
         key: "Tutor",
         label: "tutor-label",
         description:
           "tutor-desc",
+        icon: <GrRobot className="role-card-icon" />,
       },
   ];
 
@@ -56,7 +59,7 @@ const Welcome = () => {
             onClick={() => handleEscolhaPapel(role.key)}
             aria-label={`Entrar como ${t(role.labelKey)}`}
           >
-            <RiRobot3Fill className="role-card-icon" />
+            {role.icon}
             <h2 className="role-card-title">{t(role.label)}</h2>
             <p className="role-card-desc">{t(role.description)}</p>
             <span className="role-card-cta">{t("enter-btn")}</span>
