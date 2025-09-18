@@ -5,10 +5,10 @@ const LanguageSwitcher = () => {
 
   return (
     <div style={{ position: "absolute", textAlign: "right", top: "10px", left:"10px", display: "flex"}}>
-      <button style={{width: "15rem", marginRight: "1rem" }} onClick={() => changeLanguage("pt")} disabled={lang === "pt"}>
+      <button style={{width: "10rem", marginRight: "1rem" }} onClick={() => changeLanguage("pt")} disabled={lang === "pt"}>
         🇵🇹 Português
       </button>{" "}
-      <button onClick={() => changeLanguage("en")} disabled={lang === "en"}>
+      <button style={{width: "10rem", marginRight: "1rem" }} onClick={() => changeLanguage("en")} disabled={lang === "en"}>
         🇬🇧 English
       </button>
     </div>
