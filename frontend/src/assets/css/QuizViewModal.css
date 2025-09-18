@@ -1,0 +1,114 @@
+/* Overlay do modal - cobre toda a tela */
+.modal-view-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5); /* fundo semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* sempre à frente */
+}
+
+/* Conteúdo do modal */
+.modal-view-content {
+  position: relative; /* necessário para posicionar o botão de fechar */
+  padding: 20px;
+  background-color: #fefefe;
+  border-radius: 8px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Botão de fechar pequeno no topo direito do modal */
+.modal-view-close {
+  position: absolute;
+  top: 8px;       /* distância do topo do modal */
+  right: 8px;     /* distância da borda direita */
+  background: var(--color-new-chat-btn);
+  color: var(--color-white);
+  border: none;
+  width: 28px;    /* tamanho menor */
+  height: 28px;   /* tamanho menor */
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 50%; /* círculo */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Pequeno efeito de hover para feedback */
+.modal-view-close:hover {
+  background-color: darkred; /* ou um tom mais forte do seu theme */
+}
+
+/* Header do quiz */
+.quiz-view-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.quiz-view-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.quiz-view-header p {
+  margin: 5px 0 0;
+  color: var(--color-text-body);
+  font-style: italic;
+}
+
+/* Container de cada pergunta */
+.quiz-view-pergunta {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+/* Lista de opções */
+.quiz-view-opcoes {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.quiz-view-opcoes li {
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 4px;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.quiz-view-opcoes li:hover {
+  background-color: #ddd;
+}
+
+/* Classes de seleção */
+.quiz-view-opcoes li.escolhida {
+  background-color: #ff6666;
+  border: 2px solid var(--color-error);
+}
+
+.quiz-view-opcoes li.correta {
+  border: 2px solid var(--color-correct);
+  background-color: #d4edda;
+}
+
+.quiz-view-opcoes li.correta-escolhida {
+  border: 2px solid var(--color-correct-escolhida);
+  background-color: #c3e6cb;
+}
