@@ -82,7 +82,7 @@ class QuizHistoricoRead(BaseModel):
     titulo: str
     descricao: str
     session_id: int
-    data: datetime  # <- virá de RespostaUser.respondido_em
+    data: datetime
     partilhado: Optional[bool]
     criador_id: int
     criador_nome: str
@@ -95,6 +95,17 @@ class QuizPublicoSchema(BaseModel):
     titulo: str
     partilhado: bool
     data: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+
+class QuizReadDelete(BaseModel):
+    id: int
+    titulo: str
+    descricao: Optional[str]
+    session_id: int
+    data: datetime
+    partilhado: bool
 
     class Config:
         orm_mode = True

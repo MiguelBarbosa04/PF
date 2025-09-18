@@ -161,5 +161,7 @@
   "public-no-quiz": "Não existem quizzes partilhados no momento.",
   "take-quiz-btn": "Fazer Quiz",
   "Sidebar-no-chats": "Sem chats encontrados.",
-  "loading-topics": "Carregar Temas"
+  "loading-topics": "Carregar Temas",
+  "quiz-delete-confirm": "Tens a certeza que queres eliminar este quiz?",
+  "delete-btn": "Eliminar"
 }

@@ -138,3 +138,25 @@ def obter_respostas_quiz(db: Session, quiz_id: int, user_id: int):
 
     return resultado
 
+def eliminar_quiz(db: Session, quiz_id: int):
+    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+
+    if not quiz:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Quiz com id {quiz_id} não encontrado"
+        )
+
+    # Apagar respostas ligadas às perguntas do quiz
+    respostas = (
+        db.query(RespostaUser)
+        .join(Pergunta, Pergunta.id == RespostaUser.pergunta_id)
+        .filter(Pergunta.quiz_id == quiz_id)
+        .all()
+    )
+    for resposta in respostas:
+        db.delete(resposta)
+
+    db.delete(quiz)
+    db.commit()
+    return quiz

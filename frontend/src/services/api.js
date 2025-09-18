@@ -337,4 +337,18 @@ export const getQuizById = async (quizId) => {
   return res.json();
 };
 
+export const deleteQuiz = async (quizId) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/quizzes/${quizId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao eliminar o quiz");
+  }
+
+  return await response.json();
+};
 

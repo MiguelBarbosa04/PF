@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database.db import get_db, SessionLocal
 from backend.schemas.quiz_schema import QuizCreate, RespostaUserCreate, RespostaUserRead, QuizRead, \
-    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead, QuizPublicoSchema
+    QuizGenerationRequest, RespostaEnvio, QuizHistoricoRead, QuizPublicoSchema, QuizReadDelete
 from backend.repositories.quiz_repository import obter_respostas_quiz
 import backend.repositories.quiz_repository as quiz_repo
 from backend.repositories.global_settings_repository import obter_modelo_mais_recente
@@ -219,3 +219,8 @@ def atualizar_partilha(quiz_id: int, partilhar: bool = Query(..., description="N
     db.commit()
     db.refresh(quiz)
     return quiz
+
+
+@router.delete("/{quiz_id}", response_model=QuizReadDelete)
+def eliminar_quiz_route(quiz_id: int, db: Session = Depends(get_db)):
+    return quiz_repo.eliminar_quiz(db, quiz_id)

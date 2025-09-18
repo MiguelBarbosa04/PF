@@ -10,6 +10,7 @@ import "../assets/css/IconMenuWrapper.css";
 import IconMenu from "../components/IconMenu.jsx";
 import { useLanguage } from "../locales/LanguageContext.jsx";
 import { FaAngleLeft, FaAngleRight, FaSearch, FaTimes } from "react-icons/fa";
+import { deleteQuiz } from "../services/api";
 
 function HistoricoQuizzes() {
   const { userId } = useParams();
@@ -29,6 +30,18 @@ function HistoricoQuizzes() {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
     setPaginaAtual(0);
+  };
+
+  const handleDeleteQuiz = async (quizId) => {
+  if (confirm(t("quiz-delete-confirm") || "Tens a certeza que queres eliminar este quiz?")) {
+    try {
+      await deleteQuiz(quizId);
+      setQuizzes((prev) => prev.filter((q) => q.id !== quizId));
+    } catch (err) {
+      console.error("Erro ao eliminar quiz:", err);
+      alert("Erro ao eliminar quiz");
+    }
+  }
   };
 
   const handleClearSearch = () => {
@@ -180,37 +193,49 @@ function HistoricoQuizzes() {
                     <time>{dayjs(quiz.data).format("DD/MM/YYYY HH:mm")}</time>
                   </div>
 
-                    <div className="quiz-botoes">
-                        <button
-                            className="botao-ver"
-                            onClick={() => setQuizSelecionado(quiz)}
-                        >
-                            {t("view-btn")}
-                        </button>
-                        <button
-                            className="botao-repetir"
-                            onClick={() => setQuizParaRepetir(quiz.id)}
-                        >
-                            {t("repeat-btn")}
-                        </button>
-                  {parseInt(userId) === quiz.criador_id && (
-                <label className="checkbox-partilhar">
-                  <input
-                    type="checkbox"
-                    style={{
-                      marginTop: "6px",
-                      transform: "scale(0.7)",
-                      transformOrigin: "top left",
-                    }}
-                    checked={quiz.partilhado || false}
-                    onChange={(e) =>
-                      atualizarPartilha(quiz.id, e.target.checked)
-                    }
-                  />
-                  {t("share-btn")}
-                </label>
-              )}
-            </div>
+        <div className="quiz-botoes">
+  <button
+    className="botao-ver"
+    onClick={() => setQuizSelecionado(quiz)}
+  >
+    {t("view-btn")}
+  </button>
+
+  <button
+    className="botao-repetir"
+    onClick={() => setQuizParaRepetir(quiz.id)}
+  >
+    {t("repeat-btn")}
+  </button>
+
+  {parseInt(userId) === quiz.criador_id && (
+    <>
+      <button
+        className="botao-eliminar"
+        onClick={() => handleDeleteQuiz(quiz.id)}
+      >
+        {t("delete-btn")}
+      </button>
+
+      <label className="checkbox-partilhar">
+        <input
+          type="checkbox"
+          style={{
+            marginTop: "6px",
+            transform: "scale(0.7)",
+            transformOrigin: "top left",
+          }}
+          checked={quiz.partilhado || false}
+          onChange={(e) =>
+            atualizarPartilha(quiz.id, e.target.checked)
+          }
+        />
+        {t("share-btn")}
+      </label>
+    </>
+  )}
+</div>
+
                 </li>
               ))}
             </ul>
