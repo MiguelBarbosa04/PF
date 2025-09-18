@@ -41,8 +41,8 @@
 }
 
 .opcao.escolhida {
-  border: 2px solid #007bff;
-  background-color: #dceeff;
+  background-color: #ff6666;
+  border: 2px solid var(--color-error);
 }
 
 .opcao.correta {
