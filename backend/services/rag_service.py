@@ -219,24 +219,47 @@ async def generate_rag_response(
 
     system_prompt = construir_system_prompt(estilo_base, linguagem, linguagem_detectada, documentos, user_query, papel, modo)
 
-    if funcao == 3:
-        if experiencia == 1:
-            system_prompt += "Adapta a explicação para alguém com pouca experiência técnica. Inclui passos detalhados e linguagem acessível."
-        elif experiencia == 3:
-            system_prompt += "Responde de forma direta e técnica, omitindo explicações básicas."
-        else:
-            system_prompt += "Mantém um equilíbrio entre explicação e concisão."
+    if funcao == 3:  # Ex: Técnico de Manutenção
+        if experiencia == 1:  # Iniciante
+            system_prompt += (
+                "Fornece uma explicação detalhada, passo a passo, como se fosse um guia prático. "
+                "Usa linguagem simples, exemplos do dia a dia e evita termos técnicos sempre que possível. "
+                "Assume que o utilizador não tem experiência prévia e precisa de instruções muito claras."
+            )
+        elif experiencia == 3:  # Avançado
+            system_prompt += (
+                "Responde de forma técnica, concisa e orientada para alguém experiente. "
+                "Usa termos técnicos específicos, evita explicações básicas e vai direto ao ponto. "
+                "Se adequado, podes incluir siglas, abreviações e recomendações de boas práticas avançadas."
+            )
+        else:  # Intermédio
+            system_prompt += (
+                "Mantém um equilíbrio: explica de forma clara mas sem exagerar nos detalhes. "
+                "Usa alguma terminologia técnica, mas sem sobrecarregar."
+            )
 
-    elif funcao == 7:
-        if experiencia == 1:
-            system_prompt += "Usa linguagem simples e clara. Evita jargões técnicos sempre que possível"
-        elif experiencia == 3:
-            system_prompt += "Responde de forma objetiva, assumindo conhecimento prévio."
-        else:
-            system_prompt += "Explica com clareza, mas sem exagerar nos detalhes."
+    elif funcao == 7:  # Ex: Admin
+        if experiencia == 1:  # Iniciante
+            system_prompt += (
+                "Explica de forma muito simples e acessível, como se estivesses a ensinar alguém do zero. "
+                "Evita completamente jargões técnicos e usa metáforas ou analogias para facilitar a compreensão."
+            )
+        elif experiencia == 3:  # Avançado
+            system_prompt += (
+                "Responde de forma objetiva e direta, assumindo que o utilizador já domina os conceitos base. "
+                "Foca-te em detalhes técnicos, atalhos ou informações avançadas, sem perder tempo em explicações óbvias."
+            )
+        else:  # Intermédio
+            system_prompt += (
+                "Adapta a explicação para alguém que já entende o essencial, mas ainda pode precisar de exemplos "
+                "ou simplificações ocasionais."
+            )
 
-    else:  # Operador ou outro
-        system_prompt += "Adapta a explicação consoante a experiência do utilizador indicada acima."
+    else:  # Operador
+        system_prompt += (
+            "Adapta a explicação de acordo com o nível de experiência indicado: iniciante (muito detalhado e simples), "
+            "intermédio (moderadamente explicado) ou avançado (direto, técnico e conciso)."
+        )
 
     if modelo in ["mistral", "llama3"]:
         user_message = f"{user_query.strip()}\n\n--- DOCUMENTOS DISPONÍVEIS ---\n"
