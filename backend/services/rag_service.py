@@ -112,7 +112,10 @@ def construir_system_prompt(estilo_base: str, linguagem_tom: str, linguagem_dete
             )
         else:
             estilo_modo = (
-                "Responde de forma direta, útil e objetiva, sempre com base apenas nos documentos."
+                "Nunca uses números, travessões, marcadores ou bullets na resposta. "
+                "Transforma qualquer lista, enumeração ou tópicos em texto corrido, narrativo e ligado. "
+                "Responde de forma exploratória e descritiva, sempre com base apenas nos documentos. "
+                "Escreve como se estivesses a contar ou explicar em parágrafos contínuos."
             )
     else:
         estilo_modo = "Responde com base apenas nos documentos fornecidos."
